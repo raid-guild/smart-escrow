@@ -1,0 +1,397 @@
+[
+  {
+    "type": "constructor",
+    "stateMutability": "nonpayable",
+    "payable": false,
+    "inputs": [
+      { "type": "address", "name": "_lexDAO", "internalType": "address" },
+      { "type": "uint256", "name": "_MAX_DURATION", "internalType": "uint256" },
+      {
+        "type": "uint256",
+        "name": "_resolutionRate",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "ConfirmLocker",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "index",
+        "internalType": "uint256",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "sum",
+        "internalType": "uint256",
+        "indexed": true
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Lock",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "sender",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "index",
+        "internalType": "uint256",
+        "indexed": true
+      },
+      {
+        "type": "bytes32",
+        "name": "details",
+        "internalType": "bytes32",
+        "indexed": true
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RegisterLocker",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "client",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "address[]",
+        "name": "provider",
+        "internalType": "address[]",
+        "indexed": true
+      },
+      {
+        "type": "address",
+        "name": "resolver",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "address",
+        "name": "token",
+        "internalType": "address",
+        "indexed": false
+      },
+      {
+        "type": "uint256[]",
+        "name": "batch",
+        "internalType": "uint256[]",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "cap",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "index",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "termination",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "bytes32",
+        "name": "details",
+        "internalType": "bytes32",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Release",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "index",
+        "internalType": "uint256",
+        "indexed": true
+      },
+      {
+        "type": "uint256[]",
+        "name": "milestone",
+        "internalType": "uint256[]",
+        "indexed": true
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Resolve",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "resolver",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "clientAward",
+        "internalType": "uint256",
+        "indexed": true
+      },
+      {
+        "type": "uint256[]",
+        "name": "providerAward",
+        "internalType": "uint256[]",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "index",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "resolutionFee",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "bytes32",
+        "name": "details",
+        "internalType": "bytes32",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UpdateLockerSettings",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "lexDAO",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "MAX_DURATION",
+        "internalType": "uint256",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "resolutionRate",
+        "internalType": "uint256",
+        "indexed": true
+      },
+      {
+        "type": "bytes32",
+        "name": "details",
+        "internalType": "bytes32",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Withdraw",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "index",
+        "internalType": "uint256",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "remainder",
+        "internalType": "uint256",
+        "indexed": true
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "payable": false,
+    "outputs": [{ "type": "uint256", "name": "", "internalType": "uint256" }],
+    "name": "MAX_DURATION",
+    "inputs": [],
+    "constant": true
+  },
+  {
+    "type": "function",
+    "stateMutability": "payable",
+    "payable": true,
+    "outputs": [],
+    "name": "confirmLocker",
+    "inputs": [
+      { "type": "uint256", "name": "index", "internalType": "uint256" }
+    ],
+    "constant": false
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "payable": false,
+    "outputs": [{ "type": "address", "name": "", "internalType": "address" }],
+    "name": "lexDAO",
+    "inputs": [],
+    "constant": true
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "payable": false,
+    "outputs": [],
+    "name": "lock",
+    "inputs": [
+      { "type": "uint256", "name": "index", "internalType": "uint256" },
+      { "type": "bytes32", "name": "details", "internalType": "bytes32" }
+    ],
+    "constant": false
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "payable": false,
+    "outputs": [{ "type": "uint256", "name": "", "internalType": "uint256" }],
+    "name": "lockerCount",
+    "inputs": [],
+    "constant": true
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "payable": false,
+    "outputs": [
+      { "type": "address", "name": "client", "internalType": "address" },
+      { "type": "address", "name": "resolver", "internalType": "address" },
+      { "type": "address", "name": "token", "internalType": "address" },
+      { "type": "uint8", "name": "confirmed", "internalType": "uint8" },
+      { "type": "uint8", "name": "locked", "internalType": "uint8" },
+      { "type": "uint256", "name": "cap", "internalType": "uint256" },
+      { "type": "uint256", "name": "released", "internalType": "uint256" },
+      { "type": "uint256", "name": "termination", "internalType": "uint256" },
+      { "type": "bytes32", "name": "details", "internalType": "bytes32" }
+    ],
+    "name": "lockers",
+    "inputs": [{ "type": "uint256", "name": "", "internalType": "uint256" }],
+    "constant": true
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "payable": false,
+    "outputs": [{ "type": "uint256", "name": "", "internalType": "uint256" }],
+    "name": "registerLocker",
+    "inputs": [
+      { "type": "address", "name": "client", "internalType": "address" },
+      { "type": "address[]", "name": "provider", "internalType": "address[]" },
+      { "type": "address", "name": "resolver", "internalType": "address" },
+      { "type": "address", "name": "token", "internalType": "address" },
+      { "type": "uint256[]", "name": "batch", "internalType": "uint256[]" },
+      { "type": "uint256", "name": "cap", "internalType": "uint256" },
+      { "type": "uint256", "name": "milestones", "internalType": "uint256" },
+      { "type": "uint256", "name": "termination", "internalType": "uint256" },
+      { "type": "bytes32", "name": "details", "internalType": "bytes32" }
+    ],
+    "constant": false
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "payable": false,
+    "outputs": [],
+    "name": "release",
+    "inputs": [
+      { "type": "uint256", "name": "index", "internalType": "uint256" }
+    ],
+    "constant": false
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "payable": false,
+    "outputs": [{ "type": "uint256", "name": "", "internalType": "uint256" }],
+    "name": "resolutionRate",
+    "inputs": [],
+    "constant": true
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "payable": false,
+    "outputs": [],
+    "name": "resolve",
+    "inputs": [
+      { "type": "uint256", "name": "index", "internalType": "uint256" },
+      { "type": "uint256", "name": "clientAward", "internalType": "uint256" },
+      {
+        "type": "uint256[]",
+        "name": "providerAward",
+        "internalType": "uint256[]"
+      },
+      { "type": "bytes32", "name": "details", "internalType": "bytes32" }
+    ],
+    "constant": false
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "payable": false,
+    "outputs": [],
+    "name": "updateLockerSettings",
+    "inputs": [
+      { "type": "address", "name": "_lexDAO", "internalType": "address" },
+      { "type": "uint256", "name": "_MAX_DURATION", "internalType": "uint256" },
+      {
+        "type": "uint256",
+        "name": "_resolutionRate",
+        "internalType": "uint256"
+      },
+      { "type": "bytes32", "name": "details", "internalType": "bytes32" }
+    ],
+    "constant": false
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "payable": false,
+    "outputs": [{ "type": "address", "name": "", "internalType": "address" }],
+    "name": "wETH",
+    "inputs": [],
+    "constant": true
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "payable": false,
+    "outputs": [],
+    "name": "withdraw",
+    "inputs": [
+      { "type": "uint256", "name": "index", "internalType": "uint256" }
+    ],
+    "constant": false
+  }
+]

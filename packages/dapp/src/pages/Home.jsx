@@ -1,35 +1,66 @@
-import React from 'react';
+import { useContext, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useHistory } from 'react-router-dom';
 
-import { useWeb3 } from '../context/Web3Context';
+import { AppContext } from '../context/AppContext';
 
-import { logError } from '../utils/helpers';
+import { HomeButtonManager } from '../utils/ButtonManager';
+
+import '../sass/styles.scss';
 
 export const Home = () => {
-  const { connectAccount, account } = useWeb3();
+  const context = useContext(AppContext);
+  const [ID, setID] = useState('');
+  const [validId, setValidId] = useState(false);
 
   const history = useHistory();
 
-  const connectWallet = async () => {
-    try {
-      await connectAccount();
-    } catch {
-      logError("Couldn't connect web3 wallet");
-    }
+  const validateID = async () => {
+    if (ID === '') return alert('ID cannot be empty!');
+    context.updateLoadingState();
+    let result = await context.setAirtableState(ID);
+    setValidId(result.validRaidId);
+    context.updateLoadingState();
+    if (!result.validRaidId) alert('ID not found!');
   };
 
-  const validateRaidId = async () => {
-    // Do RaidID validation
-    if (true) {
-      await connectWallet();
-    }
+  const registerClickHandler = async () => {
+    await validateID();
+    if (validId) history.push('/register-escrow');
   };
+
+  const escrowClickHandler = async () => {
+    await validateID();
+    if (validId) history.push('/escrow');
+  };
+
+  let button_component = HomeButtonManager(
+    context,
+    validId,
+    escrowClickHandler,
+    registerClickHandler,
+    validateID
+  );
 
   return (
-    <div>
-      <h1>Home</h1>
-      <input type='text' placeholder='Enter raid ID'></input>
-      <button onClick={validateRaidId}>Connect</button>
+    <div className='home'>
+      <motion.div
+        className='home-sub-container'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <motion.input
+          type='text'
+          placeholder='Enter Raid ID'
+          onChange={(event) => setID(event.target.value)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+        ></motion.input>
+
+        {button_component}
+      </motion.div>
     </div>
   );
 };

@@ -2,6 +2,8 @@ import { useContext, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useHistory } from 'react-router-dom';
 
+import { Container } from '../shared/Container';
+
 import { AppContext } from '../context/AppContext';
 
 import { HomeButtonManager } from '../utils/ButtonManager';
@@ -43,24 +45,27 @@ export const Home = () => {
   );
 
   return (
-    <div className='home'>
-      <motion.div
-        className='home-sub-container'
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-      >
-        <motion.input
-          type='text'
-          placeholder='Enter Raid ID'
-          onChange={(event) => setID(event.target.value)}
+    <Container>
+      <div className='home'>
+        <motion.div
+          className='home-sub-container'
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-        ></motion.input>
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          <motion.h3> An Internal Service for RaidGuild Invoicing.</motion.h3>
+          <motion.input
+            type='text'
+            placeholder='Enter Raid ID'
+            onChange={(event) => setID(event.target.value)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+          ></motion.input>
 
-        {button_component}
-      </motion.div>
-    </div>
+          {button_component}
+        </motion.div>
+      </div>
+    </Container>
   );
 };

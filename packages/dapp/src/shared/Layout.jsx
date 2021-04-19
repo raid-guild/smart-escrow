@@ -1,6 +1,7 @@
 import { Flex } from '@chakra-ui/react';
 
 import { Header } from './Header';
+import { Footer } from './Footer';
 
 import BackgroundImage from '../assets/raid__cloud__castle.png';
 
@@ -22,6 +23,7 @@ export const Layout = ({ children }) => {
     >
       <Header />
       {children}
+      <Footer />
     </Flex>
   );
 };

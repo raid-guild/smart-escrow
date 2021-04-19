@@ -1,8 +1,4 @@
 import chakraTheme from '@chakra-ui/theme';
-import { css } from '@emotion/react';
-
-import CalendarRed from './assets/calendar-red.svg';
-import Calendar from './assets/calendar.svg';
 
 export const theme = {
   ...chakraTheme,
@@ -37,54 +33,7 @@ export const theme = {
     ...chakraTheme.fonts,
     mono: `'Rubik Mono One', sans-serif`,
     heading: `'Rubik One', sans-serif`,
+    jetbrains: `'JetBrains Mono', monospace`,
     body: `'Roboto', sans-serif`
   }
 };
-
-export const globalStyles = css`
-  /*
-    This will hide the focus indicator if the element receives focus via the mouse,
-    but it will still show up on keyboard focus.
-  */
-  .js-focus-visible :focus:not([data-focus-visible-added]) {
-    box-shadow: none;
-  }
-  *:focus {
-    outline: none;
-    border-color: ${theme.colors.purple} !important;
-    box-shadow: 0 0 0 1px ${theme.colors.purple} !important;
-  }
-  input[type='date']::-webkit-calendar-picker-indicator {
-    opacity: 1;
-    display: block;
-    background: url(${Calendar}) no-repeat;
-    background-size: contain !important;
-    width: 14px;
-    height: 14px;
-    border-width: thin;
-    cursor: pointer;
-    transition: background 0.25s;
-    &:hover {
-      background: url(${CalendarRed}) no-repeat;
-      background-size: contain;
-    }
-    &:hover,
-    &:focus,
-    &:active {
-      background-size: contain;
-      outline: none;
-    }
-  }
-  select option {
-    background: ${theme.colors.black} !important;
-    color: ${theme.colors.white};
-  }
-  body {
-    font-family: ${theme.fonts.body};
-    background: ${theme.colors.black};
-    color: ${theme.colors.white};
-  }
-  .web3modal-modal-lightbox {
-    zindex: 20;
-  }
-`;

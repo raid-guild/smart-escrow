@@ -1,13 +1,23 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
-import { Box, Button, Flex, Image, Link as ChakraLink } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Image,
+  Text,
+  Tag,
+  Link as ChakraLink
+} from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
 import { AppContext } from '../context/AppContext';
 
+import { Footer } from '../shared/Footer';
 import { HamburgerIcon } from '../icons/HamburgerIcon';
 
 import { getNetworkLabel, getAccountString } from '../utils/helpers';
+import { getProfile } from '../utils/3box';
 import { theme } from '../theme';
 
 import Logo from '../assets/raidguild__logo.png';
@@ -50,9 +60,17 @@ export const NavButton = ({ onClick, children }) => (
 );
 
 export const Header = () => {
-  const { address, disconnect, chainID } = useContext(AppContext);
+  const { address, chainID } = useContext(AppContext);
   const [isOpen, onOpen] = useState(false);
   const history = useHistory();
+
+  const [profile, setProfile] = useState();
+
+  useEffect(() => {
+    if (address) {
+      getProfile(address).then((p) => setProfile(p));
+    }
+  }, [address]);
 
   return (
     <Flex
@@ -88,6 +106,41 @@ export const Header = () => {
         height='8rem'
         transition='width 1s ease-out'
       >
+        {address && (
+          <>
+            <Flex
+              borderRadius='50%'
+              w='2.5rem'
+              h='2.5rem'
+              overflow='hidden'
+              justify='center'
+              align='center'
+              bgColor='black'
+              bgImage={profile && `url(${profile.imageUrl})`}
+              border={`1px solid ${theme.colors.white20}`}
+              bgSize='cover'
+              bgRepeat='no-repeat'
+              bgPosition='center center'
+            />
+            <Text
+              px={2}
+              display={{ base: 'none', md: 'flex' }}
+              fontFamily="'Roboto Mono', monospace;"
+              color='red.500'
+            >
+              {profile && profile.name
+                ? profile.name
+                : getAccountString(address)}
+            </Text>
+            <Tag
+              colorScheme='red'
+              display={{ base: 'none', md: 'flex' }}
+              size='sm'
+            >
+              {getNetworkLabel(chainID)}
+            </Tag>
+          </>
+        )}
         <Button
           onClick={() => onOpen((o) => !o)}
           variant='link'
@@ -144,6 +197,7 @@ export const Header = () => {
           isExternal
           _hover={{}}
         ></ChakraLink>
+        <Footer center />
       </Flex>
     </Flex>
   );

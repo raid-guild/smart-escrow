@@ -18,9 +18,9 @@ $rubik-font: 'Rubik Mono One', sans-serif;
   align-items: center;
 
   .home-sub-container {
+    height: 300px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     box-shadow: 0 2.8px 2.2px -14px rgba(0, 0, 0, 0.02),
       0 6.7px 5.3px -14px rgba(0, 0, 0, 0.028),
@@ -30,12 +30,15 @@ $rubik-font: 'Rubik Mono One', sans-serif;
       0 100px 80px -14px rgba(0, 0, 0, 0.07);
     border-radius: 5px;
     padding: 3rem;
-    h1 {
+    background-color: black;
+    h3 {
+      max-width: 300px;
       font-family: $rubik-font;
-      font-size: 1.5rem;
+      font-size: 1.1rem;
       text-transform: uppercase;
       margin-right: auto;
-      color: #fffffe;
+      margin-bottom: 20px;
+      color: $primary-color;
     }
 
     input {

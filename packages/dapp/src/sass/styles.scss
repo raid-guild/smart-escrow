@@ -86,3 +86,103 @@ $rubik-font: 'Rubik Mono One', sans-serif;
     }
   }
 }
+
+.raidinfo {
+  width: 100%;
+  .raidinfo-sub-container {
+    max-width: 450px;
+    height: 100%;
+    letter-spacing: 1.5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2.8px 2.2px -14px rgba(0, 0, 0, 0.02),
+      0 6.7px 5.3px -14px rgba(0, 0, 0, 0.028),
+      0 12.5px 10px -14px rgba(0, 0, 0, 0.035),
+      0 22.3px 17.9px -14px rgba(0, 0, 0, 0.042),
+      0 41.8px 33.4px -14px rgba(0, 0, 0, 0.05),
+      0 100px 80px -14px rgba(0, 0, 0, 0.07);
+    border-radius: 5px;
+    margin-right: auto;
+    margin-left: 1rem;
+
+    .contents {
+      div {
+        margin-bottom: 0.7rem;
+        margin-top: 15px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        font-family: $texturina-font;
+        color: #fffffe;
+      }
+
+      h2 {
+        font-size: 1.2rem;
+        font-weight: normal;
+        color: #a7a9be;
+      }
+
+      p {
+        color: #a7a9be;
+        font-family: $texturina-font;
+      }
+
+      .timelines {
+        p {
+          color: $primary-color;
+          font-family: $jetbrains-font;
+        }
+      }
+
+      a {
+        color: $royal-blue;
+        margin-bottom: 5px;
+        text-decoration: underline;
+        font-family: $texturina-font;
+      }
+
+      .addresses {
+        display: flex;
+        flex-direction: column;
+
+        a {
+          text-decoration: none;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          p {
+            margin-right: 5px;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-family: $jetbrains-font;
+          }
+        }
+      }
+
+      .custom-button {
+        width: auto;
+        display: block;
+        font-family: $rubik-font;
+        font-size: 1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #fffffe;
+        background-color: $primary-color;
+        border: none;
+        border-radius: 3px;
+        padding: 12px;
+        margin: 0 12px 12px auto;
+        letter-spacing: 1.2px;
+      }
+
+      .custom-button:hover {
+        cursor: pointer;
+        background-color: $royal-grey;
+        color: $primary-color;
+      }
+    }
+  }
+}

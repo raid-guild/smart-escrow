@@ -28,7 +28,7 @@ export const Home = () => {
 
   const registerClickHandler = async () => {
     await validateID();
-    if (validId) history.push('/register-escrow');
+    if (validId) history.push('/raid-info');
   };
 
   const escrowClickHandler = async () => {

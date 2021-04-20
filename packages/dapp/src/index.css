@@ -1,5 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Texturina:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
+
+/* $primary-color: #ff3864;
+$royal-black: #0a0a0af5;
+$royal-grey: #16161a;
+$royal-blue: #7f5af0;
+
+$texturina-font: 'Texturina', serif;
+$jetbrains-font: 'JetBrains Mono', monospace;
+$rubik-font: 'Rubik Mono One', sans-serif; */

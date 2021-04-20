@@ -1,12 +1,25 @@
 import React, { useContext, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { Flex, Box } from '@chakra-ui/react';
 import { useHistory } from 'react-router-dom';
+import styled from '@emotion/styled';
 
 import { Container } from '../shared/Container';
+import { StyledButton } from '../styled/StyledButton';
 
 import { AppContext } from '../context/AppContext';
 
-import '../sass/styles.scss';
+const StyledH1 = styled.h1`
+  font-size: 1.1rem;
+  font-family: 'Rubik Mono One', sans-serif;
+  color: #fffffe;
+`;
+
+const StyledH2 = styled.h2`
+  font-size: 1rem;
+  font-weight: normal;
+  font-family: 'JetBrains Mono', monospace;
+  color: #a7a9be;
+`;
 
 export const RaidInfo = (props) => {
   const context = useContext(AppContext);
@@ -20,87 +33,97 @@ export const RaidInfo = (props) => {
 
   return (
     <Container>
-      <div className='raidinfo'>
-        <div className='raidinfo-sub-container'>
-          <div className='contents'>
-            <motion.h2
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-            >
-              {context.client_name}
-            </motion.h2>
-            <motion.h1
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-            >
-              {context.project_name}
-            </motion.h1>
-            <motion.div
-              className='timelines'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
-            >
-              <p>Start: {context.start_date.split('T')[0]}</p>
-              <p>Planned End: {context.end_date}</p>
-            </motion.div>
-            {/* <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-            >
-              {context.brief_description}
+      <Flex
+        direction='column'
+        maxWidth='450px'
+        marginRight='auto'
+        marginLeft='3rem'
+        letterSpacing='1.5px'
+      >
+        <Flex direction='column' alignItems='flex-start'>
+          <StyledH2>{context.client_name}</StyledH2>
+          <StyledH1>{context.project_name}</StyledH1>
+          <Box marginTop='15px' marginBottom='.7rem'>
+            <p style={{ color: '#a7a9be', fontFamily: "'Texturina', serif" }}>
+              Start: {context.start_date.split('T')[0]}
+            </p>
+            <p style={{ color: '#a7a9be', fontFamily: "'Texturina', serif" }}>
+              Planned End: {context.end_date}
+            </p>
+          </Box>
+          {/* <motion.p>
+            {context.brief_description}
             </motion.p> */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.9, duration: 0.5 }}
+          <a
+            href={context.link_to_details}
+            target='_blank'
+            rel='noopener noreferrer'
+            style={{
+              color: '#7f5af0',
+              marginBottom: '5px',
+              textDecoration: 'underline',
+              fontFamily: "'Texturina', serif"
+            }}
+          >
+            Link to details of agreement
+          </a>
+
+          <Box>
+            <a
+              href={`https://blockscout.com/poa/xdai/address/${context.spoils_address}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                textDecoration: 'none'
+              }}
             >
-              <a
-                href={context.link_to_details}
-                target='_blank'
-                rel='noopener noreferrer'
+              <p
+                style={{
+                  marginRight: '5px',
+                  textTransform: 'uppercase',
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: '.7rem'
+                }}
               >
-                Link to details of agreement
-              </a>
-            </motion.div>
-            <motion.div
-              className='addresses'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1, duration: 0.5 }}
+                Spoils - {context.spoils_percent * 100}% of payment
+              </p>{' '}
+              <i className='fas fa-external-link-square-alt'></i>
+            </a>
+            <a
+              href={`https://blockscout.com/poa/xdai/address/${context.resolver_address}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                textDecoration: 'none'
+              }}
             >
-              <a
-                href={`https://blockscout.com/poa/xdai/address/${context.spoils_address}`}
-                target='_blank'
-                rel='noopener noreferrer'
+              <p
+                style={{
+                  marginRight: '5px',
+                  textTransform: 'uppercase',
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: '.7rem'
+                }}
               >
-                <p>Spoils - {context.spoils_percent * 100}% of payment</p>{' '}
-                <i className='fas fa-external-link-square-alt'></i>
-              </a>
-              <a
-                href={`https://blockscout.com/poa/xdai/address/${context.resolver_address}`}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <p>Arbitration Provider - LexDAO</p>
-                <i className='fas fa-external-link-square-alt'></i>
-              </a>
-            </motion.div>
-            <motion.button
-              className='custom-button'
-              onClick={() => history.push('/register-escrow')}
-              initial={{ x: '100vw' }}
-              animate={{ x: 0 }}
-              transition={{ delay: 1.3 }}
-            >
-              Next
-            </motion.button>
-          </div>
-        </div>
-      </div>
+                Arbitration Provider - LexDAO
+              </p>
+              <i className='fas fa-external-link-square-alt'></i>
+            </a>
+          </Box>
+          <StyledButton
+            style={{ width: 'auto', marginTop: '12px' }}
+            onClick={() => history.push('/register-escrow')}
+          >
+            Next
+          </StyledButton>
+        </Flex>
+      </Flex>
     </Container>
   );
 };

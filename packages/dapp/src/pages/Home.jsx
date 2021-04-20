@@ -1,14 +1,59 @@
 import { useContext, useState } from 'react';
-import { motion } from 'framer-motion';
 import { useHistory } from 'react-router-dom';
+import { Flex } from '@chakra-ui/react';
 
 import { Container } from '../shared/Container';
+import { Loader } from '../components/Loader';
+import { StyledButton } from '../styled/StyledButton';
+import { StyledInput } from '../styled/StyledInput';
+import { StyledH3 } from '../styled/StyledH3';
 
 import { AppContext } from '../context/AppContext';
 
-import { HomeButtonManager } from '../utils/ButtonManager';
+const ButtonManager = (
+  context,
+  validId,
+  escrowClickHandler,
+  registerClickHandler,
+  validateID
+) => {
+  let component;
+  if (context.isLoading) {
+    component = <Loader />;
+  } else if (validId) {
+    if (context.chainID.toString() !== '100' && context.chainID !== '0x64') {
+      component = (
+        <p
+          style={{ fontFamily: "'Rubik Mono One', sans-serif", color: '#fff' }}
+        >
+          Switch to xDai
+        </p>
+      );
+    } else if (context.address) {
+      if (context.escrow_index !== '') {
+        component = (
+          <StyledButton onClick={escrowClickHandler}>View Escrow</StyledButton>
+        );
+      } else {
+        component = (
+          <StyledButton onClick={registerClickHandler}>
+            Register Escrow
+          </StyledButton>
+        );
+      }
+    } else {
+      component = (
+        <StyledButton onClick={context.connectAccount}>
+          Connect Wallet
+        </StyledButton>
+      );
+    }
+  } else {
+    component = <StyledButton onClick={validateID}>Validate ID</StyledButton>;
+  }
 
-import '../sass/styles.scss';
+  return component;
+};
 
 export const Home = () => {
   const context = useContext(AppContext);
@@ -36,36 +81,40 @@ export const Home = () => {
     if (validId) history.push('/escrow');
   };
 
-  let button_component = HomeButtonManager(
-    context,
-    validId,
-    escrowClickHandler,
-    registerClickHandler,
-    validateID
-  );
-
   return (
     <Container>
-      <div className='home'>
-        <motion.div
-          className='home-sub-container'
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
+      <Flex
+        direction='column'
+        alignItems='center'
+        background='black'
+        padding='.7rem'
+        marginRight='auto'
+        marginLeft='1rem'
+      >
+        <StyledH3
+          style={{
+            maxWidth: '300px',
+            marginRight: 'auto',
+            marginBottom: '1rem'
+          }}
         >
-          <motion.h3> An Internal Service for RaidGuild Invoicing.</motion.h3>
-          <motion.input
-            type='text'
-            placeholder='Enter Raid ID'
-            onChange={(event) => setID(event.target.value)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-          ></motion.input>
+          {' '}
+          An Internal Service for RaidGuild Invoicing.
+        </StyledH3>
+        <StyledInput
+          type='text'
+          placeholder='Enter Raid ID'
+          onChange={(event) => setID(event.target.value)}
+        ></StyledInput>
 
-          {button_component}
-        </motion.div>
-      </div>
+        {ButtonManager(
+          context,
+          validId,
+          escrowClickHandler,
+          registerClickHandler,
+          validateID
+        )}
+      </Flex>
     </Container>
   );
 };

@@ -1,12 +1,11 @@
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Flex } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 
 import { Container } from '../shared/Container';
 import { Loader } from '../components/Loader';
 import { StyledButton } from '../styled/StyledButton';
 import { StyledInput } from '../styled/StyledInput';
-import { StyledH3 } from '../styled/StyledH3';
 
 import { AppContext } from '../context/AppContext';
 
@@ -84,23 +83,24 @@ export const Home = () => {
   return (
     <Container>
       <Flex
+        height='300px'
         direction='column'
         alignItems='center'
         background='black'
         padding='.7rem'
         marginRight='auto'
-        marginLeft='1rem'
+        marginLeft='3rem'
       >
-        <StyledH3
-          style={{
-            maxWidth: '300px',
-            marginRight: 'auto',
-            marginBottom: '1rem'
-          }}
+        <Heading
+          size='md'
+          fontFamily='jetbrains'
+          color='guildRed'
+          maxWidth='300px'
+          marginRight='auto'
+          marginBottom='1rem'
         >
-          {' '}
-          An Internal Service for RaidGuild Invoicing.
-        </StyledH3>
+          Start here by providing the Raid ID..
+        </Heading>
         <StyledInput
           type='text'
           placeholder='Enter Raid ID'

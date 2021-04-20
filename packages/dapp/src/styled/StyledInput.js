@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
+import { theme } from '../theme';
 
 export const StyledInput = styled.input`
   width: 350px;
   outline: none;
   color: #ff3864;
-  font-family: 'Texturina', serif;
+  font-family: ${theme.fonts.jetbrains};
   font-size: 1.1rem;
   border: 2px solid #ff3864;
   border-radius: 5px;

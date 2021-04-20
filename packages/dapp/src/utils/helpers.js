@@ -12,6 +12,7 @@ export const getAccountString = (account) => {
 };
 
 export const getNetworkName = (chainId) =>
-  networkNames[chainId] || 'Unknown Chain';
+  networkNames[parseInt(chainId)] || 'Unknown Chain';
 
-export const getNetworkLabel = (chainId) => networkLabels[chainId] || 'unknown';
+export const getNetworkLabel = (chainId) =>
+  networkLabels[parseInt(chainId)] || 'unknown';

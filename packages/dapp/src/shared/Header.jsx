@@ -27,7 +27,7 @@ const StyledButton = styled(Button)`
   &::after {
     box-sizing: inherit;
     transition: all ease-in-out 0.2s;
-    background: none repeat scroll 0 0 ${theme.colors.red[500]};
+    background: none repeat scroll 0 0 ${theme.colors.guildRed};
     content: '';
     display: block;
     height: 2px;
@@ -51,7 +51,7 @@ export const NavButton = ({ onClick, children }) => (
     transition='all 0.5s ease 0.4s'
     my='1rem'
     variant='link'
-    color='red.500'
+    color='guildRed'
     fontWeight='normal'
     fontSize='1.5rem'
   >
@@ -126,7 +126,7 @@ export const Header = () => {
               px={2}
               display={{ base: 'none', md: 'flex' }}
               fontFamily="'Roboto Mono', monospace;"
-              color='red.500'
+              color='guildRed'
             >
               {profile && profile.name
                 ? profile.name
@@ -154,7 +154,7 @@ export const Header = () => {
               transition: 'all 1s ease-out',
               transform: 'rotateZ(90deg)'
             }}
-            color='red.500'
+            color='guildRed'
           />
         </Button>
       </Flex>
@@ -185,7 +185,7 @@ export const Header = () => {
           transition='all 0.5s ease 0.4s'
           my='1rem'
           variant='link'
-          color='red.500'
+          color='guildRed'
           fontWeight='normal'
           fontSize='1.5rem'
           fontFamily='mono'

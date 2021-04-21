@@ -19,7 +19,7 @@ export const Layout = ({ children }) => {
       overflowX='hidden'
       bgImage={`url(${BackgroundImage})`}
       bgSize='cover'
-      color='red.500'
+      color='guildRed'
     >
       <Header />
       {children}

@@ -13,6 +13,7 @@ export const Container = ({ children, overlay, ...props }) => {
       flex={1}
       m='1rem'
       border={`2px solid ${theme.colors.guildRed}`}
+      style={{ backdropFilter: props.backdropFilter }}
       {...props}
     >
       {children}

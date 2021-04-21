@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Flex, Heading } from '@chakra-ui/react';
+import { Flex, Heading, VStack } from '@chakra-ui/react';
 
 import { Container } from '../shared/Container';
 import { Loader } from '../components/Loader';
@@ -82,38 +82,29 @@ export const Home = () => {
 
   return (
     <Container>
-      <Flex
-        height='300px'
-        direction='column'
-        alignItems='center'
-        background='black'
-        padding='.7rem'
-        marginRight='auto'
-        marginLeft='3rem'
-      >
-        <Heading
-          size='md'
-          fontFamily='jetbrains'
-          color='guildRed'
-          maxWidth='300px'
-          marginRight='auto'
-          marginBottom='1rem'
-        >
-          Start here by providing the Raid ID..
-        </Heading>
-        <StyledInput
-          type='text'
-          placeholder='Enter Raid ID'
-          onChange={(event) => setID(event.target.value)}
-        ></StyledInput>
-
-        {ButtonManager(
-          context,
-          validId,
-          escrowClickHandler,
-          registerClickHandler,
-          validateID
-        )}
+      <Flex marginRight='auto' marginLeft='3rem'>
+        <VStack height='150px' marginTop='auto' marginBottom='auto'>
+          <Heading
+            size='md'
+            fontFamily='jetbrains'
+            color='guildRed'
+            marginBottom='1rem'
+          >
+            Start here by providing the Raid ID..
+          </Heading>
+          <StyledInput
+            type='text'
+            placeholder='Enter Raid ID'
+            onChange={(event) => setID(event.target.value)}
+          ></StyledInput>
+          {ButtonManager(
+            context,
+            validId,
+            escrowClickHandler,
+            registerClickHandler,
+            validateID
+          )}
+        </VStack>
       </Flex>
     </Container>
   );

@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Flex, Heading, VStack } from '@chakra-ui/react';
+import { Flex, Heading, VStack, useToast, Box } from '@chakra-ui/react';
 
 import { Container } from '../shared/Container';
 import { Loader } from '../components/Loader';
@@ -59,6 +59,8 @@ export const Home = () => {
   const [ID, setID] = useState('');
   const [validId, setValidId] = useState(false);
 
+  const toast = useToast();
+
   const history = useHistory();
 
   const validateID = async () => {
@@ -67,7 +69,23 @@ export const Home = () => {
     let result = await context.setAirtableState(ID);
     setValidId(result.validRaidId);
     context.updateLoadingState();
-    if (!result.validRaidId) alert('ID not found!');
+    if (!result.validRaidId) {
+      toast({
+        duration: 3000,
+        position: 'top',
+        render: () => (
+          <Box
+            color='guildRed'
+            p={3}
+            mt='1rem'
+            bg='#16161a'
+            fontFamily='jetbrains'
+          >
+            Raid ID not found or invalid.
+          </Box>
+        )
+      });
+    }
   };
 
   const registerClickHandler = async () => {

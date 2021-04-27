@@ -1,11 +1,12 @@
 /* eslint-disable */
-const { ethers, run } = require("hardhat");
+const { ethers, run, network } = require("hardhat");
+const fs = require("fs");
 
 const smartInvoiceFactoryAddress = {
-  4: "0x783F87D4c8EFDF2fb97022C92CF716936a1eD8d6",
+  4: "0x9c94f17C4B7A8E2a75A83466c9F9745a0D9F7e1c",
   42: "",
   77: "",
-  100: "",
+  100: "0x26832d296Be653C1A818B7AaF3D4e5e16A0C314d",
 };
 
 const networkName = {
@@ -80,6 +81,15 @@ async function main() {
     ],
   });
   console.log("Verified Factory");
+
+  const deploymentInfo = {
+      network: network.name,
+      factory: wrappedInvoiceFactory.address,
+      txHash,
+      blockNumber: receipt.blockNumber.toString(),
+  }
+
+  fs.writeFileSync(`deployments/${network.name}.json`, JSON.stringify(deploymentInfo, undefined, 2));
 }
 
 main()

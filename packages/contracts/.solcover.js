@@ -1,3 +1,7 @@
 module.exports = {
-  skipFiles: ["mocks/MockWETH.sol", "mocks/MockArbitrator.sol"],
+  skipFiles: [
+    "libraries/Percentages.sol",
+    "libraries/abdk-libraries/ABDKMath64x64.sol",
+    "libraries/abdk-libraries/ABDKMathQuad.sol",
+  ],
 };

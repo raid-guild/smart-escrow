@@ -1,5 +1,5 @@
-/* eslint-disable */
-const { ethers, run, network } = require("hardhat");
+/* eslint-disable no-console */
+const { ethers, run, network, ethernal } = require("hardhat");
 const fs = require("fs");
 
 const smartInvoiceFactoryAddress = {
@@ -45,6 +45,11 @@ async function main() {
   await wrappedInvoice.deployed();
   console.log("Implementation Address:", wrappedInvoice.address);
 
+  await ethernal.push({
+    name: "WrappedInvoice",
+    address: wrappedInvoice.address,
+  });
+
   const WrappedInvoiceFactory = await ethers.getContractFactory(
     "WrappedInvoiceFactory",
   );
@@ -54,6 +59,11 @@ async function main() {
   );
   await wrappedInvoiceFactory.deployed();
   console.log("Factory Address:", wrappedInvoiceFactory.address);
+
+  await ethernal.push({
+    name: "WrappedInvoiceFactory",
+    address: wrappedInvoiceFactory.address,
+  });
 
   await wrappedInvoice.initLock();
 

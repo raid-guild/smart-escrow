@@ -27,8 +27,17 @@ contract WrappedInvoice is
     address public token;
     ISmartInvoice public invoice;
 
-    event Withdraw(address indexed token, uint256 parentShare, uint256 childShare);
-    event Disperse(address indexed token, uint256 parentShare, uint256[] amounts, address[] fundees);
+    event Withdraw(
+        address indexed token,
+        uint256 parentShare,
+        uint256 childShare
+    );
+    event Disperse(
+        address indexed token,
+        uint256 parentShare,
+        uint256[] amounts,
+        address[] fundees
+    );
 
     modifier onlyRaider() {
         require(_msgSender() == parent || _msgSender() == child, "!raider");

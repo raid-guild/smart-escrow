@@ -83,13 +83,16 @@ async function main() {
   console.log("Verified Factory");
 
   const deploymentInfo = {
-      network: network.name,
-      factory: wrappedInvoiceFactory.address,
-      txHash,
-      blockNumber: receipt.blockNumber.toString(),
-  }
+    network: network.name,
+    factory: wrappedInvoiceFactory.address,
+    txHash,
+    blockNumber: receipt.blockNumber.toString(),
+  };
 
-  fs.writeFileSync(`deployments/${network.name}.json`, JSON.stringify(deploymentInfo, undefined, 2));
+  fs.writeFileSync(
+    `deployments/${network.name}.json`,
+    JSON.stringify(deploymentInfo, undefined, 2),
+  );
 }
 
 main()

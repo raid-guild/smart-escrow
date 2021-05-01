@@ -11,7 +11,7 @@ contract WrappedInvoiceFactory is IWrappedInvoiceFactory {
     uint256 public invoiceCount = 0;
     mapping(uint256 => address) internal _invoices;
 
-    event LogNewInvoice(uint256 indexed index, address invoice);
+    event LogNewWrappedInvoice(uint256 indexed index, address invoice);
 
     address public immutable implementation;
     ISmartInvoiceFactory public immutable smartInvoiceFactory;
@@ -58,7 +58,7 @@ contract WrappedInvoiceFactory is IWrappedInvoiceFactory {
         _invoices[invoiceId] = _info.invoiceAddress;
         invoiceCount = invoiceCount + 1;
 
-        emit LogNewInvoice(invoiceId, _info.invoiceAddress);
+        emit LogNewWrappedInvoice(invoiceId, _info.invoiceAddress);
     }
 
     function _newClone() internal returns (address) {
@@ -80,13 +80,13 @@ contract WrappedInvoiceFactory is IWrappedInvoiceFactory {
         SmartInvoiceInfo smartInvoiceInfo;
         address invoiceAddress;
         address[] providers;
-        uint256[] splitFactor;
+        uint256 splitFactor;
     }
 
     function create(
         address _client,
         address[] calldata _providers,
-        uint256[] calldata _splitFactor, // [1,9] for 10% split
+        uint256 _splitFactor,
         uint8 _resolverType,
         address _resolver,
         address _token,
@@ -95,7 +95,6 @@ contract WrappedInvoiceFactory is IWrappedInvoiceFactory {
         bytes32 _details
     ) external override returns (address) {
         require(_providers.length == 2, "invalid providers");
-        require(_splitFactor.length == 2, "invalid splitFactor");
 
         address invoiceAddress = _newClone();
 

@@ -10,8 +10,9 @@ import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "./interfaces/ISmartInvoice.sol";
 import "./interfaces/IWrappedInvoice.sol";
-import "./libraries/Percentages.sol";
 
+// WrappedInvoice wraps a smart-invoice and automatically splits the released funds
+// towards the parent DAO and child Raider as per the splitFactor
 contract WrappedInvoice is
     IWrappedInvoice,
     Initializable,
@@ -22,9 +23,7 @@ contract WrappedInvoice is
 
     address public parent;
     address public child;
-    uint256 public splitParent;
-    uint256 public splitChild;
-    uint256 public splitTotal;
+    uint256 public splitFactor;
     address public token;
     ISmartInvoice public invoice;
 
@@ -38,41 +37,42 @@ contract WrappedInvoice is
     function initLock() external initializer {}
 
     function init(
-        address _parent,
-        address _child,
-        address _invoice,
-        uint256[] calldata _splitRatio // for 10% => 1:9 => splitRatio must be input as [1, 9]
+        address _parent, // Parent DAO
+        address _child, // Raid Multisig
+        address _invoice, // Smart Invoice
+        uint256 _splitFactor // for 10% => splitFactor must be input as 10
     ) external override initializer {
         require(_parent != address(0), "invalid parent");
         require(_child != address(0), "invalid child");
         require(_invoice != address(0), "invalid invoice");
+        require(
+            ISmartInvoice(_invoice).provider() == address(this),
+            "invalid invoice provider"
+        );
+        require(_splitFactor > 0, "invalid split");
 
         parent = _parent;
         child = _child;
         invoice = ISmartInvoice(_invoice);
 
-        require(_splitRatio.length == 2, "invalid ratio");
-        splitParent = _splitRatio[0];
-        splitChild = _splitRatio[1];
-
-        require(splitParent > 0 && splitChild > 0, "invalid split");
-        splitTotal = splitParent + splitChild;
+        splitFactor = _splitFactor;
 
         token = invoice.token();
-
-        require(invoice.provider() == address(this), "invalid invoice");
     }
 
     function _withdraw(address _token, uint256 _amount) internal {
         uint256 balance = IERC20(_token).balanceOf(address(this));
         require(balance >= _amount, "not enough balance");
 
-        uint256 parentShare =
-            Percentages.maxAllocation(splitChild, splitTotal, _amount);
-        uint256 childShare = balance - parentShare;
+        uint256 parentShare = _amount / splitFactor;
+        uint256 childShare = _amount - parentShare;
 
-        IERC20(_token).safeTransfer(parent, parentShare);
-        IERC20(_token).safeTransfer(child, childShare);
+        if (parentShare > 0) {
+            IERC20(_token).safeTransfer(parent, parentShare);
+        }
+        if (childShare > 0) {
+            IERC20(_token).safeTransfer(child, childShare);
+        }
 
         emit Withdraw(_token, parentShare, childShare);
     }
@@ -104,31 +104,62 @@ contract WrappedInvoice is
         address[] calldata _fundees,
         address _token,
         uint256 _amount
-    ) internal {}
+    ) internal {
+        require(
+            _amounts.length == _fundees.length,
+            "fundees length must equal amounts length"
+        );
+        uint256 total = 0;
+        for (uint256 i = 0; i < _amounts.length; i++) {
+            total += _amounts[i];
+        }
+        uint256 parentShare = _amount / splitFactor;
+        uint256 childShare = _amount - parentShare;
+        require(total == childShare, "amount does not equal total");
+        uint256 balance = IERC20(_token).balanceOf(address(this));
+        require(balance >= _amount, "not enough balance");
+
+        if (parentShare > 0) {
+            IERC20(_token).safeTransfer(parent, parentShare);
+        }
+        for (uint256 i = 0; i < _fundees.length; i++) {
+            IERC20(_token).safeTransfer(_fundees[i], _amounts[i]);
+        }
+    }
 
     function disperseAll(
         uint256[] calldata _amounts,
         address[] calldata _fundees
-    ) external override nonReentrant onlyRaider {}
+    ) external override nonReentrant onlyRaider {
+        uint256 balance = IERC20(token).balanceOf(address(this));
+        _disperse(_amounts, _fundees, token, balance);
+    }
 
     function disperseAll(
         uint256[] calldata _amounts,
         address[] calldata _fundees,
         address _token
-    ) external override nonReentrant onlyRaider {}
+    ) external override nonReentrant onlyRaider {
+        uint256 balance = IERC20(_token).balanceOf(address(this));
+        _disperse(_amounts, _fundees, _token, balance);
+    }
 
     function disperse(
         uint256[] calldata _amounts,
         address[] calldata _fundees,
         uint256 _amount
-    ) external override nonReentrant onlyRaider {}
+    ) external override nonReentrant onlyRaider {
+        _disperse(_amounts, _fundees, token, _amount);
+    }
 
     function disperse(
         uint256[] calldata _amounts,
         address[] calldata _fundees,
         address _token,
         uint256 _amount
-    ) external override nonReentrant onlyRaider {}
+    ) external override nonReentrant onlyRaider {
+        _disperse(_amounts, _fundees, _token, _amount);
+    }
 
     function lock(bytes32 _details) external payable override onlyRaider {
         invoice.lock(_details);

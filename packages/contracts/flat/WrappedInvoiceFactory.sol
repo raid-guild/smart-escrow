@@ -29,15 +29,9 @@ library Clones {
         // solhint-disable-next-line no-inline-assembly
         assembly {
             let ptr := mload(0x40)
-            mstore(
-                ptr,
-                0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000
-            )
+            mstore(ptr, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
             mstore(add(ptr, 0x14), shl(0x60, implementation))
-            mstore(
-                add(ptr, 0x28),
-                0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000
-            )
+            mstore(add(ptr, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
             instance := create(0, ptr, 0x37)
         }
         require(instance != address(0), "ERC1167: create failed");
@@ -50,22 +44,13 @@ library Clones {
      * the clone. Using the same `implementation` and `salt` multiple time will revert, since
      * the clones cannot be deployed twice at the same address.
      */
-    function cloneDeterministic(address implementation, bytes32 salt)
-        internal
-        returns (address instance)
-    {
+    function cloneDeterministic(address implementation, bytes32 salt) internal returns (address instance) {
         // solhint-disable-next-line no-inline-assembly
         assembly {
             let ptr := mload(0x40)
-            mstore(
-                ptr,
-                0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000
-            )
+            mstore(ptr, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
             mstore(add(ptr, 0x14), shl(0x60, implementation))
-            mstore(
-                add(ptr, 0x28),
-                0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000
-            )
+            mstore(add(ptr, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
             instance := create2(0, ptr, 0x37, salt)
         }
         require(instance != address(0), "ERC1167: create2 failed");
@@ -74,23 +59,13 @@ library Clones {
     /**
      * @dev Computes the address of a clone deployed using {Clones-cloneDeterministic}.
      */
-    function predictDeterministicAddress(
-        address implementation,
-        bytes32 salt,
-        address deployer
-    ) internal pure returns (address predicted) {
+    function predictDeterministicAddress(address implementation, bytes32 salt, address deployer) internal pure returns (address predicted) {
         // solhint-disable-next-line no-inline-assembly
         assembly {
             let ptr := mload(0x40)
-            mstore(
-                ptr,
-                0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000
-            )
+            mstore(ptr, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
             mstore(add(ptr, 0x14), shl(0x60, implementation))
-            mstore(
-                add(ptr, 0x28),
-                0x5af43d82803e903d91602b57fd5bf3ff00000000000000000000000000000000
-            )
+            mstore(add(ptr, 0x28), 0x5af43d82803e903d91602b57fd5bf3ff00000000000000000000000000000000)
             mstore(add(ptr, 0x38), shl(0x60, deployer))
             mstore(add(ptr, 0x4c), salt)
             mstore(add(ptr, 0x6c), keccak256(ptr, 0x37))
@@ -101,16 +76,14 @@ library Clones {
     /**
      * @dev Computes the address of a clone deployed using {Clones-cloneDeterministic}.
      */
-    function predictDeterministicAddress(address implementation, bytes32 salt)
-        internal
-        view
-        returns (address predicted)
-    {
+    function predictDeterministicAddress(address implementation, bytes32 salt) internal view returns (address predicted) {
         return predictDeterministicAddress(implementation, salt, address(this));
     }
 }
 
+
 // File contracts/interfaces/IWrappedInvoice.sol
+
 
 pragma solidity ^0.8.0;
 
@@ -119,7 +92,7 @@ interface IWrappedInvoice {
         address _parent,
         address _child,
         address _invoice,
-        uint256[] calldata _splitRatio // for 10% => 1:9 => splitRatio must be input as 9
+        uint256 _splitFactor
     ) external;
 
     function withdrawAll() external;
@@ -157,7 +130,9 @@ interface IWrappedInvoice {
     function lock(bytes32 _details) external payable;
 }
 
+
 // File contracts/interfaces/IWrappedInvoiceFactory.sol
+
 
 pragma solidity ^0.8.0;
 
@@ -165,7 +140,7 @@ interface IWrappedInvoiceFactory {
     function create(
         address _client,
         address[] calldata _providers,
-        uint256[] calldata _splitFactor, // [1,9] for 10% split
+        uint256 _splitFactor,
         uint8 _resolverType,
         address _resolver,
         address _token,
@@ -175,7 +150,9 @@ interface IWrappedInvoiceFactory {
     ) external returns (address);
 }
 
+
 // File contracts/interfaces/ISmartInvoiceFactory.sol
+
 
 pragma solidity ^0.8.0;
 
@@ -208,15 +185,20 @@ interface ISmartInvoiceFactory {
         returns (address);
 }
 
+
 // File contracts/WrappedInvoiceFactory.sol
 
+
 pragma solidity ^0.8.0;
+
+
+
 
 contract WrappedInvoiceFactory is IWrappedInvoiceFactory {
     uint256 public invoiceCount = 0;
     mapping(uint256 => address) internal _invoices;
 
-    event LogNewInvoice(uint256 indexed index, address invoice);
+    event LogNewWrappedInvoice(uint256 indexed index, address invoice);
 
     address public immutable implementation;
     ISmartInvoiceFactory public immutable smartInvoiceFactory;
@@ -263,7 +245,7 @@ contract WrappedInvoiceFactory is IWrappedInvoiceFactory {
         _invoices[invoiceId] = _info.invoiceAddress;
         invoiceCount = invoiceCount + 1;
 
-        emit LogNewInvoice(invoiceId, _info.invoiceAddress);
+        emit LogNewWrappedInvoice(invoiceId, _info.invoiceAddress);
     }
 
     function _newClone() internal returns (address) {
@@ -285,13 +267,13 @@ contract WrappedInvoiceFactory is IWrappedInvoiceFactory {
         SmartInvoiceInfo smartInvoiceInfo;
         address invoiceAddress;
         address[] providers;
-        uint256[] splitFactor;
+        uint256 splitFactor;
     }
 
     function create(
         address _client,
         address[] calldata _providers,
-        uint256[] calldata _splitFactor, // [1,9] for 10% split
+        uint256 _splitFactor,
         uint8 _resolverType,
         address _resolver,
         address _token,
@@ -300,7 +282,6 @@ contract WrappedInvoiceFactory is IWrappedInvoiceFactory {
         bytes32 _details
     ) external override returns (address) {
         require(_providers.length == 2, "invalid providers");
-        require(_splitFactor.length == 2, "invalid splitFactor");
 
         address invoiceAddress = _newClone();
 

@@ -6,7 +6,7 @@ interface IWrappedInvoiceFactory {
     function create(
         address _client,
         address[] calldata _providers,
-        uint256[] calldata _splitFactor, // [1,9] for 10% split
+        uint256 _splitFactor,
         uint8 _resolverType,
         address _resolver,
         address _token,

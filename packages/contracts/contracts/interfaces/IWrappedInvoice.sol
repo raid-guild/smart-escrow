@@ -7,7 +7,7 @@ interface IWrappedInvoice {
         address _parent,
         address _child,
         address _invoice,
-        uint256[] calldata _splitRatio // for 10% => 1:9 => splitRatio must be input as 9
+        uint256 _splitFactor
     ) external;
 
     function withdrawAll() external;

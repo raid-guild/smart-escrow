@@ -1,3 +1,6 @@
 module.exports = {
-  skipFiles: [],
+  skipFiles: [
+    "mocks/MockSmartInvoiceFactory.sol",
+    "mocks/MockSmartInvoice.sol",
+  ],
 };

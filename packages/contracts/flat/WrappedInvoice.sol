@@ -726,13 +726,24 @@ contract WrappedInvoice is
     address public token;
     ISmartInvoice public invoice;
 
-    event Withdraw(address token, uint256 parentShare, uint256 childShare);
+    event Withdraw(
+        address indexed token,
+        uint256 parentShare,
+        uint256 childShare
+    );
+    event Disperse(
+        address indexed token,
+        uint256 parentShare,
+        uint256[] amounts,
+        address[] fundees
+    );
 
     modifier onlyRaider() {
         require(_msgSender() == parent || _msgSender() == child, "!raider");
         _;
     }
 
+    // solhint-disable-next-line no-empty-blocks
     function initLock() external initializer {}
 
     function init(
@@ -806,7 +817,7 @@ contract WrappedInvoice is
     ) internal {
         require(
             _amounts.length == _fundees.length,
-            "fundees length must equal amounts length"
+            "fundees length != amounts length"
         );
         uint256 total = 0;
         for (uint256 i = 0; i < _amounts.length; i++) {
@@ -814,7 +825,7 @@ contract WrappedInvoice is
         }
         uint256 parentShare = _amount / splitFactor;
         uint256 childShare = _amount - parentShare;
-        require(total == childShare, "amount does not equal total");
+        require(total == childShare, "childShare != total");
         uint256 balance = IERC20(_token).balanceOf(address(this));
         require(balance >= _amount, "not enough balance");
 
@@ -824,6 +835,8 @@ contract WrappedInvoice is
         for (uint256 i = 0; i < _fundees.length; i++) {
             IERC20(_token).safeTransfer(_fundees[i], _amounts[i]);
         }
+
+        emit Disperse(_token, parentShare, _amounts, _fundees);
     }
 
     function disperseAll(

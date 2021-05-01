@@ -4,10 +4,18 @@ require("@nomiclabs/hardhat-ganache");
 require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-waffle");
+require("hardhat-ethernal");
 require("solidity-coverage");
 require("./tasks/verify-blockscout");
 
 const { INFURA_PROJECT_ID, PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env;
+
+/* eslint-disable no-undef, no-param-reassign */
+
+extendEnvironment(hre => {
+  hre.ethernalSync = true;
+  hre.ethernalWorkspace = "WrappedInvoice";
+});
 
 module.exports = {
   solidity: {

@@ -26,7 +26,9 @@ describe("WrappedInvoiceFactory", function () {
 
     mockToken = await deployMockContract(owner, IERC20.abi);
 
-    const MockSmartInvoiceFactory = await ethers.getContractFactory("MockSmartInvoiceFactory");
+    const MockSmartInvoiceFactory = await ethers.getContractFactory(
+      "MockSmartInvoiceFactory",
+    );
 
     mockSmartInvoiceFactory = await MockSmartInvoiceFactory.deploy();
 
@@ -129,8 +131,6 @@ describe("WrappedInvoiceFactory", function () {
       terminationTime,
       details,
     );
-    await expect(receipt)
-      .to.revertedWith("invalid providers");
+    await expect(receipt).to.revertedWith("invalid providers");
   });
-
 });

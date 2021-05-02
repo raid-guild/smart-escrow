@@ -11,7 +11,7 @@ contract WrappedInvoiceFactory is IWrappedInvoiceFactory {
     uint256 public invoiceCount = 0;
     mapping(uint256 => address) internal _invoices;
 
-    event LogNewWrappedInvoice(uint256 indexed index, address invoice);
+    event LogNewWrappedInvoice(uint256 indexed index, address wrappedInvoice);
 
     address public immutable implementation;
     ISmartInvoiceFactory public immutable smartInvoiceFactory;

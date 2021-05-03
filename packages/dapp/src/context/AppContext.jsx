@@ -12,9 +12,7 @@ const wETH_ABI = require('../abi/wETH.json');
 const {
   Locker,
   w_XDAI,
-  w_ETH,
-  RaidGuild,
-  LexArbitration
+  w_ETH
 } = require('../utils/constants').contractAddresses;
 
 const providerOptions = {
@@ -42,19 +40,20 @@ class AppContextProvider extends Component {
     provider: '',
     web3: '',
     chainID: '',
+
     //contracts & address
-    locker: '',
-    client_address: '',
-    resolver_address: LexArbitration,
-    spoils_address: RaidGuild,
-    //locker info
-    cap: '',
-    confirmed: '',
-    locked: '',
-    released: '',
-    token: '',
-    termination: '',
-    client: '',
+    // locker: '',
+    // client_address: '',
+
+    // //locker info
+    // cap: '',
+    // confirmed: '',
+    // locked: '',
+    // released: '',
+    // token: '',
+    // termination: '',
+    // client: '',
+
     //airtable info
     escrow_index: '',
     raid_id: '',

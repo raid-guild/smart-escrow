@@ -75,11 +75,12 @@ export const Home = () => {
         position: 'top',
         render: () => (
           <Box
-            color='guildRed'
+            color='white'
             p={3}
-            mt='1rem'
-            bg='#16161a'
+            mt='2rem'
+            bg='#ff3864'
             fontFamily='jetbrains'
+            textTransform='uppercase'
           >
             Raid ID not found or invalid.
           </Box>
@@ -90,7 +91,7 @@ export const Home = () => {
 
   const registerClickHandler = async () => {
     await validateID();
-    if (validId) history.push('/raid-info');
+    if (validId) history.push('/register-escrow');
   };
 
   const escrowClickHandler = async () => {

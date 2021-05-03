@@ -6,10 +6,8 @@ import {
   Switch
 } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
 
 import { Home } from './pages/Home';
-import { RaidInfo } from './pages/RaidInfo';
 import { RegisterEscrow } from './pages/RegisterEscrow';
 import { EscrowInfo } from './pages/EscrowInfo';
 
@@ -36,19 +34,13 @@ const App = () => {
           <Router>
             <Layout>
               {windowWidth < 750 ? (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.7, duration: 0.5 }}
-                  style={{ fontFamily: theme.fonts.mono, padding: '2rem' }}
-                >
+                <p style={{ fontFamily: theme.fonts.mono, padding: '2rem' }}>
                   Use a larger screen for better UX by the time we add support
                   to smaller screens.
-                </motion.p>
+                </p>
               ) : (
                 <Switch>
                   <Route path='/' exact component={Home} />
-                  <Route path='/raid-info' exact component={RaidInfo} />
                   <Route
                     path='/register-escrow'
                     exact

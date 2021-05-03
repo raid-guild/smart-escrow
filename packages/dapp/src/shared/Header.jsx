@@ -83,6 +83,7 @@ export const Header = () => {
       left={0}
       justify='space-between'
       align='center'
+      zIndex={5}
     >
       <Box zIndex={5}>
         <RouterLink to='/'>

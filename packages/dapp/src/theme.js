@@ -10,7 +10,7 @@ export const theme = {
     grey: '#A4A4A4',
     borderGrey: '#505050',
     greyText: '#ABABAB',
-    purple: '#702b89',
+    purple: '#7f5af0',
     red50: 'rgba(255, 56, 100, 0.5)'
   },
   fonts: {

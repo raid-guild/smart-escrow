@@ -16,6 +16,7 @@ function RadioCard(props) {
         color='#7f5af0'
         boxShadow='md'
         border='1px solid #7f5af0'
+        borderRadius='md'
         fontFamily="'JetBrains Mono', monospace"
         _checked={{
           bg: '#7f5af0',

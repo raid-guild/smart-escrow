@@ -76,6 +76,8 @@ export const RegisterEscrow = (props) => {
   const [tokenType, setTokenType] = useState('WXDAI');
   const [paymentDue, setPaymentDue] = useState('');
   const [milestones, setMilestones] = useState(2);
+  const [selectedDay, setSelectedDay] = useState('');
+  console.log(selectedDay);
 
   const [payments, setPayments] = useState(
     Array.from(Array(Number(milestones)))
@@ -212,6 +214,16 @@ export const RegisterEscrow = (props) => {
             </Flex>
 
             <Flex direction='row'>
+              <FormControl mr='.5em' isRequired>
+                <StyledFormLabel>Safety Valve Date</StyledFormLabel>
+                <StyledInput
+                  type='date'
+                  color='white'
+                  name='safetyValveDate'
+                  onChange={(e) => setSelectedDay(e.target.value)}
+                  value={selectedDay}
+                />
+              </FormControl>
               <FormControl isReadOnly mr='.5em'>
                 <Link
                   href={`https://blockscout.com/poa/xdai/address/${ARBITRATION_PROVIDER}`}
@@ -273,6 +285,7 @@ export const RegisterEscrow = (props) => {
                       }`}</StyledFormLabel>
                       <InputGroup>
                         <StyledInput
+                          focusBorderColor='none'
                           name={`payment${index + 1}`}
                           type='number'
                           min='1'
@@ -285,7 +298,7 @@ export const RegisterEscrow = (props) => {
                         />
                         <InputRightElement
                           fontFamily='jetbrains'
-                          color='white'
+                          color='purple'
                           w='3.5rem'
                           mr='.5rem'
                         >
@@ -344,7 +357,7 @@ export const RegisterEscrow = (props) => {
           >
             <HStack mb='.5rem' justifyContent='space-between'>
               <Text fontWeight='bold' fontFamily='jetbrains'>
-                Project Name
+                Project Name:
               </Text>
               <Text
                 fontFamily='mono'
@@ -357,7 +370,7 @@ export const RegisterEscrow = (props) => {
             </HStack>
             <HStack mb='.5rem' justifyContent='space-between'>
               <Text fontWeight='bold' fontFamily='jetbrains'>
-                Client Address
+                Client Address:
               </Text>
               <Text
                 maxWidth='200px'
@@ -372,7 +385,7 @@ export const RegisterEscrow = (props) => {
             </HStack>
             <HStack mb='.5rem' justifyContent='space-between'>
               <Text fontWeight='bold' fontFamily='jetbrains'>
-                Service Provider Address
+                Service Provider Address:
               </Text>
               <Text
                 fontFamily='mono'
@@ -387,7 +400,7 @@ export const RegisterEscrow = (props) => {
             </HStack>
             <HStack mb='.5rem' justifyContent='space-between'>
               <Text fontWeight='bold' fontFamily='jetbrains'>
-                Arbitration Provider
+                Arbitration Provider:
               </Text>
               <Text fontFamily='mono' color='white'>
                 LexDAO
@@ -395,7 +408,7 @@ export const RegisterEscrow = (props) => {
             </HStack>
             <HStack mb='.5rem' justifyContent='space-between'>
               <Text fontWeight='bold' fontFamily='jetbrains'>
-                Payment Token
+                Payment Token:
               </Text>
               <Text fontFamily='mono' color='purple'>
                 {tokenType}
@@ -403,7 +416,7 @@ export const RegisterEscrow = (props) => {
             </HStack>
             <HStack mb='.5rem' justifyContent='space-between'>
               <Text fontWeight='bold' fontFamily='jetbrains'>
-                Payment Due
+                Payment Due:
               </Text>
               <Text fontFamily='mono' color='purple'>
                 {paymentDue}
@@ -411,7 +424,7 @@ export const RegisterEscrow = (props) => {
             </HStack>
             <HStack mb='.5rem' justifyContent='space-between'>
               <Text fontWeight='bold' fontFamily='jetbrains'>
-                No of Payments
+                No of Payments:
               </Text>
               <Text fontFamily='mono' color='purple'>
                 {milestones}
@@ -444,6 +457,37 @@ export const RegisterEscrow = (props) => {
                 Create Escrow
               </StyledButton>
             </Flex>
+          </Flex>
+        )}
+
+        {step === 4 && (
+          <Flex
+            direction='column'
+            background='#262626'
+            padding='1.5rem'
+            minWidth='50%'
+          >
+            <Text fontFamily='jetbrains'>
+              Escrow creation in progress with the hash,{' '}
+            </Text>
+            <Link
+              fontFamily='mono'
+              maxWidth='250px'
+              isTruncated
+              href={`https://blockscout.com/poa/xdai/address/${ARBITRATION_PROVIDER}`}
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {ARBITRATION_PROVIDER}
+            </Link>
+
+            <StyledButton
+              onClick={() => {
+                history.push('/');
+              }}
+            >
+              Go Home
+            </StyledButton>
           </Flex>
         )}
       </Flex>

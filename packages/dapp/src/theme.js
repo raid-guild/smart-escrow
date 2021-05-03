@@ -1,4 +1,8 @@
 import chakraTheme from '@chakra-ui/theme';
+import { css } from '@emotion/react';
+
+import Calendar from './assets/calendar.svg';
+import CalendarRed from './assets/calendar-red.svg';
 
 export const theme = {
   ...chakraTheme,
@@ -22,3 +26,31 @@ export const theme = {
     body: `'Roboto', sans-serif`
   }
 };
+
+export const globalStyles = css`
+  /*
+    This will hide the focus indicator if the element receives focus via the mouse,
+    but it will still show up on keyboard focus.
+  */
+  input[type='date']::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    display: block;
+    background: url(${Calendar}) no-repeat;
+    background-size: contain !important;
+    width: 14px;
+    height: 14px;
+    border-width: thin;
+    cursor: pointer;
+    transition: background 0.25s;
+    &:hover {
+      background: url(${CalendarRed}) no-repeat;
+      background-size: contain;
+    }
+    &:hover,
+    &:focus,
+    &:active {
+      background-size: contain;
+      outline: none;
+    }
+  }
+`;

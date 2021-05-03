@@ -6,12 +6,13 @@ import {
   Switch
 } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
+import { Global } from '@emotion/react';
 
 import { Home } from './pages/Home';
 import { RegisterEscrow } from './pages/RegisterEscrow';
 import { EscrowInfo } from './pages/EscrowInfo';
 
-import { theme } from './theme';
+import { theme, globalStyles } from './theme';
 import { Layout } from './shared/Layout';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -29,6 +30,7 @@ const App = () => {
 
   return (
     <ChakraProvider theme={theme}>
+      <Global styles={globalStyles} />
       <ErrorBoundary>
         <AppContextProvider>
           <Router>

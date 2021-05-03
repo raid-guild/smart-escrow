@@ -8,13 +8,7 @@
   padding: 0;
 }
 
-/* a {
-  color: #ff3864;
-  color: #0a0a0af5;
-  color: #16161a;
-  color: #7f5af0;
-} */
-
-/* $texturina-font: 'Texturina', serif;
-$jetbrains-font: 'JetBrains Mono', monospace;
-$rubik-font: 'Rubik Mono One', sans-serif; */
+input[type='date']::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  color: aliceblue;
+}

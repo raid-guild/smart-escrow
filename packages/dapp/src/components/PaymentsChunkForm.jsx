@@ -125,8 +125,8 @@ export const PaymentsChunkForm = ({
         <StyledButton
           style={{ width: '100%' }}
           onClick={() => {
-            let sum = payments.reduce((acc, num) => acc + Number(num));
-            if (sum !== Number(paymentDue))
+            let sum = payments.reduce((acc, num) => Number(acc) + Number(num));
+            if (Number(sum) !== Number(paymentDue))
               return sendToast("Payments didn't add up to due amount.");
             updateStep((prevStep) => prevStep + 1);
           }}

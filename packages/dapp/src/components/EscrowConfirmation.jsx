@@ -132,9 +132,6 @@ export const EscrowConfirmation = ({
           style={{ width: '100%' }}
           isDisabled={isLoading}
           onClick={() => {
-            let sum = payments.reduce((acc, num) => acc + num);
-            if (sum !== Number(paymentDue))
-              return sendToast("Payments didn't add up to due amount.");
             // updateStep((prevStep) => prevStep + 1);
             setLoading(true);
           }}

@@ -35,7 +35,6 @@ export const SUPPORTED_NETWORKS = Object.keys(NETWORK_CONFIG).map((n) =>
 );
 
 export const contractAddresses = {
-  Locker: '0x7f8F6E42C169B294A384F5667c303fd8Eedb3CF3',
   w_XDAI: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
   w_ETH: '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
   RaidGuild: '0xfe1084bc16427e5eb7f13fc19bcd4e641f7d571f',

@@ -9,7 +9,7 @@ import { Loader } from '../components/Loader';
 
 import { AppContext } from '../context/AppContext';
 
-export const StyledButton = styled.button`
+const StyledButton = styled.button`
   width: 350px;
   display: block;
   font-family: 'Rubik Mono One', sans-serif;
@@ -29,7 +29,7 @@ export const StyledButton = styled.button`
   }
 `;
 
-export const StyledInput = styled.input`
+const StyledInput = styled.input`
   width: 350px;
   outline: none;
   color: white;
@@ -133,7 +133,7 @@ export const Home = () => {
 
   const escrowClickHandler = async () => {
     await validateID();
-    if (validId) history.push('/escrow');
+    if (validId) history.push(`/escrow/${context.raid_id}`);
   };
 
   return (

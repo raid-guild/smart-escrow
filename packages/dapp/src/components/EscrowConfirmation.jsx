@@ -2,7 +2,7 @@ import { Flex, HStack, Text, Button } from '@chakra-ui/react';
 
 import styled from '@emotion/styled';
 
-export const StyledButton = styled(Button)`
+const StyledButton = styled(Button)`
   display: block;
   font-family: 'Rubik Mono One', sans-serif;
   font-size: 1rem;

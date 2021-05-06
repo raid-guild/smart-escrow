@@ -28,12 +28,12 @@ const StyledInput = styled(Input)`
   }
 `;
 
-export const StyledFormLabel = styled(FormLabel)`
+const StyledFormLabel = styled(FormLabel)`
   font-family: ${theme.fonts.jetbrains};
   font-weight: bold;
 `;
 
-export const StyledButton = styled(Button)`
+const StyledButton = styled(Button)`
   display: block;
   font-family: 'Rubik Mono One', sans-serif;
   font-size: 1rem;
@@ -81,7 +81,7 @@ export const PaymentsChunkForm = ({
                   type='number'
                   onChange={(e) => {
                     let temp = [...payments];
-                    temp[index] = Number(e.target.value);
+                    temp[index] = e.target.value;
                     setPayments(temp);
                   }}
                   value={payments[index]}
@@ -125,7 +125,7 @@ export const PaymentsChunkForm = ({
         <StyledButton
           style={{ width: '100%' }}
           onClick={() => {
-            let sum = payments.reduce((acc, num) => acc + num);
+            let sum = payments.reduce((acc, num) => acc + Number(num));
             if (sum !== Number(paymentDue))
               return sendToast("Payments didn't add up to due amount.");
             updateStep((prevStep) => prevStep + 1);

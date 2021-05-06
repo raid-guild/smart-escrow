@@ -27,12 +27,12 @@ const StyledInput = styled(Input)`
   }
 `;
 
-export const StyledFormLabel = styled(FormLabel)`
+const StyledFormLabel = styled(FormLabel)`
   font-family: ${theme.fonts.jetbrains};
   font-weight: bold;
 `;
 
-export const StyledButton = styled(Button)`
+const StyledButton = styled(Button)`
   display: block;
   font-family: 'Rubik Mono One', sans-serif;
   font-size: 1rem;

@@ -2,18 +2,12 @@ import React, { Component, createContext } from 'react';
 
 import { SafeAppWeb3Modal as Web3Modal } from '@gnosis.pm/safe-apps-web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-import { ethers } from 'ethers';
 import Web3 from 'web3';
 
-const lockerABI = require('../abi/Locker.json');
 const wXDAI_ABI = require('../abi/wXDAI.json');
 const wETH_ABI = require('../abi/wETH.json');
 
-const {
-  Locker,
-  w_XDAI,
-  w_ETH
-} = require('../utils/constants').contractAddresses;
+const { w_XDAI, w_ETH } = require('../utils/constants').contractAddresses;
 
 const providerOptions = {
   walletconnect: {
@@ -41,18 +35,13 @@ class AppContextProvider extends Component {
     web3: '',
     chainID: '',
 
-    //contracts & address
-    // locker: '',
-    // client_address: '',
-
-    // //locker info
-    // cap: '',
-    // confirmed: '',
-    // locked: '',
-    // released: '',
-    // token: '',
-    // termination: '',
-    // client: '',
+    // invoice info
+    client: '0xB96E81f80b3AEEf65CB6d0E280b15FD5DBE71937',
+    serviceProvider: '0x5932221470936e5c845A93bB2b6AC3396f2863Ba',
+    token: 'WXDAI',
+    paymentDue: 5000,
+    milestones: 3,
+    payments: [1000, 3000, 1000],
 
     //airtable info
     escrow_index: '',
@@ -63,10 +52,11 @@ class AppContextProvider extends Component {
     end_date: '',
     link_to_details: '',
     brief_description: '',
+
     //math needs
     spoils_percent: 0.1,
+
     //checks
-    isClient: false,
     isLoading: false
   };
 
@@ -74,12 +64,11 @@ class AppContextProvider extends Component {
     const web3 = new Web3(
       new Web3.providers.HttpProvider(`https://rpc.xdaichain.com/`)
     );
-    const locker = new web3.eth.Contract(lockerABI, Locker);
     const wXDAI = new web3.eth.Contract(wXDAI_ABI, w_XDAI);
     const wETH = new web3.eth.Contract(wETH_ABI, w_ETH);
     const chainID = await web3.eth.net.getId();
 
-    this.setState({ web3, locker, wXDAI, wETH, chainID });
+    this.setState({ web3, wXDAI, wETH, chainID });
   }
 
   setAirtableState = async (id) => {
@@ -121,27 +110,8 @@ class AppContextProvider extends Component {
   };
 
   fetchLockerInfo = async () => {
-    if (this.state.escrow_index !== '' && this.state.locker) {
-      let {
-        cap,
-        confirmed,
-        locked,
-        released,
-        token,
-        termination,
-        client
-      } = await this.state.locker.methods
-        .lockers(this.state.escrow_index)
-        .call();
-      this.setState({
-        cap,
-        confirmed,
-        locked,
-        released,
-        token,
-        termination,
-        client
-      });
+    if (this.state.escrow_index) {
+      // todo
     }
   };
 
@@ -165,23 +135,10 @@ class AppContextProvider extends Component {
         });
       }
 
-      const locker = new web3.eth.Contract(lockerABI, Locker);
       const wXDAI = new web3.eth.Contract(wXDAI_ABI, w_XDAI);
       const wETH = new web3.eth.Contract(wETH_ABI, w_ETH);
 
       let chainID = await web3.eth.net.getId();
-
-      let ethers_locker = new ethers.Contract(
-        Locker,
-        lockerABI,
-        new ethers.providers.Web3Provider(web3.currentProvider)
-      );
-
-      let isClient = false;
-
-      if (accounts[0] === this.state.client) {
-        isClient = true;
-      }
 
       provider.on('chainChanged', (chainId) => {
         this.setState({ chainID: chainId });
@@ -196,12 +153,10 @@ class AppContextProvider extends Component {
           address: accounts[0],
           provider,
           web3,
-          isClient,
-          locker,
+
           wXDAI,
           wETH,
-          chainID,
-          ethers_locker
+          chainID
         },
         () => {
           this.updateLoadingState();

@@ -1,13 +1,50 @@
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Flex, Heading, VStack, useToast, Box } from '@chakra-ui/react';
+import styled from '@emotion/styled';
+import { theme } from '../theme';
 
 import { Container } from '../shared/Container';
 import { Loader } from '../components/Loader';
-import { StyledButton } from '../styled/StyledButton';
-import { StyledInput } from '../styled/StyledInput';
 
 import { AppContext } from '../context/AppContext';
+
+export const StyledButton = styled.button`
+  width: 350px;
+  display: block;
+  font-family: 'Rubik Mono One', sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #fffffe;
+  background-color: #ff3864;
+  border: none;
+  border-radius: 3px;
+  padding: 12px;
+  &:hover {
+    cursor: pointer;
+    background-color: #16161a;
+    color: #ff3864;
+  }
+`;
+
+export const StyledInput = styled.input`
+  width: 350px;
+  outline: none;
+  color: white;
+  font-family: ${theme.fonts.jetbrains};
+  font-size: 1.1rem;
+  border: 2px solid #ff3864;
+  border-radius: 5px;
+  background-color: transparent;
+  margin-bottom: 15px;
+  padding: 12px;
+  &::placeholder {
+    color: #ff3864;
+    opacity: 1;
+  }
+`;
 
 const ButtonManager = (
   context,

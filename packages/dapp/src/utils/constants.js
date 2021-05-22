@@ -1,8 +1,57 @@
-import { CONFIG } from '../config';
+const INFURA_ID = process.env.REACT_APP_INFURA_ID;
+const IPFS_ENDPOINT = 'https://ipfs.infura.io';
+const BOX_ENDPOINT = 'https://ipfs.3box.io';
 
-const { INFURA_ID, IPFS_ENDPOINT, BOX_ENDPOINT, NETWORK_CONFIG } = CONFIG;
-
-export { INFURA_ID, IPFS_ENDPOINT, BOX_ENDPOINT };
+const NETWORK_CONFIG = {
+  100: {
+    WRAPPED_NATIVE_TOKEN: ''.toLowerCase(),
+    INVOICE_FACTORY: ''.toLowerCase(),
+    TOKENS: {
+      ['0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'.toLowerCase()]: {
+        decimals: 18,
+        symbol: 'WXDAI'
+      },
+      ['0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1'.toLowerCase()]: {
+        decimals: 18,
+        symbol: 'WETH'
+      }
+    }
+    // RESOLVERS: {
+    //   ['0x034CfED494EdCff96f0D7160dC2B55Cae5Ee69E1'.toLowerCase()]: {
+    //     name: 'LexDAO',
+    //     logoUrl: LexDAOLogo,
+    //     termsUrl:
+    //       'https://github.com/lexDAO/Arbitration/blob/master/rules/ToU.md#lexdao-resolver',
+    //   },
+    // },
+  },
+  4: {
+    WRAPPED_NATIVE_TOKEN: ''.toLowerCase(),
+    INVOICE_FACTORY: ''.toLowerCase(),
+    TOKENS: {
+      ['0xc778417E063141139Fce010982780140Aa0cD5Ab'.toLowerCase()]: {
+        decimals: 18,
+        symbol: 'WETH'
+      },
+      ['0x3af6b2f907f0c55f279e0ed65751984e6cdc4a42'.toLowerCase()]: {
+        decimals: 18,
+        symbol: 'DAI'
+      },
+      ['0x982e00B16c313E979C0947b85230907Fce45d50e'.toLowerCase()]: {
+        decimals: 18,
+        symbol: 'TEST'
+      }
+    }
+    // RESOLVERS: {
+    //   ['0x1206b51217271FC3ffCa57d0678121983ce0390E'.toLowerCase()]: {
+    //     name: 'LexDAO',
+    //     logoUrl: LexDAOLogo,
+    //     termsUrl:
+    //       'https://github.com/lexDAO/Arbitration/blob/master/rules/ToU.md#lexdao-resolver',
+    //   },
+    // },
+  }
+};
 
 export const networkLabels = {
   100: 'xDai',
@@ -29,10 +78,6 @@ export const rpcUrls = {
   42: `https://kovan.infura.io/v3/${INFURA_ID}`,
   100: 'https://rpc.xdaichain.com'
 };
-
-export const SUPPORTED_NETWORKS = Object.keys(NETWORK_CONFIG).map((n) =>
-  Number(n)
-);
 
 export const contractAddresses = {
   w_XDAI: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',

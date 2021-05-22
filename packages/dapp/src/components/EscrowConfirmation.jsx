@@ -131,8 +131,7 @@ export const EscrowConfirmation = ({
         <StyledButton
           style={{ width: '100%' }}
           isDisabled={isLoading}
-          onClick={() => {
-            // updateStep((prevStep) => prevStep + 1);
+          onClick={async () => {
             setLoading(true);
           }}
         >

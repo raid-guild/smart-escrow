@@ -53,7 +53,7 @@ export const RegisterEscrow = (props) => {
   };
 
   useEffect(() => {
-    if (context.address === '') return history.push('/');
+    if (context.account === '') return history.push('/');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

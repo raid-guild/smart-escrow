@@ -1,4 +1,5 @@
-import { BOX_ENDPOINT, IPFS_ENDPOINT } from './constants';
+const IPFS_ENDPOINT = 'https://ipfs.infura.io';
+const BOX_ENDPOINT = 'https://ipfs.3box.io';
 
 export const getProfile = async (account) => {
   const address = account.toLowerCase();

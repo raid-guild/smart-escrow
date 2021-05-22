@@ -65,7 +65,7 @@ const ButtonManager = (
           Switch to xDai
         </p>
       );
-    } else if (context.address) {
+    } else if (context.account) {
       if (context.escrow_index !== '') {
         component = (
           <StyledButton onClick={escrowClickHandler}>View Escrow</StyledButton>

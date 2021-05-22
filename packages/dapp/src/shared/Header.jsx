@@ -16,12 +16,22 @@ import { AppContext } from '../context/AppContext';
 import { Footer } from '../shared/Footer';
 import { HamburgerIcon } from '../icons/HamburgerIcon';
 
-import { getNetworkLabel, getAccountString } from '../utils/helpers';
 import { getProfile } from '../utils/3box';
+import { networkLabels } from '../utils/constants';
 import { theme } from '../theme';
 
 import Logo from '../assets/raidguild__logo.png';
 import LogoText from '../assets/logo.svg';
+
+export const getNetworkLabel = (chainId) =>
+  networkLabels[parseInt(chainId)] || 'unknown';
+
+export const getAccountString = (account) => {
+  const len = account.length;
+  return `0x${account.substr(2, 3).toUpperCase()}...${account
+    .substr(len - 3, len - 1)
+    .toUpperCase()}`;
+};
 
 const StyledButton = styled(Button)`
   &::after {
@@ -60,17 +70,17 @@ export const NavButton = ({ onClick, children }) => (
 );
 
 export const Header = () => {
-  const { address, chainID } = useContext(AppContext);
+  const { account, chainID } = useContext(AppContext);
   const [isOpen, onOpen] = useState(false);
   const history = useHistory();
 
   const [profile, setProfile] = useState();
 
   useEffect(() => {
-    if (address) {
-      getProfile(address).then((p) => setProfile(p));
+    if (account) {
+      getProfile(account).then((p) => setProfile(p));
     }
-  }, [address]);
+  }, [account]);
 
   return (
     <Flex
@@ -107,7 +117,7 @@ export const Header = () => {
         height='8rem'
         transition='width 1s ease-out'
       >
-        {address && (
+        {account && (
           <>
             <Flex
               borderRadius='50%'
@@ -131,7 +141,7 @@ export const Header = () => {
             >
               {profile && profile.name
                 ? profile.name
-                : getAccountString(address)}
+                : getAccountString(account)}
             </Text>
             <Tag
               colorScheme='red'

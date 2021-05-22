@@ -2,18 +2,15 @@ import React, { Component, createContext } from 'react';
 
 import { SafeAppWeb3Modal as Web3Modal } from '@gnosis.pm/safe-apps-web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
+import { ethers } from 'ethers';
 import Web3 from 'web3';
-
-const wXDAI_ABI = require('../abi/wXDAI.json');
-const wETH_ABI = require('../abi/wETH.json');
-
-const { w_XDAI, w_ETH } = require('../utils/constants').contractAddresses;
 
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
     options: {
       rpc: {
+        4: `https://rinkeby.infura.io/v3/${process.env.INFURA_ID}`,
         100: 'https://rpc.xdaichain.com/'
       }
     }
@@ -30,7 +27,7 @@ export const AppContext = createContext();
 class AppContextProvider extends Component {
   state = {
     //web3 needs
-    address: '',
+    account: '',
     provider: '',
     web3: '',
     chainID: '',
@@ -64,11 +61,10 @@ class AppContextProvider extends Component {
     const web3 = new Web3(
       new Web3.providers.HttpProvider(`https://rpc.xdaichain.com/`)
     );
-    const wXDAI = new web3.eth.Contract(wXDAI_ABI, w_XDAI);
-    const wETH = new web3.eth.Contract(wETH_ABI, w_ETH);
+
     const chainID = await web3.eth.net.getId();
 
-    this.setState({ web3, wXDAI, wETH, chainID });
+    this.setState({ web3, chainID });
   }
 
   setAirtableState = async (id) => {
@@ -115,54 +111,49 @@ class AppContextProvider extends Component {
     }
   };
 
+  setWeb3Provider = async (prov, initialCall = false) => {
+    if (prov) {
+      const web3Provider = new Web3(prov);
+      const gotProvider = new ethers.providers.Web3Provider(
+        web3Provider.currentProvider
+      );
+      const gotChainId = Number(prov.chainId);
+
+      if (initialCall) {
+        const signer = gotProvider.getSigner();
+        const gotAccount = await signer.getAddress();
+        this.setState({
+          account: gotAccount,
+          chainID: gotChainId,
+          provider: gotProvider
+        });
+      } else {
+        this.setState({ chainID: gotChainId, provider: gotProvider });
+      }
+    }
+  };
+
   connectAccount = async () => {
     try {
       this.updateLoadingState();
-      // web3Modal.clearCachedProvider();
 
-      const provider = await web3Modal.requestProvider();
-      const web3 = new Web3(provider);
-      const accounts = await web3.eth.getAccounts();
+      const modalProvider = await web3Modal.requestProvider();
 
-      const isGnosisSafe = !!provider.safe;
+      await this.setWeb3Provider(modalProvider, true);
+
+      const isGnosisSafe = !!modalProvider.safe;
 
       if (!isGnosisSafe) {
-        provider.on('accountsChanged', (accounts) => {
-          this.setState({ address: accounts[0] });
+        modalProvider.on('accountsChanged', (accounts) => {
+          this.setState({ account: accounts[0] });
         });
-        provider.on('chainChanged', (chainId) => {
-          this.setState({ chainID: chainId });
+        modalProvider.on('chainChanged', (chainID) => {
+          this.setState({ chainID });
         });
       }
-
-      const wXDAI = new web3.eth.Contract(wXDAI_ABI, w_XDAI);
-      const wETH = new web3.eth.Contract(wETH_ABI, w_ETH);
-
-      let chainID = await web3.eth.net.getId();
-
-      provider.on('chainChanged', (chainId) => {
-        this.setState({ chainID: chainId });
-      });
-
-      provider.on('accountsChanged', (accounts) => {
-        window.location.href = '/';
-      });
-
-      this.setState(
-        {
-          address: accounts[0],
-          provider,
-          web3,
-
-          wXDAI,
-          wETH,
-          chainID
-        },
-        () => {
-          this.updateLoadingState();
-        }
-      );
-    } catch (err) {
+    } catch (web3ModalError) {
+      console.log(web3ModalError);
+    } finally {
       this.updateLoadingState();
     }
   };
@@ -173,7 +164,7 @@ class AppContextProvider extends Component {
 
   disconnect = async () => {
     web3Modal.clearCachedProvider();
-    this.setState({ address: '', provider: '', web3: '', chainID: '' });
+    this.setState({ account: '', provider: '', web3: '', chainID: '' });
   };
 
   render() {

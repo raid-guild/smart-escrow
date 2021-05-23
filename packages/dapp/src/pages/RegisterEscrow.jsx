@@ -10,22 +10,29 @@ import { AppContext } from '../context/AppContext';
 import { PaymentDetailsForm } from '../components/PaymentDetailsForm';
 import { PaymentsChunkForm } from '../components/PaymentsChunkForm';
 import { EscrowConfirmation } from '../components/EscrowConfirmation';
-import { EscrowCreated } from '../components/EscrowCreated';
+import { EscrowSuccess } from '../components/EscrowSuccess';
 import { ProjectInfo } from '../components/ProjectInfo';
+
+// web3 functions
+import { register } from '../utils/invoice';
 
 export const RegisterEscrow = (props) => {
   const context = useContext(AppContext);
 
   const [client, setClient] = useState('');
   const [serviceProvider, setServiceProvider] = useState('');
-  const [tokenType, setTokenType] = useState('WXDAI');
+
   const [paymentDue, setPaymentDue] = useState('');
   const [milestones, setMilestones] = useState(2);
   const [selectedDay, setSelectedDay] = useState('');
 
+  const [tokenType, setTokenType] = useState('');
+
   const [payments, setPayments] = useState(
     Array.from(Array(Number(milestones)))
   );
+
+  const [tx, setTx] = useState('');
 
   const [step, updateStep] = useState(1);
   const [isLoading, setLoading] = useState(false);
@@ -33,9 +40,9 @@ export const RegisterEscrow = (props) => {
   const history = useHistory();
   const toast = useToast();
 
-  const sendToast = (msg) => {
+  const sendToast = (msg, duration = 3000) => {
     toast({
-      duration: 3000,
+      duration,
       position: 'top',
       render: () => (
         <Box
@@ -66,7 +73,6 @@ export const RegisterEscrow = (props) => {
         justifyContent='space-evenly'
       >
         <ProjectInfo context={context} />
-
         {step === 1 && (
           <PaymentDetailsForm
             context={context}
@@ -86,7 +92,6 @@ export const RegisterEscrow = (props) => {
             updateStep={updateStep}
           />
         )}
-
         {step === 2 && (
           <PaymentsChunkForm
             tokenType={tokenType}
@@ -98,7 +103,6 @@ export const RegisterEscrow = (props) => {
             updateStep={updateStep}
           />
         )}
-
         {step === 3 && (
           <EscrowConfirmation
             context={context}
@@ -108,14 +112,22 @@ export const RegisterEscrow = (props) => {
             paymentDue={paymentDue}
             milestones={milestones}
             payments={payments}
+            selectedDay={selectedDay}
             isLoading={isLoading}
             setLoading={setLoading}
-            sendToast={sendToast}
             updateStep={updateStep}
+            register={register}
+            setTx={setTx}
           />
         )}
-
-        {step === 4 && <EscrowCreated history={history} />}
+        {step === 4 && (
+          <EscrowSuccess
+            ethersProvider={context.provider}
+            tx={tx}
+            chainID={context.chainID}
+            history={history}
+          />
+        )}
       </Flex>
     </Container>
   );

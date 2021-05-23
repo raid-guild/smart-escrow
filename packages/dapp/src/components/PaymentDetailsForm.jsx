@@ -10,6 +10,7 @@ import {
 import { RadioBox } from './RadioBox';
 import styled from '@emotion/styled';
 import { theme } from '../theme';
+import { useEffect, useState } from 'react';
 
 const StyledInput = styled(Input)`
   width: 100%;
@@ -72,6 +73,19 @@ export const PaymentDetailsForm = ({
   sendToast,
   updateStep
 }) => {
+  const [tokens, setTokens] = useState([]);
+
+  const updateTokenList = () => {
+    if (parseInt(context.chainID) === 4) {
+      setTokens(['WETH', 'DAI', 'TEST']);
+    } else {
+      setTokens(['WETH', 'WXDAI']);
+    }
+    setTokenType(tokens[0]);
+  };
+
+  useEffect(() => updateTokenList(), []);
+
   return (
     <Flex
       direction='column'
@@ -101,7 +115,7 @@ export const PaymentDetailsForm = ({
         <FormControl isRequired>
           <StyledFormLabel>Payment Token</StyledFormLabel>
           <RadioBox
-            options={['WXDAI', 'WETH']}
+            options={tokens}
             updateRadio={setTokenType}
             name='paymentToken'
             defaultValue={tokenType}
@@ -172,6 +186,8 @@ export const PaymentDetailsForm = ({
             return sendToast('Invalid Client Address.');
           if (!context.web3.utils.isAddress(serviceProvider))
             return sendToast('Invalid Service Provider Address.');
+          if (tokenType === undefined)
+            return sendToast('Select a Payment Token.');
           if (paymentDue < 1 || paymentDue === '')
             return sendToast('Invalid Payment Due Amount.');
           if (!selectedDay) return sendToast('Safety valve date required.');

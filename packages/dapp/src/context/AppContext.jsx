@@ -5,13 +5,15 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 
+import { rpcUrls } from '../utils/constants';
+
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
     options: {
       rpc: {
-        4: `https://rinkeby.infura.io/v3/${process.env.INFURA_ID}`,
-        100: 'https://rpc.xdaichain.com/'
+        4: rpcUrls[4],
+        100: rpcUrls[100]
       }
     }
   }
@@ -149,6 +151,7 @@ class AppContextProvider extends Component {
         });
         modalProvider.on('chainChanged', (chainID) => {
           this.setState({ chainID });
+          console.log(chainID);
         });
       }
     } catch (web3ModalError) {

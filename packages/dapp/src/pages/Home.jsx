@@ -57,12 +57,17 @@ const ButtonManager = (
   if (context.isLoading) {
     component = <Loader />;
   } else if (validId) {
-    if (context.chainID.toString() !== '100' && context.chainID !== '0x64') {
+    if (
+      context.chainID.toString() !== '100' &&
+      context.chainID !== '0x64' &&
+      context.chainID.toString() !== '4' &&
+      context.chainID !== '0x4'
+    ) {
       component = (
         <p
           style={{ fontFamily: "'Rubik Mono One', sans-serif", color: '#fff' }}
         >
-          Switch to xDai
+          Switch to xDai or Rinkeby
         </p>
       );
     } else if (context.account) {

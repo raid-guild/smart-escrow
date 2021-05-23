@@ -1,56 +1,78 @@
-const INFURA_ID = process.env.REACT_APP_INFURA_ID;
-const IPFS_ENDPOINT = 'https://ipfs.infura.io';
-const BOX_ENDPOINT = 'https://ipfs.3box.io';
+import LexDAOLogo from '../assets/lex-dao.png';
 
-const NETWORK_CONFIG = {
+export const INFURA_ID = process.env.REACT_APP_INFURA_ID;
+export const IPFS_ENDPOINT = 'https://ipfs.infura.io';
+export const BOX_ENDPOINT = 'https://ipfs.3box.io';
+
+export const NETWORK_CONFIG = {
+  RG_XDAI: '0xfe1084bc16427e5eb7f13fc19bcd4e641f7d571f'.toLowerCase(),
   100: {
-    WRAPPED_NATIVE_TOKEN: ''.toLowerCase(),
     INVOICE_FACTORY: ''.toLowerCase(),
     TOKENS: {
-      ['0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'.toLowerCase()]: {
+      WXDAI: {
         decimals: 18,
-        symbol: 'WXDAI'
+        address: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'.toLowerCase()
       },
-      ['0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1'.toLowerCase()]: {
+      WETH: {
         decimals: 18,
-        symbol: 'WETH'
+        address: '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1'.toLowerCase()
+      }
+    },
+    RESOLVERS: {
+      LexDAO: {
+        address: '0x034CfED494EdCff96f0D7160dC2B55Cae5Ee69E1'.toLowerCase(),
+        logoUrl: LexDAOLogo,
+        termsUrl:
+          'https://github.com/lexDAO/Arbitration/blob/master/rules/ToU.md#lexdao-resolver'
       }
     }
-    // RESOLVERS: {
-    //   ['0x034CfED494EdCff96f0D7160dC2B55Cae5Ee69E1'.toLowerCase()]: {
-    //     name: 'LexDAO',
-    //     logoUrl: LexDAOLogo,
-    //     termsUrl:
-    //       'https://github.com/lexDAO/Arbitration/blob/master/rules/ToU.md#lexdao-resolver',
-    //   },
-    // },
   },
   4: {
-    WRAPPED_NATIVE_TOKEN: ''.toLowerCase(),
-    INVOICE_FACTORY: ''.toLowerCase(),
+    INVOICE_FACTORY: '0x003680b3C09699D0B16b01F4c00fBeF6692b1Dce'.toLowerCase(),
     TOKENS: {
-      ['0xc778417E063141139Fce010982780140Aa0cD5Ab'.toLowerCase()]: {
+      WETH: {
         decimals: 18,
-        symbol: 'WETH'
+        address: '0xc778417E063141139Fce010982780140Aa0cD5Ab'.toLowerCase()
       },
-      ['0x3af6b2f907f0c55f279e0ed65751984e6cdc4a42'.toLowerCase()]: {
+      DAI: {
         decimals: 18,
-        symbol: 'DAI'
+        address: '0x3af6b2f907f0c55f279e0ed65751984e6cdc4a42'.toLowerCase()
       },
-      ['0x982e00B16c313E979C0947b85230907Fce45d50e'.toLowerCase()]: {
+      TEST: {
         decimals: 18,
-        symbol: 'TEST'
+        address: '0x982e00B16c313E979C0947b85230907Fce45d50e'.toLowerCase()
+      }
+    },
+    RESOLVERS: {
+      LexDAO: {
+        address: '0x1206b51217271FC3ffCa57d0678121983ce0390E'.toLowerCase(),
+        logoUrl: LexDAOLogo,
+        termsUrl:
+          'https://github.com/lexDAO/Arbitration/blob/master/rules/ToU.md#lexdao-resolver'
       }
     }
-    // RESOLVERS: {
-    //   ['0x1206b51217271FC3ffCa57d0678121983ce0390E'.toLowerCase()]: {
-    //     name: 'LexDAO',
-    //     logoUrl: LexDAOLogo,
-    //     termsUrl:
-    //       'https://github.com/lexDAO/Arbitration/blob/master/rules/ToU.md#lexdao-resolver',
-    //   },
-    // },
   }
+};
+
+export const explorerUrls = {
+  1: 'https://etherscan.io',
+  4: 'https://rinkeby.etherscan.io',
+  42: 'https://kovan.etherscan.io',
+  100: 'https://blockscout.com/poa/xdai'
+};
+
+export const chainIds = {
+  xdai: 100,
+  mainnet: 1,
+  rinkeby: 4,
+  kovan: 42
+};
+
+export const hexChainIds = {
+  xdai: '0x64',
+  mainnet: '0x01',
+  rinkeby: '0x4',
+  kovan: '0x2a'
 };
 
 export const networkLabels = {
@@ -79,9 +101,4 @@ export const rpcUrls = {
   100: 'https://rpc.xdaichain.com'
 };
 
-export const contractAddresses = {
-  w_XDAI: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
-  w_ETH: '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
-  RaidGuild: '0xfe1084bc16427e5eb7f13fc19bcd4e641f7d571f',
-  LexArbitration: '0x034CfED494EdCff96f0D7160dC2B55Cae5Ee69E1'
-};
+export const spoilsPercent = 10;

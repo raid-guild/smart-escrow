@@ -2,6 +2,10 @@ import { Flex, HStack, Text, Button } from '@chakra-ui/react';
 
 import styled from '@emotion/styled';
 
+import { AccountLink } from '../shared/AccountLink';
+
+import { spoilsPercent, NETWORK_CONFIG } from '../utils/constants';
+
 const StyledButton = styled(Button)`
   display: block;
   font-family: 'Rubik Mono One', sans-serif;
@@ -30,11 +34,60 @@ export const EscrowConfirmation = ({
   paymentDue,
   milestones,
   payments,
+  selectedDay,
   isLoading,
   setLoading,
-  sendToast,
-  updateStep
+  updateStep,
+  register,
+  setTx
 }) => {
+  const createInvoice = async () => {
+    setLoading(true);
+
+    let chainID = context.chainID;
+    let ethersProvider = context.provider;
+    let clientAddress = client;
+
+    let daoAddress =
+      parseInt(chainID) === 100 ? NETWORK_CONFIG['RG_XDAI'] : serviceProvider;
+
+    let serviceProviders = [daoAddress, serviceProvider]; // [dao address, multisig address]
+    let splitFactor = spoilsPercent;
+    let resolver =
+      NETWORK_CONFIG[parseInt(chainID)]['RESOLVERS']['LexDAO']['address']; //arbitration
+    let tokenAddress =
+      NETWORK_CONFIG[parseInt(chainID)]['TOKENS'][tokenType]['address'];
+    let paymentsInWei = [];
+    let terminationTime = new Date(selectedDay).getTime() / 1000;
+
+    payments.map((amount) =>
+      paymentsInWei.push(context.web3.utils.toWei(amount))
+    );
+
+    try {
+      let transaction = await register(
+        chainID,
+        ethersProvider,
+        clientAddress,
+        serviceProviders,
+        splitFactor,
+        resolver,
+        tokenAddress,
+        paymentsInWei,
+        terminationTime,
+        '0x0000000000000000000000000000000000000000000000000000000000000000'
+      );
+
+      setTx(transaction);
+      console.log(transaction);
+
+      updateStep((prevStep) => prevStep + 1);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+    }
+  };
+
   return (
     <Flex
       direction='column'
@@ -54,31 +107,13 @@ export const EscrowConfirmation = ({
         <Text fontWeight='bold' fontFamily='jetbrains'>
           Client Address:
         </Text>
-        <Text
-          maxWidth='200px'
-          fontFamily='mono'
-          color='guildRed'
-          isTruncated
-          padding='5px'
-          background='#16161a'
-        >
-          {client}
-        </Text>
+        <AccountLink address={client} />
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
         <Text fontWeight='bold' fontFamily='jetbrains'>
           Service Provider Address:
         </Text>
-        <Text
-          fontFamily='mono'
-          maxWidth='200px'
-          color='guildRed'
-          padding='5px'
-          background='#16161a'
-          isTruncated
-        >
-          {serviceProvider}
-        </Text>
+        <AccountLink address={serviceProvider} />
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
         <Text fontWeight='bold' fontFamily='jetbrains'>
@@ -131,9 +166,7 @@ export const EscrowConfirmation = ({
         <StyledButton
           style={{ width: '100%' }}
           isDisabled={isLoading}
-          onClick={async () => {
-            setLoading(true);
-          }}
+          onClick={createInvoice}
         >
           {isLoading ? 'Creating Escrow..' : 'Create Escrow'}
         </StyledButton>

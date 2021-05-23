@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Flex, Box, useToast } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  useToast,
+  Alert,
+  AlertIcon,
+  AlertTitle
+} from '@chakra-ui/react';
 
 import { useHistory } from 'react-router-dom';
 
@@ -128,6 +135,29 @@ export const RegisterEscrow = (props) => {
             history={history}
           />
         )}
+
+        <Alert
+          status={
+            parseInt(context.chainID) === 4
+              ? 'warning'
+              : parseInt(context.chainID) === 100
+              ? 'success'
+              : 'warning'
+          }
+          width='auto'
+          position='absolute'
+          bottom='1rem'
+          left='1rem'
+        >
+          <AlertIcon />
+          <AlertTitle mr={2} fontFamily='jetbrains' color='black'>
+            {parseInt(context.chainID) === 4
+              ? 'USING TEST NETWORK'
+              : parseInt(context.chainID) === 100
+              ? 'USING PRODUCTION NETWORK'
+              : 'USING UNSUPPORTED NETWORK'}
+          </AlertTitle>
+        </Alert>
       </Flex>
     </Container>
   );

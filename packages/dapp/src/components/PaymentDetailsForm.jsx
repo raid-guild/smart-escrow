@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Flex,
   Input,
@@ -7,10 +8,13 @@ import {
   Link
 } from '@chakra-ui/react';
 
-import { RadioBox } from './RadioBox';
 import styled from '@emotion/styled';
+
+import { RadioBox } from './RadioBox';
+
 import { theme } from '../theme';
-import { useEffect, useState } from 'react';
+
+import { getResolverUrl, getSpoilsUrl } from '../utils/helpers';
 
 const StyledInput = styled(Input)`
   width: 100%;
@@ -53,9 +57,6 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const ARBITRATION_PROVIDER = '0x034CfED494EdCff96f0D7160dC2B55Cae5Ee69E1';
-const SPOILS = '0xfe1084bc16427e5eb7f13fc19bcd4e641f7d571f';
-
 export const PaymentDetailsForm = ({
   context,
   client,
@@ -81,10 +82,12 @@ export const PaymentDetailsForm = ({
     } else {
       setTokens(['WETH', 'WXDAI']);
     }
-    setTokenType(tokens[0]);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => updateTokenList(), []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => updateTokenList(), [context.chainID]);
 
   return (
     <Flex
@@ -157,7 +160,7 @@ export const PaymentDetailsForm = ({
         </FormControl>
         <FormControl isReadOnly mr='.5em'>
           <Link
-            href={`https://blockscout.com/poa/xdai/address/${ARBITRATION_PROVIDER}`}
+            href={getResolverUrl(parseInt(context.chainID))}
             target='_blank'
             rel='noopener noreferrer'
           >
@@ -170,7 +173,7 @@ export const PaymentDetailsForm = ({
 
         <FormControl isReadOnly>
           <Link
-            href={`https://blockscout.com/poa/xdai/address/${SPOILS}`}
+            href={getSpoilsUrl(parseInt(context.chainID), serviceProvider)}
             target='_blank'
             rel='noopener noreferrer'
           >
@@ -182,6 +185,11 @@ export const PaymentDetailsForm = ({
 
       <StyledButton
         onClick={() => {
+          if (
+            parseInt(context.chainID) !== 4 &&
+            parseInt(context.chainID) !== 100
+          )
+            return sendToast('Switch to a supported network.');
           if (!context.web3.utils.isAddress(client))
             return sendToast('Invalid Client Address.');
           if (!context.web3.utils.isAddress(serviceProvider))
@@ -193,6 +201,7 @@ export const PaymentDetailsForm = ({
           if (!selectedDay) return sendToast('Safety valve date required.');
           if (new Date(selectedDay).getTime() < new Date().getTime())
             return sendToast('Safety valve date needs to be in future.');
+
           updateStep((prevStep) => prevStep + 1);
         }}
       >

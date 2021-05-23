@@ -7,11 +7,7 @@ import { AppContext } from '../context/AppContext';
 import { theme } from '../theme';
 import { getProfile } from '../utils/3box';
 
-import { explorerUrls } from '../utils/constants';
-
-const getExplorerUrl = (chainId) => explorerUrls[chainId] || explorerUrls[4];
-const getAddressLink = (chainId, hash) =>
-  `${getExplorerUrl(chainId)}/address/${hash}`;
+import { getAddressLink } from '../utils/helpers';
 
 export const AccountLink = ({
   address: inputAddress,

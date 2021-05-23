@@ -17,21 +17,11 @@ import { Footer } from '../shared/Footer';
 import { HamburgerIcon } from '../icons/HamburgerIcon';
 
 import { getProfile } from '../utils/3box';
-import { networkLabels } from '../utils/constants';
+import { getAccountString, getNetworkLabel } from '../utils/helpers';
 import { theme } from '../theme';
 
 import Logo from '../assets/raidguild__logo.png';
 import LogoText from '../assets/logo.svg';
-
-export const getNetworkLabel = (chainId) =>
-  networkLabels[parseInt(chainId)] || 'unknown';
-
-export const getAccountString = (account) => {
-  const len = account.length;
-  return `0x${account.substr(2, 3).toUpperCase()}...${account
-    .substr(len - 3, len - 1)
-    .toUpperCase()}`;
-};
 
 const StyledButton = styled(Button)`
   &::after {

@@ -6,8 +6,8 @@ import { useState, useEffect } from 'react';
 import { CopyIcon } from '../icons/CopyIcon';
 import { Loader } from '../components/Loader';
 
-import { explorerUrls } from '../utils/constants';
 import { awaitInvoiceAddress } from '../utils/invoice';
+import { getTxLink, copyToClipboard, getAddressLink } from '../utils/helpers';
 
 const StyledButton = styled(Button)`
   display: block;
@@ -28,20 +28,6 @@ const StyledButton = styled(Button)`
     color: #ff3864;
   }
 `;
-
-const copyToClipboard = (value) => {
-  const tempInput = document.createElement('input');
-  tempInput.value = value;
-  document.body.appendChild(tempInput);
-  tempInput.select();
-  document.execCommand('copy');
-  document.body.removeChild(tempInput);
-};
-
-const getExplorerUrl = (chainId) => explorerUrls[chainId] || explorerUrls[4];
-
-export const getTxLink = (chainId, hash) =>
-  `${getExplorerUrl(chainId)}/tx/${hash}`;
 
 export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
   const [invoiceId, setInvoiceId] = useState('');
@@ -96,13 +82,14 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
             p='0.3rem'
             justify='space-between'
             align='center'
-            bg='background'
+            bg='black'
             borderRadius='0.25rem'
             w='100%'
+            fontFamily='jetbrains'
           >
             <Link
               ml='0.5rem'
-              href={`https://blockscout.com/poa/xdai/address/${invoiceId}`}
+              href={getAddressLink(chainID, invoiceId)}
               color='white'
               overflow='hidden'
             >

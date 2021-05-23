@@ -1,5 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Texturina:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  color: aliceblue;
 }

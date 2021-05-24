@@ -1,30 +1,8 @@
 import { Flex, HStack, Text, Button } from '@chakra-ui/react';
 
-import styled from '@emotion/styled';
-
 import { AccountLink } from '../shared/AccountLink';
 
 import { spoilsPercent, NETWORK_CONFIG } from '../utils/constants';
-
-const StyledButton = styled(Button)`
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  margin-top: 1rem;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
-`;
 
 export const EscrowConfirmation = ({
   context,
@@ -99,7 +77,7 @@ export const EscrowConfirmation = ({
         <Text fontWeight='bold' fontFamily='jetbrains'>
           Project Name:
         </Text>
-        <Text fontFamily='mono' color='white' maxWidth='200px' isTruncated>
+        <Text fontFamily='rubik' color='white' maxWidth='200px' isTruncated>
           {context.project_name}
         </Text>
       </HStack>
@@ -119,7 +97,7 @@ export const EscrowConfirmation = ({
         <Text fontWeight='bold' fontFamily='jetbrains'>
           Arbitration Provider:
         </Text>
-        <Text fontFamily='mono' color='white'>
+        <Text fontFamily='rubik' color='white'>
           LexDAO
         </Text>
       </HStack>
@@ -127,7 +105,7 @@ export const EscrowConfirmation = ({
         <Text fontWeight='bold' fontFamily='jetbrains'>
           Payment Token:
         </Text>
-        <Text fontFamily='mono' color='purple'>
+        <Text fontFamily='rubik' color='yellow'>
           {tokenType}
         </Text>
       </HStack>
@@ -135,7 +113,7 @@ export const EscrowConfirmation = ({
         <Text fontWeight='bold' fontFamily='jetbrains'>
           Payment Due:
         </Text>
-        <Text fontFamily='mono' color='purple'>
+        <Text fontFamily='rubik' color='yellow'>
           {paymentDue}
         </Text>
       </HStack>
@@ -143,33 +121,34 @@ export const EscrowConfirmation = ({
         <Text fontWeight='bold' fontFamily='jetbrains'>
           No of Payments:
         </Text>
-        <Text fontFamily='mono' color='purple'>
+        <Text fontFamily='rubik' color='yellow'>
           {milestones}
         </Text>
       </HStack>
 
       <Flex direction='row' width='100%'>
-        <StyledButton
-          style={{
-            minWidth: '25%',
-            marginRight: '.5rem',
-            border: '2px solid #ff3864',
-            backgroundColor: '#16161a',
-            color: '#ff3864',
-            padding: '5px'
-          }}
+        <Button
+          variant='primary'
+          minW='25%'
+          color='red'
+          border='2px solid'
+          borderColor='red'
+          bg='black'
+          p='5px'
+          mr='.5rem'
           isDisabled={isLoading}
           onClick={() => updateStep((prevStep) => prevStep - 1)}
         >
           Back
-        </StyledButton>
-        <StyledButton
-          style={{ width: '100%' }}
+        </Button>
+        <Button
+          variant='primary'
+          w='100%'
           isDisabled={isLoading}
           onClick={createInvoice}
         >
           {isLoading ? 'Creating Escrow..' : 'Create Escrow'}
-        </StyledButton>
+        </Button>
       </Flex>
     </Flex>
   );

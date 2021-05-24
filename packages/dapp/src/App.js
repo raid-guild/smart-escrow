@@ -12,7 +12,7 @@ import { Home } from './pages/Home';
 import { RegisterEscrow } from './pages/RegisterEscrow';
 import { EscrowInfo } from './pages/EscrowInfo';
 
-import { theme, globalStyles } from './theme';
+import { theme, globalStyles } from './theme/theme';
 import { Layout } from './shared/Layout';
 
 import { ErrorBoundary } from './components/ErrorBoundary';

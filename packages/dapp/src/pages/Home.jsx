@@ -1,33 +1,13 @@
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Flex, Heading, VStack, useToast, Box } from '@chakra-ui/react';
+import { Flex, Heading, VStack, useToast, Box, Button } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import { theme } from '../theme';
+import { theme } from '../theme/theme';
 
 import { Container } from '../shared/Container';
 import { Loader } from '../components/Loader';
 
 import { AppContext } from '../context/AppContext';
-
-const StyledButton = styled.button`
-  width: 350px;
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
-`;
 
 const StyledInput = styled.input`
   width: 350px;
@@ -57,7 +37,13 @@ const ButtonManager = (
   if (context.isLoading) {
     component = <Loader />;
   } else if (validId) {
-    if (
+    if (context.account === '') {
+      component = (
+        <Button w='350px' variant='primary' onClick={context.connectAccount}>
+          Connect Wallet
+        </Button>
+      );
+    } else if (
       context.chainID.toString() !== '100' &&
       context.chainID !== '0x64' &&
       context.chainID.toString() !== '4' &&
@@ -70,27 +56,25 @@ const ButtonManager = (
           Switch to xDai or Rinkeby
         </p>
       );
-    } else if (context.account) {
-      if (context.escrow_index !== '') {
-        component = (
-          <StyledButton onClick={escrowClickHandler}>View Escrow</StyledButton>
-        );
-      } else {
-        component = (
-          <StyledButton onClick={registerClickHandler}>
-            Register Escrow
-          </StyledButton>
-        );
-      }
+    } else if (context.invoice_id !== '') {
+      component = (
+        <Button w='350px' variant='primary' onClick={escrowClickHandler}>
+          View Escrow
+        </Button>
+      );
     } else {
       component = (
-        <StyledButton onClick={context.connectAccount}>
-          Connect Wallet
-        </StyledButton>
+        <Button w='350px' variant='primary' onClick={registerClickHandler}>
+          Register Escrow
+        </Button>
       );
     }
   } else {
-    component = <StyledButton onClick={validateID}>Validate ID</StyledButton>;
+    component = (
+      <Button w='350px' variant='primary' onClick={validateID}>
+        Validate ID
+      </Button>
+    );
   }
 
   return component;
@@ -148,7 +132,7 @@ export const Home = () => {
           <Heading
             size='md'
             fontFamily='jetbrains'
-            color='guildRed'
+            color='red'
             marginBottom='1rem'
           >
             Start here by providing the Raid ID..

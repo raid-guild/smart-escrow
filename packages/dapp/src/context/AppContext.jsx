@@ -6,6 +6,7 @@ import { ethers } from 'ethers';
 import Web3 from 'web3';
 
 import { rpcUrls } from '../utils/constants';
+import { apiRequest } from '../utils/helpers';
 
 const providerOptions = {
   walletconnect: {
@@ -43,7 +44,7 @@ class AppContextProvider extends Component {
     payments: [1000, 3000, 1000],
 
     //airtable info
-    escrow_index: '',
+    invoice_id: '',
     raid_id: '',
     project_name: '',
     client_name: '',
@@ -59,56 +60,34 @@ class AppContextProvider extends Component {
     isLoading: false
   };
 
-  async componentDidMount() {
-    const web3 = new Web3(
-      new Web3.providers.HttpProvider(`https://rpc.xdaichain.com/`)
-    );
-
-    const chainID = await web3.eth.net.getId();
-
-    this.setState({ web3, chainID });
-  }
-
   setAirtableState = async (id) => {
-    let result = await fetch(
-      'https://guild-keeper.herokuapp.com/escrow/validate-raid',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ID: id
-        })
-      }
-    ).then((res) => res.json());
+    let data = await apiRequest({ type: 'validate', raidID: id });
 
-    if (result !== 'NOT_FOUND') {
+    if (data !== 'NOT_FOUND') {
       this.setState(
         {
-          escrow_index: result['Escrow Index'] || '',
+          invoice_id: data['Invoice ID'] || '',
           raid_id: id,
-          project_name: result['Project Name'] || 'Not Available',
-          client_name: result['Name'] || 'Not Available',
-          start_date: result['Raid Start Date'] || 'Not Available',
-          end_date: result['Expected Deadline'] || 'Not Available',
-          link_to_details: result['Specs Link'] || 'Not Available',
-          brief_description: result['Project Description'] || 'Not Available'
+          project_name: data['Project Name'] || 'Not Available',
+          client_name: data['Name'] || 'Not Available',
+          start_date: data['Raid Start Date'] || 'Not Available',
+          end_date: data['Expected Deadline'] || 'Not Available',
+          link_to_details: data['Specs Link'] || 'Not Available',
+          brief_description: data['Project Description'] || 'Not Available'
         },
         () => this.fetchLockerInfo()
       );
       return {
         validRaidId: true,
-        escrow_index: result['Escrow Index'] || ''
+        invoice_id: data['Invoice ID'] || ''
       };
     } else {
-      return { validRaidId: false, escrow_index: '' };
+      return { validRaidId: false, invoice_id: '' };
     }
   };
 
   fetchLockerInfo = async () => {
-    if (this.state.escrow_index) {
+    if (this.state.invoice_id) {
       // todo
     }
   };
@@ -127,10 +106,15 @@ class AppContextProvider extends Component {
         this.setState({
           account: gotAccount,
           chainID: gotChainId,
-          provider: gotProvider
+          provider: gotProvider,
+          web3: web3Provider
         });
       } else {
-        this.setState({ chainID: gotChainId, provider: gotProvider });
+        this.setState({
+          chainID: gotChainId,
+          provider: gotProvider,
+          web3: web3Provider
+        });
       }
     }
   };

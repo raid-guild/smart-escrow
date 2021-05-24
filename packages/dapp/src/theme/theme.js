@@ -1,31 +1,38 @@
-import chakraTheme from '@chakra-ui/theme';
+import { extendTheme } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 
-import Calendar from './assets/calendar.svg';
-import CalendarRed from './assets/calendar-red.svg';
+import { Button } from './styled/Button';
 
-export const theme = {
-  ...chakraTheme,
-  initialColorMode: 'dark',
-  useSystemColorMode: false,
+import Calendar from '../assets/calendar.svg';
+import CalendarRed from '../assets/calendar-red.svg';
+
+export const theme = extendTheme({
   colors: {
-    ...chakraTheme.colors,
-    guildRed: '#ff3864',
-    grey: '#A4A4A4',
-    borderGrey: '#505050',
-    greyText: '#ABABAB',
-    purple: '#7f5af0',
-    red50: 'rgba(255, 56, 100, 0.5)'
+    transparent: 'transparent',
+    blackDark: 'rgba(10, 10, 10, 0.960784)',
+    blackLight: '#2b2c34',
+    blackLighter: '#16161a',
+    greyLight: '#a7a9be',
+    greyDark: '#4a4a4a',
+    white: '#fffffe',
+    purple: '#822EA6',
+    purpleLight: '#B66AD6',
+    red: '#ff3864',
+    yellow: '#F2E857',
+    yellowDark: '#DCCF11'
   },
   fonts: {
-    ...chakraTheme.fonts,
-    mono: `'Rubik Mono One', sans-serif`,
-    heading: `'Rubik One', sans-serif`,
-    jetbrains: `'JetBrains Mono', monospace`,
     texturina: `'Texturina', serif`,
+    jetbrains: `'JetBrains Mono', monospace`,
+    rubik: `'Rubik Mono One', sans-serif`,
+    uncial: `'Uncial Antiqua', cursive`,
+    spaceMono: `'Space Mono', monospace;`,
     body: `'Roboto', sans-serif`
+  },
+  components: {
+    Button
   }
-};
+});
 
 export const globalStyles = css`
   /*

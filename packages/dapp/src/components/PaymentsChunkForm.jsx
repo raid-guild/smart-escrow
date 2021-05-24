@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 import styled from '@emotion/styled';
-import { theme } from '../theme';
+import { theme } from '../theme/theme';
 
 const StyledInput = styled(Input)`
   width: 100%;
@@ -31,26 +31,6 @@ const StyledInput = styled(Input)`
 const StyledFormLabel = styled(FormLabel)`
   font-family: ${theme.fonts.jetbrains};
   font-weight: bold;
-`;
-
-const StyledButton = styled(Button)`
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  margin-top: 1rem;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
 `;
 
 export const PaymentsChunkForm = ({
@@ -88,7 +68,7 @@ export const PaymentsChunkForm = ({
                 />
                 <InputRightElement
                   fontFamily='jetbrains'
-                  color='purple'
+                  color='yellow'
                   w='3.5rem'
                   mr='.5rem'
                 >
@@ -100,30 +80,27 @@ export const PaymentsChunkForm = ({
         })}
       </div>
 
-      <Text
-        color={`${theme.colors.purple}`}
-        textTransform='uppercase'
-        fontFamily='jetbrains'
-      >
+      <Text color='white' textTransform='uppercase' fontFamily='jetbrains'>
         The sum should add up to {paymentDue} {tokenType}
       </Text>
 
       <Flex direction='row' width='100%'>
-        <StyledButton
-          style={{
-            minWidth: '25%',
-            marginRight: '.5rem',
-            border: '2px solid #ff3864',
-            backgroundColor: '#16161a',
-            color: '#ff3864',
-            padding: '5px'
-          }}
+        <Button
+          variant='primary'
+          minW='25%'
+          color='red'
+          border='2px solid'
+          borderColor='red'
+          bg='black'
+          p='5px'
+          mr='.5rem'
           onClick={() => updateStep((prevStep) => prevStep - 1)}
         >
           Back
-        </StyledButton>
-        <StyledButton
-          style={{ width: '100%' }}
+        </Button>
+        <Button
+          variant='primary'
+          w='100%'
           onClick={() => {
             let sum = payments.reduce((acc, num) => Number(acc) + Number(num));
             if (Number(sum) !== Number(paymentDue))
@@ -132,7 +109,7 @@ export const PaymentsChunkForm = ({
           }}
         >
           Next: Confirmation
-        </StyledButton>
+        </Button>
       </Flex>
     </Flex>
   );

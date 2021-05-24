@@ -9,33 +9,12 @@ import {
   Box,
   useToast
 } from '@chakra-ui/react';
-import styled from '@emotion/styled';
 
 import { Container } from '../shared/Container';
 
 import { ProjectInfo } from '../components/ProjectInfo';
 
 import { AppContext } from '../context/AppContext';
-
-const StyledButton = styled(Button)`
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  margin-top: 1rem;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
-`;
 
 export const EscrowInfo = () => {
   const context = useContext(AppContext);
@@ -68,7 +47,7 @@ export const EscrowInfo = () => {
         return history.push('/');
       }
 
-      if (!result.escrow_index) {
+      if (!result.invoice_id) {
         toast({
           duration: 3000,
           position: 'top',
@@ -119,8 +98,8 @@ export const EscrowInfo = () => {
             </Text>
             <Text
               maxWidth='200px'
-              fontFamily='mono'
-              color='guildRed'
+              fontFamily='rubik'
+              color='red'
               isTruncated
               padding='5px'
               background='#16161a'
@@ -133,9 +112,9 @@ export const EscrowInfo = () => {
               Service Provider Address:
             </Text>
             <Text
-              fontFamily='mono'
+              fontFamily='rubik'
               maxWidth='200px'
-              color='guildRed'
+              color='red'
               padding='5px'
               background='#16161a'
               isTruncated
@@ -147,7 +126,7 @@ export const EscrowInfo = () => {
             <Text fontWeight='bold' fontFamily='jetbrains'>
               Arbitration Provider:
             </Text>
-            <Text fontFamily='mono' color='white'>
+            <Text fontFamily='rubik' color='white'>
               LexDAO
             </Text>
           </HStack>
@@ -158,7 +137,7 @@ export const EscrowInfo = () => {
             <Text fontWeight='bold' fontFamily='jetbrains'>
               Total Payment Due:
             </Text>
-            <Text fontFamily='mono' color='purple'>
+            <Text fontFamily='rubik' color='purpleLight'>
               {context.paymentDue}
             </Text>
           </HStack>
@@ -178,31 +157,33 @@ export const EscrowInfo = () => {
           })}
 
           <Flex direction='row' width='100%'>
-            <StyledButton
-              style={{
-                minWidth: '25%',
-                marginRight: '.5rem',
-                border: '2px solid #ff3864',
-                backgroundColor: '#16161a',
-                color: '#ff3864',
-                padding: '5px'
-              }}
+            <Button
+              variant='primary'
+              minW='25%'
+              color='red'
+              border='2px solid'
+              borderColor='red'
+              bg='black'
+              p='5px'
+              mr='.5rem'
             >
               Lock
-            </StyledButton>
-            <StyledButton
-              style={{
-                minWidth: '25%',
-                marginRight: '.5rem',
-                border: '2px solid #ff3864',
-                backgroundColor: '#16161a',
-                color: '#ff3864',
-                padding: '5px'
-              }}
+            </Button>
+            <Button
+              variant='primary'
+              minW='25%'
+              color='red'
+              border='2px solid'
+              borderColor='red'
+              bg='black'
+              p='5px'
+              mr='.5rem'
             >
               Release
-            </StyledButton>
-            <StyledButton style={{ width: '100%' }}>Deposit</StyledButton>
+            </Button>
+            <Button variant='primary' w='100%'>
+              Deposit
+            </Button>
           </Flex>
         </Flex>
       </Flex>

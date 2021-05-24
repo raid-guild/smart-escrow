@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { explorerUrls, networkLabels, NETWORK_CONFIG } from './constants';
 
 export const copyToClipboard = (value) => {
@@ -38,4 +40,27 @@ export const getAccountString = (account) => {
   return `0x${account.substr(2, 3).toUpperCase()}...${account
     .substr(len - 3, len - 1)
     .toUpperCase()}`;
+};
+
+export const apiRequest = async ({
+  type,
+  raidID,
+  txHash = '',
+  invoiceId = ''
+}) => {
+  let result;
+
+  if (type === 'validate')
+    result = await axios.post('/validate-raid', {
+      ID: raidID
+    });
+
+  if (type === 'update')
+    result = await axios.post('/update-invoice', {
+      ID: raidID,
+      Hash: txHash,
+      Index: invoiceId
+    });
+
+  return result.data;
 };

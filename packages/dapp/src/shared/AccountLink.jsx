@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../context/AppContext';
 
-import { theme } from '../theme';
+import { theme } from '../theme/theme';
 import { getProfile } from '../utils/3box';
 
 import { getAddressLink } from '../utils/helpers';

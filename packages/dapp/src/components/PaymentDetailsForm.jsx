@@ -12,7 +12,7 @@ import styled from '@emotion/styled';
 
 import { RadioBox } from './RadioBox';
 
-import { theme } from '../theme';
+import { theme } from '../theme/theme';
 
 import { getResolverUrl, getSpoilsUrl } from '../utils/helpers';
 
@@ -35,26 +35,6 @@ const StyledInput = styled(Input)`
 const StyledFormLabel = styled(FormLabel)`
   font-family: ${theme.fonts.jetbrains};
   font-weight: bold;
-`;
-
-const StyledButton = styled(Button)`
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  margin-top: 1rem;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
 `;
 
 export const PaymentDetailsForm = ({
@@ -183,7 +163,8 @@ export const PaymentDetailsForm = ({
         </FormControl>
       </Flex>
 
-      <StyledButton
+      <Button
+        variant='primary'
         onClick={() => {
           if (
             parseInt(context.chainID) !== 4 &&
@@ -206,7 +187,7 @@ export const PaymentDetailsForm = ({
         }}
       >
         Next: Set Payment Amounts
-      </StyledButton>
+      </Button>
     </Flex>
   );
 };

@@ -1,35 +1,24 @@
 import { Flex, Text, Link, Button, Heading, VStack } from '@chakra-ui/react';
-
-import styled from '@emotion/styled';
 import { useState, useEffect } from 'react';
 
 import { CopyIcon } from '../icons/CopyIcon';
 import { Loader } from '../components/Loader';
 
 import { awaitInvoiceAddress } from '../utils/invoice';
-import { getTxLink, copyToClipboard, getAddressLink } from '../utils/helpers';
+import {
+  getTxLink,
+  copyToClipboard,
+  getAddressLink,
+  apiRequest
+} from '../utils/helpers';
 
-const StyledButton = styled(Button)`
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  margin-top: 2rem;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
-`;
-
-export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
+export const EscrowSuccess = ({
+  ethersProvider,
+  tx,
+  chainID,
+  raidID,
+  history
+}) => {
   const [invoiceId, setInvoiceId] = useState('');
 
   const getInvoice = async () => {
@@ -38,10 +27,36 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
     console.log(invoiceID);
   };
 
+  const postInvoiceId = async () => {
+    let result = await apiRequest({
+      type: 'update',
+      raidID: raidID,
+      txHash: tx.hash,
+      invoiceId: invoiceId
+    });
+
+    console.log(result);
+  };
+
+  const postTxHash = async () => {
+    let result = await apiRequest({
+      type: 'update',
+      raidID: raidID,
+      txHash: tx.hash
+    });
+    console.log(result);
+  };
+
   useEffect(() => {
+    postTxHash();
     getInvoice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (invoiceId) postInvoiceId();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [invoiceId]);
 
   return (
     <Flex
@@ -51,7 +66,7 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
       padding='1.5rem'
       minWidth='50%'
     >
-      <Heading fontFamily='mono' size='md' color='guildRed' mb='2rem'>
+      <Heading fontFamily='rubik' size='md' color='guildRed' mb='2rem'>
         {invoiceId ? 'Escrow created!' : 'Generating Escrow Id...'}
       </Heading>
 
@@ -68,7 +83,7 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
         <Link
           href={getTxLink(chainID, tx.hash)}
           isExternal
-          color='red.500'
+          color='yellow'
           textDecoration='underline'
         >
           here
@@ -90,7 +105,7 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
             <Link
               ml='0.5rem'
               href={getAddressLink(chainID, invoiceId)}
-              color='white'
+              color='yellow'
               overflow='hidden'
             >
               {invoiceId}
@@ -99,8 +114,7 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
               <Button
                 ml={4}
                 onClick={() => copyToClipboard(invoiceId)}
-                variant='ghost'
-                colorScheme='red'
+                bgColor='black'
                 h='auto'
                 w='auto'
                 minW='2'
@@ -115,13 +129,14 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
         <Loader />
       )}
 
-      <StyledButton
+      <Button
+        variant='primary'
         onClick={() => {
           history.push('/');
         }}
       >
         Go Home
-      </StyledButton>
+      </Button>
     </Flex>
   );
 };

@@ -1,7 +1,5 @@
 import { Flex } from '@chakra-ui/react';
 
-import { theme } from '../theme';
-
 export const Container = ({ children, overlay, ...props }) => {
   return (
     <Flex
@@ -12,7 +10,8 @@ export const Container = ({ children, overlay, ...props }) => {
       h='100%'
       flex={1}
       m='1rem'
-      border={`2px solid ${theme.colors.guildRed}`}
+      border='5px solid'
+      borderColor='red'
       style={{ backdropFilter: props.backdropFilter }}
       {...props}
     >

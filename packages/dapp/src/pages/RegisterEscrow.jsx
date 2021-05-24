@@ -132,6 +132,7 @@ export const RegisterEscrow = (props) => {
             ethersProvider={context.provider}
             tx={tx}
             chainID={context.chainID}
+            raidID={context.raid_id}
             history={history}
           />
         )}

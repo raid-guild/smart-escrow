@@ -18,7 +18,7 @@ import { HamburgerIcon } from '../icons/HamburgerIcon';
 
 import { getProfile } from '../utils/3box';
 import { getAccountString, getNetworkLabel } from '../utils/helpers';
-import { theme } from '../theme';
+import { theme } from '../theme/theme';
 
 import Logo from '../assets/raidguild__logo.png';
 import LogoText from '../assets/logo.svg';
@@ -27,7 +27,7 @@ const StyledButton = styled(Button)`
   &::after {
     box-sizing: inherit;
     transition: all ease-in-out 0.2s;
-    background: none repeat scroll 0 0 ${theme.colors.guildRed};
+    background: none repeat scroll 0 0 ${theme.colors.red};
     content: '';
     display: block;
     height: 2px;
@@ -35,7 +35,7 @@ const StyledButton = styled(Button)`
     position: absolute;
     bottom: 0;
     left: 0;
-    font-family: ${theme.fonts.mono};
+    font-family: ${theme.fonts.rubik};
   }
   &:hover {
     text-decoration: none;
@@ -51,7 +51,7 @@ export const NavButton = ({ onClick, children }) => (
     transition='all 0.5s ease 0.4s'
     my='1rem'
     variant='link'
-    color='guildRed'
+    color='red'
     fontWeight='normal'
     fontSize='1.5rem'
   >
@@ -77,7 +77,7 @@ export const Header = () => {
       w='100%'
       h='8rem'
       color='white'
-      fontFamily='mono'
+      fontFamily='rubik'
       position='absolute'
       top={0}
       left={0}
@@ -127,7 +127,7 @@ export const Header = () => {
               px={2}
               display={{ base: 'none', md: 'flex' }}
               fontFamily="'Roboto Mono', monospace;"
-              color='guildRed'
+              color='red'
             >
               {profile && profile.name
                 ? profile.name
@@ -155,7 +155,7 @@ export const Header = () => {
               transition: 'all 1s ease-out',
               transform: 'rotateZ(90deg)'
             }}
-            color='guildRed'
+            color='red'
           />
         </Button>
       </Flex>
@@ -186,10 +186,10 @@ export const Header = () => {
           transition='all 0.5s ease 0.4s'
           my='1rem'
           variant='link'
-          color='guildRed'
+          color='red'
           fontWeight='normal'
           fontSize='1.5rem'
-          fontFamily='mono'
+          fontFamily='rubik'
         >
           HOME
         </StyledButton>

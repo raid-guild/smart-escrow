@@ -1,4 +1,8 @@
+import axios from 'axios';
+
 import LexDAOLogo from '../assets/lex-dao.png';
+
+axios.defaults.baseURL = 'https://guild-keeper.herokuapp.com/escrow';
 
 export const INFURA_ID = process.env.REACT_APP_INFURA_ID;
 export const IPFS_ENDPOINT = 'https://ipfs.infura.io';

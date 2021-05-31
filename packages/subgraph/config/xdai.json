@@ -1,0 +1,10 @@
+{
+  "network": "xdai",
+  "factories": [
+    {
+      "factoryName": "Version00",
+      "startBlock": "",
+      "address": ""
+    }
+  ]
+}

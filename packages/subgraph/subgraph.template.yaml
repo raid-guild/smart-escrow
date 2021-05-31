@@ -1,0 +1,57 @@
+specVersion: 0.0.2
+description: Wrapped Invoice
+schema:
+  file: ./schema.graphql
+dataSources:
+  {{#factories}}
+  - kind: ethereum/contract
+    name: WrappedInvoiceFactory{{factoryName}}
+    # prettier-ignore
+    network: {{network}}
+    source:
+      address: '{{address}}'
+      abi: WrappedInvoiceFactory
+      # prettier-ignore
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - WrappedInvoice
+      abis:
+        - name: WrappedInvoiceFactory
+          file: ./abis/WrappedInvoiceFactory.json
+        - name: WrappedInvoice
+          file: ./abis/WrappedInvoice.json
+      eventHandlers:
+        - event: LogNewWrappedInvoice(indexed uint256,address)
+          handler: handleLogNewInvoice
+
+      file: ./src/mappings.ts
+  {{/factories}}
+templates:
+  - kind: ethereum/contract
+    name: WrappedInvoice
+    # prettier-ignore
+    network: {{network}}
+    source:
+      abi: WrappedInvoice
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - WrappedInvoice
+        - Withdraw
+        - Disperse
+      abis:
+        - name: WrappedInvoice
+          file: ./abis/WrappedInvoice.json
+      eventHandlers:
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleWithdraw
+        - event: Disperse(indexed address,uint256,uint256[],address[])
+          handler: handleDisperse
+      file: ./src/mappings.ts
+  # prettier-ignore

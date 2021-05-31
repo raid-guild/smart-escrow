@@ -1,0 +1,10 @@
+{
+  "network": "rinkeby",
+  "factories": [
+    {
+      "factoryName": "Version00",
+      "startBlock": "8516486",
+      "address": "0x003680b3C09699D0B16b01F4c00fBeF6692b1Dce"
+    }
+  ]
+}

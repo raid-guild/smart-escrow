@@ -1,0 +1,36 @@
+type WrappedInvoice @entity {
+  id: ID!
+  network: String!
+  factory: Bytes!
+  parent: Bytes!
+  child: Bytes!
+  smartInvoice: Bytes!
+  token: Bytes!
+  splitFactor: BigInt!
+  createdAt: BigInt!
+  createdBy: Bytes!
+  creationTx: Bytes!
+  withdraws: [Withdraw!]! @derivedFrom(field: "wrappedInvoice")
+  disperses: [Disperse!]! @derivedFrom(field: "wrappedInvoice")
+}
+
+type Withdraw @entity {
+  id: ID!
+  txHash: Bytes!
+  token: Bytes!
+  timestamp: BigInt!
+  parentShare: BigInt!
+  childShare: BigInt!
+  wrappedInvoice: WrappedInvoice!
+}
+
+type Disperse @entity {
+  id: ID!
+  txHash: Bytes!
+  token: Bytes!
+  timestamp: BigInt!
+  parentShare: BigInt!
+  amounts: [BigInt!]!
+  fundees: [Bytes!]!
+  wrappedInvoice: WrappedInvoice!
+}

@@ -11,6 +11,7 @@ export const BOX_ENDPOINT = 'https://ipfs.3box.io';
 export const NETWORK_CONFIG = {
   RG_XDAI: '0xfe1084bc16427e5eb7f13fc19bcd4e641f7d571f'.toLowerCase(),
   100: {
+    SUBGRAPH: 'dan13ram/xdai-smart-invoices',
     INVOICE_FACTORY: ''.toLowerCase(),
     TOKENS: {
       WXDAI: {
@@ -32,6 +33,7 @@ export const NETWORK_CONFIG = {
     }
   },
   4: {
+    SUBGRAPH: 'dan13ram/rinkeby-smart-invoices',
     INVOICE_FACTORY: '0x003680b3C09699D0B16b01F4c00fBeF6692b1Dce'.toLowerCase(),
     TOKENS: {
       WETH: {

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   Flex,
@@ -9,12 +9,14 @@ import {
   Box,
   useToast
 } from '@chakra-ui/react';
+import { utils } from 'ethers';
 
 import { Container } from '../shared/Container';
 
 import { ProjectInfo } from '../components/ProjectInfo';
 
 import { AppContext } from '../context/AppContext';
+import { getInvoice } from '../graphql/getInvoice';
 
 export const EscrowInfo = () => {
   const context = useContext(AppContext);
@@ -22,6 +24,8 @@ export const EscrowInfo = () => {
 
   const history = useHistory();
   const toast = useToast();
+
+  const [invoice, setInvoice] = useState();
 
   const initData = async () => {
     if (id) {
@@ -76,6 +80,20 @@ export const EscrowInfo = () => {
     initData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (
+      utils.isAddress(context.invoice_id) &&
+      !Number.isNaN(parseInt(context.chainID))
+    ) {
+      getInvoice(parseInt(context.chainID), context.invoice_id).then((i) =>
+        setInvoice(i)
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context.invoice_id]);
+
+  useEffect(() => console.log(invoice), [invoice]);
 
   return (
     <Container backdropFilter='blur(.5rem)'>
@@ -144,6 +162,7 @@ export const EscrowInfo = () => {
           {context.payments.map((payment, index) => {
             return (
               <HStack
+                key={index}
                 mb='.5rem'
                 justifyContent='space-between'
                 textDecoration={`${index === 0 ? 'line-through' : 'none'}`}

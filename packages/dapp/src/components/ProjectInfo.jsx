@@ -5,17 +5,11 @@ import { theme } from '../theme/theme';
 export const ProjectInfo = ({ context }) => {
   return (
     <Flex direction='column' alignItems='flex-start'>
-      <Heading size='md' fontFamily='jetbrains' color='red'>
+      <Heading size='sm' fontFamily='jetbrains' color='red'>
         {context.client_name}
       </Heading>
 
-      <Heading
-        size='lg'
-        fontFamily='rubik'
-        color='white'
-        maxWidth='300px'
-        isTruncated
-      >
+      <Heading size='md' fontFamily='rubik' color='white' maxWidth='300px'>
         {context.project_name}
       </Heading>
 

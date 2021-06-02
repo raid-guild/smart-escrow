@@ -54,7 +54,7 @@ export const AccountLink = ({
       px='0.25rem'
       _hover={{
         textDecor: 'none',
-        bgColor: 'white20'
+        bgColor: 'blackLight'
       }}
       borderRadius='5px'
       alignItems='center'
@@ -75,7 +75,7 @@ export const AccountLink = ({
         bgRepeat='no-repeat'
         bgPosition='center center'
       />
-      <Text as='span' pl='0.25rem' fontSize='sm' maxW='15rem' isTruncated>
+      <Text as='span' pl='0.25rem' fontSize='sm' maxW='10rem' isTruncated>
         {displayString}
       </Text>
     </Link>

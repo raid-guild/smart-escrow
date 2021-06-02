@@ -24,7 +24,7 @@ const invoiceQuery = gql`
 export const getInvoice = async (chainId, queryAddress) => {
   const address = isAddress(queryAddress);
   if (!address) return null;
-  console.log(chainId, queryAddress);
+
   const { data, error } = await clients[chainId]
     .query(invoiceQuery, { address })
     .toPromise();
@@ -32,10 +32,9 @@ export const getInvoice = async (chainId, queryAddress) => {
     if (error) {
       console.log(error);
     }
-    console.log(data);
     return null;
   }
-  console.log(data);
+
   return data.invoice;
 };
 

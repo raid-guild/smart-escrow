@@ -47,6 +47,15 @@ export const register = async (
   );
 };
 
+export const getSmartInvoiceAddress = async (address, ethersProvider) => {
+  const abi = new utils.Interface([
+    'function invoice() public view returns(address)'
+  ]);
+  const contract = new Contract(address, abi, ethersProvider);
+  const smartInvoice = await contract.invoice();
+  return smartInvoice;
+};
+
 export const getResolutionRateFromFactory = async (
   chainId,
   ethersProvider,

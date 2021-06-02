@@ -14,24 +14,26 @@ import React, { useCallback, useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 import { OrderedTextarea } from '../shared/OrderedTextArea';
 
-import { tokenInfo, hexChainIds } from '../utils/constants';
+import { NETWORK_CONFIG } from '../utils/constants';
 import { getTxLink } from '../utils/helpers';
 
 import { resolve } from '../utils/invoice';
 import { uploadDisputeDetails } from '../utils/ipfs';
 
-const getTokenInfo = (chainId, token) =>
-  (tokenInfo[chainId] || tokenInfo[4])[token] || {
-    decimals: 18,
-    symbol: 'UNKNOWN'
-  };
-
-const getHexChainId = (network) => hexChainIds[network] || hexChainIds.rinkeby;
+const parseTokenAddress = (chainId, address) => {
+  for (const [key, value] of Object.entries(
+    NETWORK_CONFIG[parseInt(chainId)]['TOKENS']
+  )) {
+    if (value['address'] === address.toLowerCase()) {
+      return key;
+    }
+  }
+};
 
 export const ResolveFunds = ({ invoice, balance, close }) => {
-  const { network, address, resolutionRate, token, isLocked } = invoice;
+  const { address, resolutionRate, token, isLocked } = invoice;
   const { chainID, provider } = useContext(AppContext);
-  const { decimals, symbol } = getTokenInfo(chainID, token);
+
   const [loading, setLoading] = useState(false);
   const [transaction, setTransaction] = useState();
 
@@ -42,7 +44,7 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
   const [clientAward, setClientAward] = useState(availableFunds);
   const [providerAward, setProviderAward] = useState(BigNumber.from(0));
   const [clientAwardInput, setClientAwardInput] = useState(
-    utils.formatUnits(availableFunds, decimals)
+    utils.formatUnits(availableFunds, 18)
   );
   const [providerAwardInput, setProviderAwardInput] = useState('0');
   const [comments, setComments] = useState('');
@@ -71,7 +73,7 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
         );
         setTransaction(tx);
         await tx.wait();
-        window.location.href = `/invoice/${getHexChainId(network)}/${address}`;
+        // window.location.href = `/invoice/${getHexChainId(network)}/${address}`;
       } catch (depositError) {
         setLoading(false);
         console.log(depositError);
@@ -85,8 +87,7 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
     clientAward,
     providerAward,
     resolverAward,
-    address,
-    network
+    address
   ]);
 
   return (
@@ -103,8 +104,11 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
         {isLocked
           ? `You’ll need to distribute the total balance of ${utils.formatUnits(
               balance,
-              decimals
-            )} ${symbol} between the client and provider, excluding the ${
+              18
+            )} ${parseTokenAddress(
+              chainID,
+              token
+            )} between the client and provider, excluding the ${
               100 / resolutionRate
             }% arbitration fee which you shall receive.`
           : `Invoice is not locked`}
@@ -131,20 +135,22 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
                 onChange={(e) => {
                   setClientAwardInput(e.target.value);
                   if (e.target.value) {
-                    let award = utils.parseUnits(e.target.value, decimals);
+                    let award = utils.parseUnits(e.target.value, 18);
                     if (award.gt(availableFunds)) {
                       award = availableFunds;
-                      setClientAwardInput(utils.formatUnits(award, decimals));
+                      setClientAwardInput(utils.formatUnits(award, 18));
                     }
                     setClientAward(award);
                     award = availableFunds.sub(award);
                     setProviderAward(award);
-                    setProviderAwardInput(utils.formatUnits(award, decimals));
+                    setProviderAwardInput(utils.formatUnits(award, 18));
                   }
                 }}
                 placeholder='Client Award'
               />
-              <InputRightElement w='3.5rem'>{symbol}</InputRightElement>
+              <InputRightElement w='3.5rem'>
+                {parseTokenAddress(chainID, token)}
+              </InputRightElement>
             </InputGroup>
           </VStack>
           <VStack spacing='0.5rem' align='stretch' color='red.500'>
@@ -160,20 +166,22 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
                 onChange={(e) => {
                   setProviderAwardInput(e.target.value);
                   if (e.target.value) {
-                    let award = utils.parseUnits(e.target.value, decimals);
+                    let award = utils.parseUnits(e.target.value, 18);
                     if (award.gt(availableFunds)) {
                       award = availableFunds;
-                      setProviderAwardInput(utils.formatUnits(award, decimals));
+                      setProviderAwardInput(utils.formatUnits(award, 18));
                     }
                     setProviderAward(award);
                     award = availableFunds.sub(award);
                     setClientAward(award);
-                    setClientAwardInput(utils.formatUnits(award, decimals));
+                    setClientAwardInput(utils.formatUnits(award, 18));
                   }
                 }}
                 placeholder='Provider Award'
               />
-              <InputRightElement w='3.5rem'>{symbol}</InputRightElement>
+              <InputRightElement w='3.5rem'>
+                {parseTokenAddress(chainID, token)}
+              </InputRightElement>
             </InputGroup>
           </VStack>
           <VStack spacing='0.5rem' align='stretch' color='red.500' mb='1rem'>
@@ -184,11 +192,13 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
                 color='white'
                 border='none'
                 type='number'
-                value={utils.formatUnits(resolverAward, decimals)}
+                value={utils.formatUnits(resolverAward, 18)}
                 pr='3.5rem'
                 isDisabled
               />
-              <InputRightElement w='3.5rem'>{symbol}</InputRightElement>
+              <InputRightElement w='3.5rem'>
+                {parseTokenAddress(chainID, token)}
+              </InputRightElement>
             </InputGroup>
           </VStack>
           <Button

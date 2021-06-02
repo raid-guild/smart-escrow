@@ -4,16 +4,18 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../context/AppContext';
 import { getTxLink } from '../utils/helpers';
-import { tokenInfo, hexChainIds } from '../utils/constants';
+import { NETWORK_CONFIG } from '../utils/constants';
 import { release } from '../utils/invoice';
 
-const getTokenInfo = (chainId, token) =>
-  (tokenInfo[chainId] || tokenInfo[4])[token] || {
-    decimals: 18,
-    symbol: 'UNKNOWN'
-  };
-
-const getHexChainId = (network) => hexChainIds[network] || hexChainIds.rinkeby;
+const parseTokenAddress = (chainId, address) => {
+  for (const [key, value] of Object.entries(
+    NETWORK_CONFIG[parseInt(chainId)]['TOKENS']
+  )) {
+    if (value['address'] === address.toLowerCase()) {
+      return key;
+    }
+  }
+};
 
 export const ReleaseFunds = ({ invoice, balance, close }) => {
   const [loading, setLoading] = useState(false);
@@ -26,7 +28,6 @@ export const ReleaseFunds = ({ invoice, balance, close }) => {
       ? balance
       : amounts[currentMilestone];
 
-  const { decimals, symbol } = getTokenInfo(chainID, token);
   const [transaction, setTransaction] = useState();
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export const ReleaseFunds = ({ invoice, balance, close }) => {
         const tx = await release(provider, address);
         setTransaction(tx);
         await tx.wait();
-        window.location.href = `/invoice/${getHexChainId(network)}/${address}`;
+        // window.location.href = `/invoice/${getHexChainId(network)}/${address}`;
       } catch (releaseError) {
         console.log(releaseError);
         close();
@@ -70,7 +71,10 @@ export const ReleaseFunds = ({ invoice, balance, close }) => {
           fontSize='1rem'
           fontWeight='bold'
           textAlign='center'
-        >{`${utils.formatUnits(amount, decimals)} ${symbol}`}</Text>
+        >{`${utils.formatUnits(amount, 18)} ${parseTokenAddress(
+          chainID,
+          token
+        )}`}</Text>
       </VStack>
       {transaction && (
         <Text color='white' textAlign='center' fontSize='sm'>

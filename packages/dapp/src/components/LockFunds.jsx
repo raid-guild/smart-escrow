@@ -12,15 +12,17 @@ import { lock } from '../utils/invoice';
 import { uploadDisputeDetails } from '../utils/ipfs';
 import { Loader } from './Loader';
 
-import { tokenInfo, hexChainIds, NETWORK_CONFIG } from '../utils/constants';
+import { NETWORK_CONFIG } from '../utils/constants';
 
-const getTokenInfo = (chainId, token) =>
-  (tokenInfo[chainId] || tokenInfo[4])[token] || {
-    decimals: 18,
-    symbol: 'UNKNOWN'
-  };
-
-const getHexChainId = (network) => hexChainIds[network] || hexChainIds.rinkeby;
+const parseTokenAddress = (chainId, address) => {
+  for (const [key, value] of Object.entries(
+    NETWORK_CONFIG[parseInt(chainId)]['TOKENS']
+  )) {
+    if (value['address'] === address.toLowerCase()) {
+      return key;
+    }
+  }
+};
 
 const resolverInfo = {
   4: NETWORK_CONFIG[4].RESOLVERS,
@@ -51,14 +53,14 @@ const getResolverString = (chainId, resolver) => {
 
 export const LockFunds = ({ invoice, balance }) => {
   const { chainID, provider } = useContext(AppContext);
-  const { network, address, resolver, token, resolutionRate } = invoice;
-  const { decimals, symbol } = getTokenInfo(chainID, token);
+  const { address, resolver, token, resolutionRate } = invoice;
+
   const [disputeReason, setDisputeReason] = useState('');
 
   const fee = `${utils.formatUnits(
     BigNumber.from(balance).div(resolutionRate),
-    decimals
-  )} ${symbol}`;
+    18
+  )} ${parseTokenAddress(chainID, token)}`;
 
   const [locking, setLocking] = useState(false);
   const [transaction, setTransaction] = useState();
@@ -76,16 +78,16 @@ export const LockFunds = ({ invoice, balance }) => {
         setTransaction(tx);
         await tx.wait();
         setTimeout(() => {
-          window.location.href = `/invoice/${getHexChainId(
-            network
-          )}/${address}`;
+          // window.location.href = `/invoice/${getHexChainId(
+          //   network
+          // )}/${address}`;
         }, 2000);
       } catch (lockError) {
         setLocking(false);
         console.log(lockError);
       }
     }
-  }, [network, provider, locking, balance, address, disputeReason]);
+  }, [provider, locking, balance, address, disputeReason]);
 
   if (locking) {
     return (
@@ -175,7 +177,10 @@ export const LockFunds = ({ invoice, balance }) => {
         variant='primary'
         w='100%'
       >
-        {`Lock ${utils.formatUnits(balance, decimals)} ${symbol}`}
+        {`Lock ${utils.formatUnits(balance, 18)} ${parseTokenAddress(
+          chainID,
+          token
+        )}`}
       </Button>
       {isKnownResolver(chainID, resolver) && (
         <Link

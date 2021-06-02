@@ -200,7 +200,7 @@ export const InvoiceButtonManager = ({ invoice, account, provider }) => {
           <ModalContent
             p='2rem'
             maxW='40rem'
-            background='background'
+            background='blackLight'
             borderRadius='0.5rem'
             color='white'
           >

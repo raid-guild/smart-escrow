@@ -21,13 +21,12 @@ import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 import { QuestionIcon } from '../icons/QuestionIcon';
 import { balanceOf } from '../utils/erc20';
+import { hexChainIds, NETWORK_CONFIG } from '../utils/constants';
 import {
-  nativeSymbols,
-  wrappedNativeToken,
-  tokenInfo,
-  hexChainIds
-} from '../utils/constants';
-import { getTxLink } from '../utils/helpers';
+  getTxLink,
+  getNativeTokenSymbol,
+  getWrappedNativeToken
+} from '../utils/helpers';
 
 const getCheckedStatus = (deposited, amounts) => {
   let sum = BigNumber.from(0);
@@ -41,31 +40,37 @@ const checkedAtIndex = (index, checked) => {
   return checked.map((_c, i) => i <= index);
 };
 
-const getNativeTokenSymbol = (chainId) =>
-  nativeSymbols[chainId] || nativeSymbols[4];
-
-const getWrappedNativeToken = (chainId) =>
-  wrappedNativeToken[chainId] || wrappedNativeToken[4];
-
-const getTokenInfo = (chainId, token) =>
-  (tokenInfo[chainId] || tokenInfo[4])[token] || {
-    decimals: 18,
-    symbol: 'UNKNOWN'
-  };
+const parseTokenAddress = (chainId, address) => {
+  for (const [key, value] of Object.entries(
+    NETWORK_CONFIG[parseInt(chainId)]['TOKENS']
+  )) {
+    if (value['address'] === address.toLowerCase()) {
+      return key;
+    }
+  }
+};
 
 const getHexChainId = (network) => hexChainIds[network] || hexChainIds.rinkeby;
 
 export const DepositFunds = ({ invoice, deposited, due }) => {
+  const { address, token, network, amounts, currentMilestone } = invoice;
   const { chainID, provider, account } = useContext(AppContext);
+
   const NATIVE_TOKEN_SYMBOL = getNativeTokenSymbol(chainID);
   const WRAPPED_NATIVE_TOKEN = getWrappedNativeToken(chainID);
-  const { address, token, network, amounts, currentMilestone } = invoice;
+  const isWRAPPED = token.toLowerCase() === WRAPPED_NATIVE_TOKEN;
+
   const [paymentType, setPaymentType] = useState(0);
   const [amount, setAmount] = useState(BigNumber.from(0));
   const [amountInput, setAmountInput] = useState('');
-  const { decimals, symbol } = getTokenInfo(chainID, token);
+
   const [loading, setLoading] = useState(false);
   const [transaction, setTransaction] = useState();
+
+  const initialStatus = getCheckedStatus(deposited, amounts);
+  const [checked, setChecked] = useState(initialStatus);
+
+  const [balance, setBalance] = useState();
 
   const deposit = async () => {
     if (!amount || !provider) return;
@@ -90,13 +95,6 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
     }
   };
 
-  const isWRAPPED = token.toLowerCase() === WRAPPED_NATIVE_TOKEN;
-
-  const initialStatus = getCheckedStatus(deposited, amounts);
-  const [checked, setChecked] = useState(initialStatus);
-
-  const [balance, setBalance] = useState();
-
   useEffect(() => {
     try {
       if (paymentType === 0) {
@@ -116,15 +114,16 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
         mb='1rem'
         textTransform='uppercase'
         textAlign='center'
+        fontFamily='rubik'
+        color='red'
       >
         Pay Invoice
       </Heading>
-      <Text textAlign='center' fontSize='sm' mb='1rem'>
+      <Text textAlign='center' fontSize='sm' mb='1rem' fontFamily='jetbrains'>
         At a minimum, you’ll need to deposit enough to cover the{' '}
-        {currentMilestone === 0 ? 'first' : 'next'} project payment.
+        {currentMilestone === '0' ? 'first' : 'next'} project payment.
       </Text>
-
-      <Text textAlign='center' color='red.500'>
+      <Text textAlign='center' color='purpleLight' fontFamily='jetbrains'>
         How much will you be depositing today?
       </Text>
       <VStack spacing='0.5rem'>
@@ -148,34 +147,41 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
 
                 setChecked(newChecked);
                 setAmount(newAmount);
-                setAmountInput(utils.formatUnits(newAmount, decimals));
+                setAmountInput(utils.formatUnits(newAmount, 18));
               }}
-              colorScheme='red'
+              color='yellow'
               border='none'
               size='lg'
               fontSize='1rem'
-              color='white'
+              fontFamily='jetbrains'
             >
               Payment #{i + 1} &nbsp; &nbsp;
-              {utils.formatUnits(a, decimals)} {symbol}
+              {utils.formatUnits(a, 18)} {parseTokenAddress(chainID, token)}
             </Checkbox>
           );
         })}
       </VStack>
 
-      <VStack spacing='0.5rem' align='stretch' color='red.500' mb='1rem'>
+      <VStack
+        spacing='0.5rem'
+        align='stretch'
+        color='purpleLight'
+        mb='1rem'
+        fontFamily='jetbrains'
+      >
         <Flex justify='space-between' w='100%'>
           <Text fontWeight='700'>Amount</Text>
-          <Flex>
-            {paymentType === 1 && (
-              <Tooltip
-                label={`Your ${NATIVE_TOKEN_SYMBOL} will be automagically wrapped to ${symbol} tokens`}
-                placement='auto-start'
-              >
-                <QuestionIcon ml='1rem' boxSize='0.75rem' />
-              </Tooltip>
-            )}
-          </Flex>
+          {paymentType === 1 && (
+            <Tooltip
+              label={`Your ${NATIVE_TOKEN_SYMBOL} will be automagically wrapped to ${parseTokenAddress(
+                chainID,
+                token
+              )} tokens`}
+              placement='auto-start'
+            >
+              <QuestionIcon ml='1rem' boxSize='0.75rem' />
+            </Tooltip>
+          )}
         </Flex>
         <InputGroup>
           <Input
@@ -188,7 +194,7 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
               const newAmountInput = e.target.value;
               setAmountInput(newAmountInput);
               if (newAmountInput) {
-                const newAmount = utils.parseUnits(newAmountInput, decimals);
+                const newAmount = utils.parseUnits(newAmountInput, 18);
                 setAmount(newAmount);
                 setChecked(getCheckedStatus(deposited.add(newAmount), amounts));
               } else {
@@ -205,14 +211,14 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
                 onChange={(e) => setPaymentType(Number(e.target.value))}
                 value={paymentType}
                 bg='black'
-                color='white'
+                color='red'
                 border='none'
               >
-                <option value='0'>{symbol}</option>
+                <option value='0'>{parseTokenAddress(chainID, token)}</option>
                 <option value='1'>{NATIVE_TOKEN_SYMBOL}</option>
               </Select>
             ) : (
-              symbol
+              parseTokenAddress(chainID, token)
             )}
           </InputRightElement>
         </InputGroup>
@@ -225,25 +231,39 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
           </Alert>
         )}
       </VStack>
-      <Flex color='white' justify='space-between' w='100%' fontSize='sm'>
+      <Flex
+        color='white'
+        justify='space-between'
+        w='100%'
+        fontSize='sm'
+        fontFamily='jetbrains'
+      >
         {deposited && (
           <VStack align='flex-start'>
             <Text fontWeight='bold'>Total Deposited</Text>
-            <Text>{`${utils.formatUnits(deposited, decimals)} ${symbol}`}</Text>
+            <Text>{`${utils.formatUnits(deposited, 18)} ${parseTokenAddress(
+              chainID,
+              token
+            )}`}</Text>
           </VStack>
         )}
         {due && (
           <VStack>
             <Text fontWeight='bold'>Total Due</Text>
-            <Text>{`${utils.formatUnits(due, decimals)} ${symbol}`}</Text>
+            <Text>{`${utils.formatUnits(due, 18)} ${parseTokenAddress(
+              chainID,
+              token
+            )}`}</Text>
           </VStack>
         )}
         {balance && (
           <VStack align='flex-end'>
             <Text fontWeight='bold'>Your Balance</Text>
             <Text>
-              {`${utils.formatUnits(balance, decimals)} ${
-                paymentType === 0 ? symbol : NATIVE_TOKEN_SYMBOL
+              {`${utils.formatUnits(balance, 18)} ${
+                paymentType === 0
+                  ? parseTokenAddress(chainID, token)
+                  : NATIVE_TOKEN_SYMBOL
               }`}
             </Text>
           </VStack>
@@ -265,7 +285,7 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
           <Link
             href={getTxLink(chainID, transaction.hash)}
             isExternal
-            color='red.500'
+            color='red'
             textDecoration='underline'
           >
             here

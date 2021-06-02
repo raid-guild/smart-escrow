@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-import { explorerUrls, networkLabels, NETWORK_CONFIG } from './constants';
+import {
+  explorerUrls,
+  networkLabels,
+  NETWORK_CONFIG,
+  nativeSymbols,
+  wrappedNativeToken
+} from './constants';
 
 export const copyToClipboard = (value) => {
   const tempInput = document.createElement('input');
@@ -41,6 +47,12 @@ export const getAccountString = (account) => {
     .substr(len - 3, len - 1)
     .toUpperCase()}`;
 };
+
+export const getNativeTokenSymbol = (chainId) =>
+  nativeSymbols[chainId] || nativeSymbols[4];
+
+export const getWrappedNativeToken = (chainId) =>
+  wrappedNativeToken[chainId] || wrappedNativeToken[4];
 
 export const apiRequest = async ({
   type,

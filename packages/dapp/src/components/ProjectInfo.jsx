@@ -14,21 +14,31 @@ export const ProjectInfo = ({ context }) => {
       </Heading>
 
       <Box marginTop='15px' marginBottom='.7rem' fontFamily='jetbrains'>
-        <Text color='#a7a9be'>Start: {context.start_date.split('T')[0]}</Text>
-        <Text color='#a7a9be'>Planned End: {context.end_date}</Text>
+        <Text color='#a7a9be'>
+          Start date: {context.start_date.split('T')[0]}
+        </Text>
+        <Text color='#a7a9be'>End date: {context.end_date}</Text>
       </Box>
 
-      <Link
-        href={context.link_to_details}
-        target='_blank'
-        rel='noopener noreferrer'
-        color={`${theme.colors.purpleLight}`}
-        textDecoration='underline'
-        fontFamily='jetbrains'
-        marginBottom='.5rem'
-      >
-        Link to project doc provided
-      </Link>
+      {context.link_to_details === 'Not Specified' && (
+        <Text color='purpleLight' fontFamily='jetbrains'>
+          Project specs not specified.
+        </Text>
+      )}
+
+      {context.link_to_details !== 'Not Specified' && (
+        <Link
+          href={context.link_to_details}
+          target='_blank'
+          rel='noopener noreferrer'
+          color={`${theme.colors.purpleLight}`}
+          textDecoration='underline'
+          fontFamily='jetbrains'
+          marginBottom='.5rem'
+        >
+          Link to project doc provided
+        </Link>
+      )}
     </Flex>
   );
 };

@@ -68,12 +68,12 @@ class AppContextProvider extends Component {
         {
           invoice_id: data['Invoice ID'] || '',
           raid_id: id,
-          project_name: data['Project Name'] || 'Not Available',
-          client_name: data['Name'] || 'Not Available',
-          start_date: data['Raid Start Date'] || 'Not Available',
-          end_date: data['Expected Deadline'] || 'Not Available',
-          link_to_details: data['Specs Link'] || 'Not Available',
-          brief_description: data['Project Description'] || 'Not Available'
+          project_name: data['Project Name'] || 'Not Specified',
+          client_name: data['Name'] || 'Not Specified',
+          start_date: data['Raid Start Date'] || 'Not Specified',
+          end_date: data['Expected Deadline'] || 'Not Specified',
+          link_to_details: data['Specs Link'] || 'Not Specified',
+          brief_description: data['Project Description'] || 'Not Specified'
         },
         () => this.fetchLockerInfo()
       );

@@ -8,7 +8,7 @@ import { awaitInvoiceAddress } from '../utils/invoice';
 import {
   getTxLink,
   copyToClipboard,
-  getAddressLink,
+  // getAddressLink,
   apiRequest
 } from '../utils/helpers';
 
@@ -92,7 +92,7 @@ export const EscrowSuccess = ({
 
       {invoiceId ? (
         <VStack w='100%' align='stretch' mb='1rem'>
-          <Text fontWeight='bold'>Your Invoice ID</Text>
+          <Text fontWeight='bold'>Invoice URL</Text>
           <Flex
             p='0.3rem'
             justify='space-between'
@@ -104,16 +104,20 @@ export const EscrowSuccess = ({
           >
             <Link
               ml='0.5rem'
-              href={getAddressLink(chainID, invoiceId)}
+              href={`https://${window.location.hostname}/escrow/${raidID}`}
               color='yellow'
               overflow='hidden'
             >
-              {invoiceId}
+              {`https://${window.location.hostname}/escrow/${raidID}`}
             </Link>
             {document.queryCommandSupported('copy') && (
               <Button
                 ml={4}
-                onClick={() => copyToClipboard(invoiceId)}
+                onClick={() =>
+                  copyToClipboard(
+                    `https://${window.location.hostname}/escrow/${raidID}`
+                  )
+                }
                 bgColor='black'
                 h='auto'
                 w='auto'
@@ -132,10 +136,10 @@ export const EscrowSuccess = ({
       <Button
         variant='primary'
         onClick={() => {
-          history.push('/');
+          history.push(`/escrow/${raidID}`);
         }}
       >
-        Go Home
+        View invoice
       </Button>
     </Flex>
   );

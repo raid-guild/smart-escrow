@@ -143,15 +143,17 @@ export const LockFunds = ({ invoice, balance }) => {
         mb='1rem'
         textTransform='uppercase'
         textAlign='center'
+        fontFamily='rubik'
+        color='red'
       >
         Lock Funds
       </Heading>
 
-      <Text textAlign='center' fontSize='sm' mb='1rem'>
+      <Text textAlign='center' fontSize='sm' mb='1rem' fontFamily='jetbrains'>
         Locking freezes all remaining funds in the contract and initiates a
         dispute.
       </Text>
-      <Text w='100%'>
+      <Text textAlign='center' fontSize='sm' mb='1rem' fontFamily='jetbrains'>
         {'Once a dispute has been initiated, '}
         <AccountLink address={resolver} />
         {
@@ -165,7 +167,7 @@ export const LockFunds = ({ invoice, balance }) => {
         value={disputeReason}
         setValue={setDisputeReason}
       />
-      <Text color='red.500' textAlign='center'>
+      <Text color='white' textAlign='center' fontFamily='jetbrains'>
         {`Upon resolution, a fee of ${fee} will be deducted from the locked fund amount and sent to `}
         <AccountLink address={resolver} />
         {` for helping resolve this dispute.`}

@@ -50,7 +50,7 @@ export const AccountLink = ({
       isExternal
       display='inline-flex'
       textAlign='right'
-      bgColor='black30'
+      bgColor='black'
       px='0.25rem'
       _hover={{
         textDecor: 'none',
@@ -75,7 +75,14 @@ export const AccountLink = ({
         bgRepeat='no-repeat'
         bgPosition='center center'
       />
-      <Text as='span' pl='0.25rem' fontSize='sm' maxW='10rem' isTruncated>
+      <Text
+        as='span'
+        pl='0.25rem'
+        fontSize='sm'
+        maxW='10rem'
+        color='white'
+        isTruncated
+      >
         {displayString}
       </Text>
     </Link>

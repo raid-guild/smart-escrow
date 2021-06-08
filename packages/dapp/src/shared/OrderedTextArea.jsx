@@ -15,12 +15,14 @@ export const OrderedTextarea = ({
   return (
     <VStack w='100%' spacing='0.5rem' justify='space-between' color='red.500'>
       <Flex justify='space-between' w='100%'>
-        <Text fontWeight='700'>{label}</Text>
+        <Text fontFamily='jetbrains' fontWeight='700' color='red'>
+          {label}
+        </Text>
         <Flex>
           {infoText && <Text fontSize='xs'>{infoText}</Text>}
           {tooltip && (
             <Tooltip label={tooltip} placement='auto-start'>
-              <QuestionIcon ml='1rem' boxSize='0.75rem' />
+              <QuestionIcon ml='1rem' boxSize='0.75rem' color='red' />
             </Tooltip>
           )}
         </Flex>

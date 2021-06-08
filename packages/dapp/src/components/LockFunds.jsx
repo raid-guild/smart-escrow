@@ -78,10 +78,8 @@ export const LockFunds = ({ invoice, balance }) => {
         setTransaction(tx);
         await tx.wait();
         setTimeout(() => {
-          // window.location.href = `/invoice/${getHexChainId(
-          //   network
-          // )}/${address}`;
-        }, 2000);
+          window.location.reload();
+        }, 10000);
       } catch (lockError) {
         setLocking(false);
         console.log(lockError);
@@ -97,6 +95,8 @@ export const LockFunds = ({ invoice, balance }) => {
           mb='1rem'
           textTransform='uppercase'
           textAlign='center'
+          fontFamily='rubik'
+          color='red'
         >
           Locking Funds
         </Heading>

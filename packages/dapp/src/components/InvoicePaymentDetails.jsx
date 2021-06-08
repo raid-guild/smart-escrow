@@ -42,6 +42,8 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
     terminationTime,
     currentMilestone,
     amounts,
+    deposits,
+    releases,
     resolver
   } = invoice;
   const deposited = BigNumber.from(released).add(balance);
@@ -60,36 +62,96 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
   );
   const isReleasable = !isLocked && balance.gte(amount) && balance.gt(0);
 
+  let sum = BigNumber.from(0);
   return (
     <Flex direction='column' background='#262626' padding='2rem'>
-      <HStack mt='.5rem' mb='1rem' justifyContent='space-between' fontSize='lg'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
-          Total Project Amount
-        </Text>
+      <HStack
+        mt='.5rem'
+        mb='1rem'
+        justifyContent='space-between'
+        fontSize='lg'
+        fontWeight='bold'
+        fontFamily='jetbrains'
+      >
+        <Text>Total Project Amount</Text>
         <Text>
           {web3.utils.fromWei(invoice.total)}{' '}
           {parseTokenAddress(chainID, invoice.token)}
         </Text>
       </HStack>
-      {invoice.amounts.map((payment, index) => {
-        return (
-          <HStack
-            key={index}
-            mb='.2rem'
-            justifyContent='space-between'
-            fontFamily='jetbrains'
-            color='yellow'
-          >
-            <Text>{`payment milestone #${index + 1}:`}</Text>
-            <Text>
-              {`${web3.utils.fromWei(payment)} ${parseTokenAddress(
-                chainID,
-                invoice.token
-              )}`}
-            </Text>
-          </HStack>
-        );
-      })}
+      <VStack align='stretch' spacing='0.25rem'>
+        {invoice.amounts.map((amt, index) => {
+          let tot = BigNumber.from(0);
+          let ind = -1;
+          let full = false;
+          if (deposits.length > 0) {
+            for (let i = 0; i < deposits.length; i += 1) {
+              tot = tot.add(deposits[i].amount);
+              if (tot.gt(sum)) {
+                ind = i;
+                if (tot.sub(sum).gte(amt)) {
+                  full = true;
+                  break;
+                }
+              }
+            }
+          }
+          sum = sum.add(amt);
+
+          return (
+            <Flex
+              key={index.toString()}
+              justify='space-between'
+              align={{ base: 'stretch', sm: 'center' }}
+              direction={{ base: 'column', sm: 'row' }}
+              fontFamily='jetbrains'
+              color='yellow'
+            >
+              <Text>Payment Milestone #{index + 1}</Text>
+              <HStack
+                spacing={{ base: '0.5rem', md: '1rem' }}
+                align='center'
+                justify='flex-end'
+                ml={{ base: '0.5rem', md: '1rem' }}
+              >
+                {index < currentMilestone && releases.length > index && (
+                  <Link
+                    fontSize='xs'
+                    isExternal
+                    color='grey'
+                    fontStyle='italic'
+                    href={getTxLink(chainID, releases[index].txHash)}
+                  >
+                    Released{' '}
+                    {new Date(
+                      releases[index].timestamp * 1000
+                    ).toLocaleDateString()}
+                  </Link>
+                )}
+                {!(index < currentMilestone && releases.length > index) &&
+                  ind !== -1 && (
+                    <Link
+                      fontSize='xs'
+                      isExternal
+                      color='grey'
+                      fontStyle='italic'
+                      href={getTxLink(chainID, deposits[ind].txHash)}
+                    >
+                      {full ? '' : 'Partially '}Deposited{' '}
+                      {new Date(
+                        deposits[ind].timestamp * 1000
+                      ).toLocaleDateString()}
+                    </Link>
+                  )}
+                <Text textAlign='right' fontWeight='500'>{`${utils.formatUnits(
+                  amt,
+                  18
+                )} ${parseTokenAddress(chainID, invoice.token)}`}</Text>
+              </HStack>
+            </Flex>
+          );
+        })}
+      </VStack>
       <Divider mt='1rem' />
       <HStack
         mt='1rem'
@@ -168,6 +230,7 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
             align='center'
             fontWeight='bold'
             fontSize='lg'
+            fontFamily='jetbrains'
           >
             <Text>Amount Locked</Text>
             <Text textAlign='right'>{`${utils.formatUnits(
@@ -175,7 +238,7 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
               18
             )} ${parseTokenAddress(chainID, invoice.token)}`}</Text>
           </Flex>
-          <Text>
+          <Text fontFamily='jetbrains' color='purpleLight'>
             {`A dispute is in progress with `}
             <AccountLink address={resolver} chainId={chainID} />
             <br />
@@ -191,12 +254,13 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
       )}
 
       {resolution && (
-        <VStack w='100%' align='stretch' spacing='1rem' color='red.500'>
+        <VStack align='stretch' spacing='1rem' color='red.500'>
           <Flex
             justify='space-between'
             align='center'
             fontWeight='bold'
             fontSize='lg'
+            fontFamily='jetbrains'
           >
             <Text>Amount Dispersed</Text>
             <Text textAlign='right'>{`${utils.formatUnits(
@@ -211,9 +275,10 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
             direction={{ base: 'column', sm: 'row' }}
           >
             <Flex flex={1}>
-              <Text textAlign={{ base: 'center', sm: 'left' }}>
+              <Text fontFamily='jetbrains' maxW='300px' color='purpleLight'>
                 <AccountLink address={resolver} chainId={chainID} />
                 {' has resolved the dispute and dispersed remaining funds'}
+                <br />
                 <br />
                 <Link href={getIpfsLink(resolution.ipfsHash)} isExternal>
                   <u>View details on IPFS</u>
@@ -227,10 +292,10 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
             <VStack
               spacing='0.5rem'
               mt={{ base: '1rem', sm: '0' }}
-              align={{ base: 'center', sm: 'stretch' }}
+              fontFamily='jetbrains'
             >
               {resolution.resolutionFee && (
-                <Text textAlign='right'>
+                <Text textAlign='right' color='purpleLight'>
                   {`${utils.formatUnits(
                     BigNumber.from(resolution.resolutionFee),
                     18
@@ -238,19 +303,19 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
                   <AccountLink address={resolver} chainId={chainID} />
                 </Text>
               )}
-              <Text textAlign='right'>
+              <Text textAlign='right' color='purpleLight'>
                 {`${utils.formatUnits(
                   BigNumber.from(resolution.clientAward),
                   18
                 )} ${parseTokenAddress(chainID, invoice.token)} to `}
                 <AccountLink address={client} chainId={chainID} />
               </Text>
-              <Text textAlign='right'>
+              <Text textAlign='right' color='purpleLight'>
                 {`${utils.formatUnits(
                   BigNumber.from(resolution.providerAward),
                   18
                 )} ${parseTokenAddress(chainID, invoice.token)} to `}
-                <AccountLink address={provider} chainId={chainID} />
+                <AccountLink address={invoice.provider} chainId={chainID} />
               </Text>
             </VStack>
           </Flex>

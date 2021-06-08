@@ -15,7 +15,8 @@ export const AccountLink = ({
 }) => {
   const context = useContext(AppContext);
 
-  const address = inputAddress.toLowerCase();
+  const address =
+    typeof inputAddress === 'string' ? inputAddress.toLowerCase() : '';
   const [profile, setProfile] = useState();
   const chainId = inputChainId || context.chainID;
 

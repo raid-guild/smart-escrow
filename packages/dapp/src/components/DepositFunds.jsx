@@ -18,10 +18,11 @@ import {
 import { BigNumber, Contract, utils } from 'ethers';
 import { useContext, useEffect, useState } from 'react';
 
+import { Loader } from '../components/Loader';
 import { AppContext } from '../context/AppContext';
 import { QuestionIcon } from '../icons/QuestionIcon';
 import { balanceOf } from '../utils/erc20';
-import { hexChainIds, NETWORK_CONFIG } from '../utils/constants';
+import { NETWORK_CONFIG } from '../utils/constants';
 import {
   getTxLink,
   getNativeTokenSymbol,
@@ -50,10 +51,10 @@ const parseTokenAddress = (chainId, address) => {
   }
 };
 
-const getHexChainId = (network) => hexChainIds[network] || hexChainIds.rinkeby;
+// const getHexChainId = (network) => hexChainIds[network] || hexChainIds.rinkeby;
 
 export const DepositFunds = ({ invoice, deposited, due }) => {
-  const { address, token, network, amounts, currentMilestone } = invoice;
+  const { address, token, amounts, currentMilestone } = invoice;
   const { chainID, provider, account } = useContext(AppContext);
 
   const NATIVE_TOKEN_SYMBOL = getNativeTokenSymbol(chainID);
@@ -88,7 +89,7 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
       }
       setTransaction(tx);
       await tx.wait();
-      window.location.href = `/invoice/${getHexChainId(network)}/${address}`;
+      window.location.reload();
     } catch (depositError) {
       setLoading(false);
       console.log(depositError);
@@ -269,16 +270,19 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
           </VStack>
         )}
       </Flex>
-      <Button
-        onClick={deposit}
-        isLoading={loading}
-        isDisabled={amount.lte(0)}
-        textTransform='uppercase'
-        variant='primary'
-        w='100%'
-      >
-        Deposit
-      </Button>
+      {loading && <Loader />}
+
+      {!loading && (
+        <Button
+          onClick={deposit}
+          isDisabled={amount.lte(0)}
+          textTransform='uppercase'
+          variant='primary'
+          w='100%'
+        >
+          Deposit
+        </Button>
+      )}
       {transaction && (
         <Text color='white' textAlign='center' fontSize='sm'>
           Follow your transaction{' '}

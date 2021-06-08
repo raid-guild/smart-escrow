@@ -13,6 +13,7 @@ import React, { useCallback, useContext, useState } from 'react';
 
 import { AppContext } from '../context/AppContext';
 import { OrderedTextarea } from '../shared/OrderedTextArea';
+import { Loader } from '../components/Loader';
 
 import { NETWORK_CONFIG } from '../utils/constants';
 import { getTxLink } from '../utils/helpers';
@@ -73,7 +74,7 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
         );
         setTransaction(tx);
         await tx.wait();
-        // window.location.href = `/invoice/${getHexChainId(network)}/${address}`;
+        window.location.reload();
       } catch (depositError) {
         setLoading(false);
         console.log(depositError);
@@ -97,10 +98,12 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
         mb='1rem'
         textTransform='uppercase'
         textAlign='center'
+        fontFamily='rubik'
+        color='red'
       >
         Resolve Dispute
       </Heading>
-      <Text textAlign='center' fontSize='sm' mb='1rem'>
+      <Text textAlign='center' fontSize='sm' mb='1rem' fontFamily='jetbrains'>
         {isLocked
           ? `You’ll need to distribute the total balance of ${utils.formatUnits(
               balance,
@@ -122,12 +125,17 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
             setValue={setComments}
           />
 
-          <VStack spacing='0.5rem' align='stretch' color='red.500'>
+          <VStack
+            spacing='0.5rem'
+            align='stretch'
+            color='red.500'
+            fontFamily='jetbrains'
+          >
             <Text fontWeight='700'>Client Award</Text>
             <InputGroup>
               <Input
                 bg='black'
-                color='white'
+                color='yellow'
                 border='none'
                 type='number'
                 value={clientAwardInput}
@@ -148,17 +156,22 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
                 }}
                 placeholder='Client Award'
               />
-              <InputRightElement w='3.5rem'>
+              <InputRightElement w='3.5rem' color='yellow'>
                 {parseTokenAddress(chainID, token)}
               </InputRightElement>
             </InputGroup>
           </VStack>
-          <VStack spacing='0.5rem' align='stretch' color='red.500'>
+          <VStack
+            spacing='0.5rem'
+            align='stretch'
+            color='red.500'
+            fontFamily='jetbrains'
+          >
             <Text fontWeight='700'>Provider Award</Text>
             <InputGroup>
               <Input
                 bg='black'
-                color='white'
+                color='yellow'
                 border='none'
                 type='number'
                 value={providerAwardInput}
@@ -179,38 +192,49 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
                 }}
                 placeholder='Provider Award'
               />
-              <InputRightElement w='3.5rem'>
+              <InputRightElement w='3.5rem' color='yellow'>
                 {parseTokenAddress(chainID, token)}
               </InputRightElement>
             </InputGroup>
           </VStack>
-          <VStack spacing='0.5rem' align='stretch' color='red.500' mb='1rem'>
+          <VStack
+            spacing='0.5rem'
+            align='stretch'
+            color='red.500'
+            mb='1rem'
+            fontFamily='jetbrains'
+          >
             <Text fontWeight='700'>Resolver Award</Text>
             <InputGroup>
               <Input
                 bg='black'
-                color='white'
+                color='yellow'
                 border='none'
                 type='number'
                 value={utils.formatUnits(resolverAward, 18)}
                 pr='3.5rem'
                 isDisabled
               />
-              <InputRightElement w='3.5rem'>
+              <InputRightElement w='3.5rem' color='yellow'>
                 {parseTokenAddress(chainID, token)}
               </InputRightElement>
             </InputGroup>
           </VStack>
-          <Button
-            onClick={resolveFunds}
-            isLoading={loading}
-            isDisabled={resolverAward.lte(0) || !comments}
-            textTransform='uppercase'
-            variant='primary'
-            w='100%'
-          >
-            Resolve
-          </Button>
+
+          {loading && <Loader />}
+
+          {!loading && (
+            <Button
+              onClick={resolveFunds}
+              isDisabled={resolverAward.lte(0) || !comments}
+              textTransform='uppercase'
+              variant='primary'
+              w='100%'
+            >
+              Resolve
+            </Button>
+          )}
+
           {transaction && (
             <Text color='white' textAlign='center' fontSize='sm'>
               Follow your transaction{' '}

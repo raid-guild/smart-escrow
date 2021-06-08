@@ -85,6 +85,8 @@ export const EscrowSuccess = ({
           isExternal
           color='yellow'
           textDecoration='underline'
+          target='_blank'
+          rel='noopener noreferrer'
         >
           here
         </Link>
@@ -104,7 +106,7 @@ export const EscrowSuccess = ({
           >
             <Link
               ml='0.5rem'
-              href={`https://${window.location.hostname}/escrow/${raidID}`}
+              href={`/escrow/${raidID}`}
               color='yellow'
               overflow='hidden'
             >
@@ -135,6 +137,7 @@ export const EscrowSuccess = ({
 
       <Button
         variant='primary'
+        disabled={invoiceId ? false : true}
         onClick={() => {
           history.push(`/escrow/${raidID}`);
         }}

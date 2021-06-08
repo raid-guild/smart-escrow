@@ -64,31 +64,22 @@ class AppContextProvider extends Component {
     let data = await apiRequest({ type: 'validate', raidID: id });
 
     if (data !== 'NOT_FOUND') {
-      this.setState(
-        {
-          invoice_id: data['Invoice ID'] || '',
-          raid_id: id,
-          project_name: data['Project Name'] || 'Not Specified',
-          client_name: data['Name'] || 'Not Specified',
-          start_date: data['Raid Start Date'] || 'Not Specified',
-          end_date: data['Expected Deadline'] || 'Not Specified',
-          link_to_details: data['Specs Link'] || 'Not Specified',
-          brief_description: data['Project Description'] || 'Not Specified'
-        },
-        () => this.fetchLockerInfo()
-      );
+      this.setState({
+        invoice_id: data['Invoice ID'] || '',
+        raid_id: id,
+        project_name: data['Project Name'] || 'Not Specified',
+        client_name: data['Name'] || 'Not Specified',
+        start_date: data['Raid Start Date'] || 'Not Specified',
+        end_date: data['Expected Deadline'] || 'Not Specified',
+        link_to_details: data['Specs Link'] || 'Not Specified',
+        brief_description: data['Project Description'] || 'Not Specified'
+      });
       return {
         validRaidId: true,
         invoice_id: data['Invoice ID'] || ''
       };
     } else {
       return { validRaidId: false, invoice_id: '' };
-    }
-  };
-
-  fetchLockerInfo = async () => {
-    if (this.state.invoice_id) {
-      // todo
     }
   };
 

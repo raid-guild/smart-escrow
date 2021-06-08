@@ -1,10 +1,12 @@
 import { Button, Heading, Link, Text, VStack } from '@chakra-ui/react';
 import { utils } from 'ethers';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { AppContext } from '../context/AppContext';
 import { getTxLink } from '../utils/helpers';
 import { withdraw } from '../utils/invoice';
+
+import { Loader } from '../components/Loader';
 
 import { NETWORK_CONFIG } from '../utils/constants';
 
@@ -18,31 +20,28 @@ const parseTokenAddress = (chainId, address) => {
   }
 };
 
-export const WithdrawFunds = ({ invoice, balance, close }) => {
+export const WithdrawFunds = ({ invoice, balance }) => {
   const [loading, setLoading] = useState(false);
   const { chainID, provider } = useContext(AppContext);
-  const { network, address, token } = invoice;
+  const { address, token } = invoice;
 
   const [transaction, setTransaction] = useState();
 
-  useEffect(() => {
-    const send = async () => {
+  const withdrawFunds = async () => {
+    if (!loading && provider && balance.gte(0)) {
       try {
         setLoading(true);
         const tx = await withdraw(provider, address);
         setTransaction(tx);
         await tx.wait();
-        // window.location.href = `/invoice/${getHexChainId(network)}/${address}`;
+
         setLoading(false);
+        window.location.reload();
       } catch (withdrawError) {
-        close();
         console.log(withdrawError);
       }
-    };
-    if (!loading && provider && balance.gte(0)) {
-      send();
     }
-  }, [network, balance, address, provider, loading, close]);
+  };
 
   return (
     <VStack w='100%' spacing='1rem'>
@@ -51,22 +50,30 @@ export const WithdrawFunds = ({ invoice, balance, close }) => {
         mb='1rem'
         textTransform='uppercase'
         textAlign='center'
+        fontFamily='rubik'
+        color='red'
       >
         Withdraw Funds
       </Heading>
-      <Text textAlign='center' fontSize='sm' mb='1rem'>
+      <Text textAlign='center' fontSize='sm' mb='1rem' fontFamily='jetbrains'>
         Follow the instructions in your wallet to withdraw remaining funds from
         the escrow.
       </Text>
       <VStack my='2rem' px='5rem' py='1rem' bg='black' borderRadius='0.5rem'>
-        <Text color='red.500' fontSize='0.875rem' textAlign='center'>
+        <Text
+          color='red.500'
+          fontSize='0.875rem'
+          textAlign='center'
+          fontFamily='jetbrains'
+        >
           Amount To Be Withdrawn
         </Text>
         <Text
-          color='white'
+          color='yellow'
           fontSize='1rem'
           fontWeight='bold'
           textAlign='center'
+          fontFamily='jetbrains'
         >{`${utils.formatUnits(balance, 18)} ${parseTokenAddress(
           chainID,
           token
@@ -85,13 +92,14 @@ export const WithdrawFunds = ({ invoice, balance, close }) => {
           </Link>
         </Text>
       )}
+      {loading && <Loader />}
       <Button
-        onClick={close}
+        onClick={withdrawFunds}
         variant='primary'
         textTransform='uppercase'
         w='100%'
       >
-        Close
+        Withdraw
       </Button>
     </VStack>
   );

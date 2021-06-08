@@ -1,6 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Flex, Box, useToast } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  useToast,
+  Alert,
+  AlertIcon,
+  AlertTitle
+} from '@chakra-ui/react';
 import { utils } from 'ethers';
 
 import { Container } from '../shared/Container';
@@ -82,9 +89,9 @@ export const EscrowInfo = () => {
         context.invoice_id,
         context.provider
       );
-      getInvoice(parseInt(context.chainID), smartInvoice).then((i) =>
-        setInvoice(i)
-      );
+      getInvoice(parseInt(context.chainID), smartInvoice).then((i) => {
+        setInvoice(i);
+      });
     }
   };
 
@@ -94,13 +101,11 @@ export const EscrowInfo = () => {
   }, []);
 
   useEffect(() => {
-    getSmartInvoiceData();
+    if (context.invoice_id) {
+      getSmartInvoiceData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [context.invoice_id]);
-
-  useEffect(() => {
-    console.log(invoice);
-  }, [invoice]);
+  }, [context.invoice_id, context.chainID]);
 
   return (
     <Container backdropFilter='blur(.5rem)'>
@@ -117,7 +122,7 @@ export const EscrowInfo = () => {
             <InvoiceMetaDetails invoice={invoice} />
           </Flex>
 
-          <Flex direction='column' minW='40%'>
+          <Flex direction='column' minW='45%'>
             <InvoicePaymentDetails
               web3={context.web3}
               invoice={invoice}
@@ -133,6 +138,29 @@ export const EscrowInfo = () => {
           </Flex>
         </Flex>
       )}
+
+      <Alert
+        status={
+          parseInt(context.chainID) === 4
+            ? 'warning'
+            : parseInt(context.chainID) === 100
+            ? 'success'
+            : 'warning'
+        }
+        width='auto'
+        position='absolute'
+        bottom='1rem'
+        left='1rem'
+      >
+        <AlertIcon />
+        <AlertTitle mr={2} fontFamily='jetbrains' color='black'>
+          {parseInt(context.chainID) === 4
+            ? 'USING TEST NETWORK'
+            : parseInt(context.chainID) === 100
+            ? 'USING PRODUCTION NETWORK'
+            : 'USING UNSUPPORTED NETWORK'}
+        </AlertTitle>
+      </Alert>
     </Container>
   );
 };

@@ -98,7 +98,7 @@ export const PaymentDetailsForm = ({
 
       <FormControl isRequired>
         <HStack alignItems='baseline' justifyContent='space-between'>
-          <StyledFormLabel>Service Provider Address</StyledFormLabel>
+          <StyledFormLabel>Raid Party Address</StyledFormLabel>
           <Tooltip label='Recipient of the funds' placement='auto-start'>
             <QuestionIcon boxSize='0.85rem' />
           </Tooltip>
@@ -208,7 +208,11 @@ export const PaymentDetailsForm = ({
           if (!context.web3.utils.isAddress(client))
             return sendToast('Invalid Client Address.');
           if (!context.web3.utils.isAddress(serviceProvider))
-            return sendToast('Invalid Service Provider Address.');
+            return sendToast('Invalid Raid Party Address.');
+          if (client === serviceProvider)
+            return sendToast(
+              'Client and Raid party address cannot be the same.'
+            );
           if (tokenType === undefined)
             return sendToast('Select a Payment Token.');
           if (paymentDue <= 0 || paymentDue === '')

@@ -109,6 +109,26 @@ export const awaitInvoiceAddress = async (ethersProvider, tx) => {
   return '';
 };
 
+export const awaitSpoilsWithdrawn = async (ethersProvider, tx) => {
+  await tx.wait(1);
+  const abi = new utils.Interface([
+    'event Withdraw(address indexed token, uint256 parentShare, uint256 childShare)'
+  ]);
+  const receipt = await ethersProvider.getTransactionReceipt(tx.hash);
+  const eventFragment = abi.events[Object.keys(abi.events)[0]];
+  const eventTopic = abi.getEventTopic(eventFragment);
+  const event = receipt.logs.find((e) => e.topics[0] === eventTopic);
+  if (event) {
+    const decodedLog = abi.decodeEventLog(
+      eventFragment,
+      event.data,
+      event.topics
+    );
+    return decodedLog;
+  }
+  return '';
+};
+
 export const release = async (ethersProvider, address) => {
   const abi = new utils.Interface(['function release() public']);
   const contract = new Contract(address, abi, ethersProvider.getSigner());

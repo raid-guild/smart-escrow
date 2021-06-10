@@ -11,10 +11,16 @@ import {
 import { utils, Contract } from 'ethers';
 import React, { useContext, useState } from 'react';
 
-import { AppContext } from '../context/AppContext';
-import { getTxLink, parseTokenAddress } from '../utils/helpers';
-
 import { Loader } from '../components/Loader';
+
+import { AppContext } from '../context/AppContext';
+
+import {
+  getTxLink,
+  parseTokenAddress,
+  apiNotifySpoils
+} from '../utils/helpers';
+import { awaitSpoilsWithdrawn } from '../utils/invoice';
 
 export const WithdrawWrappedBalance = ({ contractAddress, token, balance }) => {
   const [loading, setLoading] = useState(false);
@@ -24,6 +30,17 @@ export const WithdrawWrappedBalance = ({ contractAddress, token, balance }) => {
   //   const [amount, setAmount] = useState(BigNumber.from(0));
 
   const [transaction, setTransaction] = useState();
+
+  const notifySpoilsSent = async (tx) => {
+    let result = await awaitSpoilsWithdrawn(provider, tx);
+    let status = await apiNotifySpoils(
+      parseTokenAddress(chainID, result.token),
+      utils.formatUnits(result.childShare, 18),
+      utils.formatUnits(result.parentShare, 18),
+      getTxLink(chainID, tx.hash)
+    );
+    console.log(status);
+  };
 
   const withdrawFunds = async () => {
     if (!loading && provider && balance.gte(0)) {
@@ -38,11 +55,12 @@ export const WithdrawWrappedBalance = ({ contractAddress, token, balance }) => {
         const tx = await contract.withdrawAll();
         setTransaction(tx);
         await tx.wait();
+        notifySpoilsSent(tx);
         setTimeout(() => {
           window.location.reload();
         }, 10000);
-        setLoading(false);
       } catch (withdrawError) {
+        setLoading(false);
         console.log(withdrawError);
       }
     }
@@ -58,7 +76,7 @@ export const WithdrawWrappedBalance = ({ contractAddress, token, balance }) => {
         fontFamily='rubik'
         color='red'
       >
-        Withdraw Funds
+        Withdraw Balance
       </Heading>
       {/* <VStack my='2rem' py='1rem' fontFamily='jetbrains'>
         <Text color='red.500' fontSize='1.3rem' textAlign='center'>

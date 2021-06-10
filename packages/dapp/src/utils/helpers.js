@@ -99,3 +99,19 @@ export const apiRequest = async ({
 
   return result.data;
 };
+
+export const apiNotifySpoils = async (
+  token,
+  raidPartyShare,
+  guildShare,
+  txLink
+) => {
+  let result = await axios.post('/notify-spoils', {
+    token: token,
+    raidPartyShare: raidPartyShare,
+    guildShare: guildShare,
+    txLink: txLink
+  });
+
+  return result.data;
+};

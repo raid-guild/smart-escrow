@@ -62,7 +62,7 @@ export const ReleaseFunds = ({ invoice, balance }) => {
       </Heading>
       <Text textAlign='center' fontSize='sm' mb='1rem' fontFamily='jetbrains'>
         Follow the instructions in your wallet to release funds from escrow to
-        the project team.
+        the raid party.
       </Text>
       <VStack my='2rem' px='5rem' py='1rem' bg='black' borderRadius='0.5rem'>
         <Text

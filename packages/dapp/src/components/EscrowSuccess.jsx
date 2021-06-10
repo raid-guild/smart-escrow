@@ -21,12 +21,6 @@ export const EscrowSuccess = ({
   const [invoiceId, setInvoiceId] = useState('');
   const [invoice, setInvoice] = useState();
 
-  const getInvoiceID = async () => {
-    let invoiceID = await awaitInvoiceAddress(ethersProvider, tx);
-    setInvoiceId(invoiceID);
-    console.log(invoiceID);
-  };
-
   const postInvoiceId = async () => {
     let result = await apiRequest({
       type: 'update',
@@ -47,26 +41,21 @@ export const EscrowSuccess = ({
     console.log(result);
   };
 
-  useEffect(() => {
-    postTxHash();
-    getInvoiceID();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (invoiceId) postInvoiceId();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [invoiceId]);
-
   const pollGraph = async () => {
+    if (!utils.isAddress(invoiceId) || !!invoice) return () => undefined;
+
+    postInvoiceId();
+
     let isSubscribed = true;
 
-    console.log(invoiceId);
-
-    let smartInvoice = await getSmartInvoiceAddress(invoiceId, ethersProvider);
+    const smartInvoice = await getSmartInvoiceAddress(
+      invoiceId,
+      ethersProvider
+    );
 
     const interval = setInterval(() => {
-      getInvoice(parseInt(chainID), smartInvoice).then((inv) => {
+      getInvoice(chainID, smartInvoice).then((inv) => {
+        console.log(inv);
         if (isSubscribed && !!inv) {
           setInvoice(inv);
         }
@@ -80,7 +69,16 @@ export const EscrowSuccess = ({
   };
 
   useEffect(() => {
-    if (!utils.isAddress(invoiceId) || !!invoice) return () => undefined;
+    if (tx && ethersProvider) {
+      postTxHash();
+      awaitInvoiceAddress(ethersProvider, tx).then((id) => {
+        setInvoiceId(id.toLowerCase());
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tx, ethersProvider]);
+
+  useEffect(() => {
     pollGraph();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainID, invoiceId, invoice]);
@@ -94,7 +92,7 @@ export const EscrowSuccess = ({
       minWidth='50%'
     >
       <Heading fontFamily='rubik' size='md' color='guildRed' mb='2rem'>
-        {invoiceId ? 'Escrow created!' : 'Generating Escrow Id...'}
+        {invoice ? 'Escrow Registered!' : 'Escrow Registration Received'}
       </Heading>
 
       <Text
@@ -104,7 +102,7 @@ export const EscrowSuccess = ({
         fontFamily='jetbrains'
         mb='1rem'
       >
-        {invoiceId
+        {invoice
           ? 'You can view your transaction '
           : 'You can check the progress of your transaction '}
         <Link

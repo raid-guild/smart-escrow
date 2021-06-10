@@ -1,16 +1,15 @@
 import { Flex, Text, Link, Button, Heading, VStack } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
+import { utils } from 'ethers';
 
 import { CopyIcon } from '../icons/CopyIcon';
 import { Loader } from '../components/Loader';
 
-import { awaitInvoiceAddress } from '../utils/invoice';
-import {
-  getTxLink,
-  copyToClipboard,
-  // getAddressLink,
-  apiRequest
-} from '../utils/helpers';
+import { awaitInvoiceAddress, getSmartInvoiceAddress } from '../utils/invoice';
+import { getInvoice } from '../graphql/getInvoice';
+import { getTxLink, copyToClipboard, apiRequest } from '../utils/helpers';
+
+const POLL_INTERVAL = 5000;
 
 export const EscrowSuccess = ({
   ethersProvider,
@@ -20,8 +19,9 @@ export const EscrowSuccess = ({
   history
 }) => {
   const [invoiceId, setInvoiceId] = useState('');
+  const [invoice, setInvoice] = useState();
 
-  const getInvoice = async () => {
+  const getInvoiceID = async () => {
     let invoiceID = await awaitInvoiceAddress(ethersProvider, tx);
     setInvoiceId(invoiceID);
     console.log(invoiceID);
@@ -49,7 +49,7 @@ export const EscrowSuccess = ({
 
   useEffect(() => {
     postTxHash();
-    getInvoice();
+    getInvoiceID();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -57,6 +57,33 @@ export const EscrowSuccess = ({
     if (invoiceId) postInvoiceId();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invoiceId]);
+
+  const pollGraph = async () => {
+    let isSubscribed = true;
+
+    console.log(invoiceId);
+
+    let smartInvoice = await getSmartInvoiceAddress(invoiceId, ethersProvider);
+
+    const interval = setInterval(() => {
+      getInvoice(parseInt(chainID), smartInvoice).then((inv) => {
+        if (isSubscribed && !!inv) {
+          setInvoice(inv);
+        }
+      });
+    }, POLL_INTERVAL);
+
+    return () => {
+      isSubscribed = false;
+      clearInterval(interval);
+    };
+  };
+
+  useEffect(() => {
+    if (!utils.isAddress(invoiceId) || !!invoice) return () => undefined;
+    pollGraph();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainID, invoiceId, invoice]);
 
   return (
     <Flex
@@ -92,7 +119,7 @@ export const EscrowSuccess = ({
         </Link>
       </Text>
 
-      {invoiceId ? (
+      {invoice ? (
         <VStack w='100%' align='stretch' mb='1rem'>
           <Text fontWeight='bold'>Invoice URL</Text>
           <Flex
@@ -137,12 +164,11 @@ export const EscrowSuccess = ({
 
       <Button
         variant='primary'
-        disabled={invoiceId ? false : true}
         onClick={() => {
-          history.push(`/escrow/${raidID}`);
+          history.push(`/`);
         }}
       >
-        View invoice
+        return home
       </Button>
     </Flex>
   );

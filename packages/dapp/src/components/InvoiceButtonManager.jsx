@@ -16,9 +16,18 @@ import { ReleaseFunds } from './ReleaseFunds';
 import { ResolveFunds } from './ResolveFunds';
 import { LockFunds } from './LockFunds';
 import { WithdrawFunds } from './WithdrawFunds';
+import { WithdrawWrappedBalance } from './WithdrawWrappedBalance';
 
-export const InvoiceButtonManager = ({ invoice, account, provider }) => {
+export const InvoiceButtonManager = ({
+  invoice,
+  account,
+  provider,
+  raidParty
+}) => {
   const [balance, setBalance] = useState(BigNumber.from(0));
+  const [wrappedInvoiceBalance, setWrappedInvoiceBalance] = useState(
+    BigNumber.from(0)
+  );
 
   const [selected, setSelected] = useState(0);
   const [modal, setModal] = useState(false);
@@ -54,12 +63,24 @@ export const InvoiceButtonManager = ({ invoice, account, provider }) => {
     }
   };
 
-  useEffect(() => {
-    balanceOf(provider, invoice.token, invoice.address)
+  const onWithdrawWrappedBalance = async () => {
+    if (isRaidParty && wrappedInvoiceBalance) {
+      setSelected(5);
+      setModal(true);
+    }
+  };
+
+  const checkBalance = (set, contractAddress) => {
+    balanceOf(provider, invoice.token, contractAddress)
       .then((b) => {
-        setBalance(b);
+        set(b);
       })
       .catch((balanceError) => console.log(balanceError));
+  };
+
+  useEffect(() => {
+    checkBalance(setBalance, invoice.address);
+    checkBalance(setWrappedInvoiceBalance, invoice.provider);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -75,6 +96,8 @@ export const InvoiceButtonManager = ({ invoice, account, provider }) => {
     total,
     resolver
   } = invoice;
+
+  const isRaidParty = account.toLowerCase() === raidParty.toLowerCase();
 
   const isClient = account.toLowerCase() === client;
   const isResolver = account.toLowerCase() === resolver.toLowerCase();
@@ -131,7 +154,7 @@ export const InvoiceButtonManager = ({ invoice, account, provider }) => {
 
       {!dispute && !resolution && !isResolver && isClient && (
         <SimpleGrid columns={gridColumns} spacing='1rem' w='100%'>
-          {isLockable && (
+          {isLockable && (isClient || isRaidParty) && (
             <Button
               variant='primary'
               textTransform='uppercase'
@@ -175,8 +198,12 @@ export const InvoiceButtonManager = ({ invoice, account, provider }) => {
       )}
 
       {!dispute && !resolution && !isResolver && !isClient && (
-        <SimpleGrid columns={isLockable ? 2 : 1} spacing='1rem' w='100%'>
-          {isLockable && (
+        <SimpleGrid
+          columns={isLockable && (isClient || isRaidParty) ? 2 : 1}
+          spacing='1rem'
+          w='100%'
+        >
+          {isLockable && (isClient || isRaidParty) && (
             <Button
               variant='primary'
               textTransform='uppercase'
@@ -193,6 +220,16 @@ export const InvoiceButtonManager = ({ invoice, account, provider }) => {
             Deposit
           </Button>
         </SimpleGrid>
+      )}
+
+      {wrappedInvoiceBalance.gt(0) && isRaidParty && (
+        <Button
+          variant='primary'
+          textTransform='uppercase'
+          onClick={() => onWithdrawWrappedBalance()}
+        >
+          Withdraw Balance
+        </Button>
       )}
 
       <Modal isOpen={modal} onClose={() => setModal(false)} isCentered>
@@ -240,8 +277,18 @@ export const InvoiceButtonManager = ({ invoice, account, provider }) => {
             )}
             {modal && selected === 4 && (
               <WithdrawFunds
+                contractAddress={invoice.address}
+                token={invoice.token}
                 invoice={invoice}
                 balance={balance}
+                close={() => setModal(false)}
+              />
+            )}
+            {modal && selected === 5 && (
+              <WithdrawWrappedBalance
+                contractAddress={invoice.provider}
+                token={invoice.token}
+                balance={wrappedInvoiceBalance}
                 close={() => setModal(false)}
               />
             )}

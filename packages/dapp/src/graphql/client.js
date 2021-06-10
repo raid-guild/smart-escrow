@@ -20,5 +20,3 @@ export const clients = SUPPORTED_NETWORKS.reduce(
   }),
   {}
 );
-
-console.log(clients);

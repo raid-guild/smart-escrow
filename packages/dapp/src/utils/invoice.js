@@ -56,6 +56,15 @@ export const getSmartInvoiceAddress = async (address, ethersProvider) => {
   return smartInvoice;
 };
 
+export const getRaidPartyAddress = async (address, ethersProvider) => {
+  const abi = new utils.Interface([
+    'function child() public view returns(address)'
+  ]);
+  const contract = new Contract(address, abi, ethersProvider);
+  const child = await contract.child();
+  return child;
+};
+
 export const getResolutionRateFromFactory = async (
   chainId,
   ethersProvider,

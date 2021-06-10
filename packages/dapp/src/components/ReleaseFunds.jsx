@@ -3,27 +3,16 @@ import { BigNumber, utils } from 'ethers';
 import React, { useContext, useState } from 'react';
 
 import { Loader } from '../components/Loader';
-import { AppContext } from '../context/AppContext';
-import { getTxLink } from '../utils/helpers';
-import { NETWORK_CONFIG } from '../utils/constants';
-import { release } from '../utils/invoice';
 
-const parseTokenAddress = (chainId, address) => {
-  for (const [key, value] of Object.entries(
-    NETWORK_CONFIG[parseInt(chainId)]['TOKENS']
-  )) {
-    if (value['address'] === address.toLowerCase()) {
-      return key;
-    }
-  }
-};
+import { AppContext } from '../context/AppContext';
+
+import { getTxLink, parseTokenAddress } from '../utils/helpers';
+import { release } from '../utils/invoice';
 
 export const ReleaseFunds = ({ invoice, balance }) => {
   const [loading, setLoading] = useState(false);
   const { chainID, provider } = useContext(AppContext);
   const { currentMilestone, amounts, address, token } = invoice;
-
-  console.log(currentMilestone, amounts.length);
 
   const getReleaseAmount = (currentMilestone, amounts, balance) => {
     if (
@@ -50,7 +39,9 @@ export const ReleaseFunds = ({ invoice, balance }) => {
         const tx = await release(provider, address);
         setTransaction(tx);
         await tx.wait();
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 10000);
       } catch (releaseError) {
         console.log(releaseError);
       }

@@ -15,21 +15,9 @@ import { AppContext } from '../context/AppContext';
 import { OrderedTextarea } from '../shared/OrderedTextArea';
 import { Loader } from '../components/Loader';
 
-import { NETWORK_CONFIG } from '../utils/constants';
-import { getTxLink } from '../utils/helpers';
-
+import { getTxLink, parseTokenAddress } from '../utils/helpers';
 import { resolve } from '../utils/invoice';
 import { uploadDisputeDetails } from '../utils/ipfs';
-
-const parseTokenAddress = (chainId, address) => {
-  for (const [key, value] of Object.entries(
-    NETWORK_CONFIG[parseInt(chainId)]['TOKENS']
-  )) {
-    if (value['address'] === address.toLowerCase()) {
-      return key;
-    }
-  }
-};
 
 export const ResolveFunds = ({ invoice, balance, close }) => {
   const { address, resolutionRate, token, isLocked } = invoice;
@@ -74,7 +62,9 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
         );
         setTransaction(tx);
         await tx.wait();
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 10000);
       } catch (depositError) {
         setLoading(false);
         console.log(depositError);

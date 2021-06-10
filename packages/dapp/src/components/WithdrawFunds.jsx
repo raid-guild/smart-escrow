@@ -3,27 +3,14 @@ import { utils } from 'ethers';
 import React, { useContext, useState } from 'react';
 
 import { AppContext } from '../context/AppContext';
-import { getTxLink } from '../utils/helpers';
+import { getTxLink, parseTokenAddress } from '../utils/helpers';
 import { withdraw } from '../utils/invoice';
 
 import { Loader } from '../components/Loader';
 
-import { NETWORK_CONFIG } from '../utils/constants';
-
-const parseTokenAddress = (chainId, address) => {
-  for (const [key, value] of Object.entries(
-    NETWORK_CONFIG[parseInt(chainId)]['TOKENS']
-  )) {
-    if (value['address'] === address.toLowerCase()) {
-      return key;
-    }
-  }
-};
-
-export const WithdrawFunds = ({ invoice, balance }) => {
+export const WithdrawFunds = ({ contractAddress, token, balance }) => {
   const [loading, setLoading] = useState(false);
   const { chainID, provider } = useContext(AppContext);
-  const { address, token } = invoice;
 
   const [transaction, setTransaction] = useState();
 
@@ -31,12 +18,13 @@ export const WithdrawFunds = ({ invoice, balance }) => {
     if (!loading && provider && balance.gte(0)) {
       try {
         setLoading(true);
-        const tx = await withdraw(provider, address);
+        const tx = await withdraw(provider, contractAddress);
         setTransaction(tx);
         await tx.wait();
-
         setLoading(false);
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 10000);
       } catch (withdrawError) {
         console.log(withdrawError);
       }

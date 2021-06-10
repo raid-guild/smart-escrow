@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { BigNumber } from 'ethers';
 
 import {
   explorerUrls,
@@ -53,6 +54,28 @@ export const getNativeTokenSymbol = (chainId) =>
 
 export const getWrappedNativeToken = (chainId) =>
   wrappedNativeToken[chainId] || wrappedNativeToken[4];
+
+export const getCheckedStatus = (deposited, amounts) => {
+  let sum = BigNumber.from(0);
+  return amounts.map((a) => {
+    sum = sum.add(a);
+    return deposited.gte(sum);
+  });
+};
+
+export const parseTokenAddress = (chainId, address) => {
+  for (const [key, value] of Object.entries(
+    NETWORK_CONFIG[parseInt(chainId)]['TOKENS']
+  )) {
+    if (value['address'] === address.toLowerCase()) {
+      return key;
+    }
+  }
+};
+
+export const checkedAtIndex = (index, checked) => {
+  return checked.map((_c, i) => i <= index);
+};
 
 export const apiRequest = async ({
   type,

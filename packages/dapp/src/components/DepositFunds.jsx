@@ -22,36 +22,15 @@ import { Loader } from '../components/Loader';
 import { AppContext } from '../context/AppContext';
 import { QuestionIcon } from '../icons/QuestionIcon';
 import { balanceOf } from '../utils/erc20';
-import { NETWORK_CONFIG } from '../utils/constants';
+
 import {
   getTxLink,
   getNativeTokenSymbol,
-  getWrappedNativeToken
+  getWrappedNativeToken,
+  parseTokenAddress,
+  checkedAtIndex,
+  getCheckedStatus
 } from '../utils/helpers';
-
-const getCheckedStatus = (deposited, amounts) => {
-  let sum = BigNumber.from(0);
-  return amounts.map((a) => {
-    sum = sum.add(a);
-    return deposited.gte(sum);
-  });
-};
-
-const checkedAtIndex = (index, checked) => {
-  return checked.map((_c, i) => i <= index);
-};
-
-const parseTokenAddress = (chainId, address) => {
-  for (const [key, value] of Object.entries(
-    NETWORK_CONFIG[parseInt(chainId)]['TOKENS']
-  )) {
-    if (value['address'] === address.toLowerCase()) {
-      return key;
-    }
-  }
-};
-
-// const getHexChainId = (network) => hexChainIds[network] || hexChainIds.rinkeby;
 
 export const DepositFunds = ({ invoice, deposited, due }) => {
   const { address, token, amounts, currentMilestone } = invoice;
@@ -89,7 +68,9 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
       }
       setTransaction(tx);
       await tx.wait();
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 10000);
     } catch (depositError) {
       setLoading(false);
       console.log(depositError);
@@ -131,6 +112,7 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
         {amounts.map((a, i) => {
           return (
             <Checkbox
+              minW='300px'
               key={i.toString()}
               isChecked={checked[i]}
               isDisabled={initialStatus[i]}

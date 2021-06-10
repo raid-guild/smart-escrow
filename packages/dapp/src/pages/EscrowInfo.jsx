@@ -17,7 +17,8 @@ import { Loader } from '../components/Loader';
 
 import { AppContext } from '../context/AppContext';
 import { getInvoice } from '../graphql/getInvoice';
-import { getSmartInvoiceAddress } from '../utils/invoice';
+import { getSmartInvoiceAddress, getRaidPartyAddress } from '../utils/invoice';
+
 import { InvoicePaymentDetails } from '../components/InvoicePaymentDetails';
 import { InvoiceMetaDetails } from '../components/InvoiceMetaDetails';
 import { InvoiceButtonManager } from '../components/InvoiceButtonManager';
@@ -30,6 +31,7 @@ export const EscrowInfo = () => {
   const toast = useToast();
 
   const [invoice, setInvoice] = useState();
+  const [raidParty, setRaidParty] = useState('');
 
   const initData = async () => {
     if (id) {
@@ -95,6 +97,13 @@ export const EscrowInfo = () => {
     }
   };
 
+  const fetchRaidPartyAddress = async () => {
+    if (invoice) {
+      let addr = await getRaidPartyAddress(invoice.provider, context.provider);
+      setRaidParty(addr);
+    }
+  };
+
   useEffect(() => {
     initData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -107,6 +116,9 @@ export const EscrowInfo = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context.invoice_id, context.chainID]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => fetchRaidPartyAddress(), [invoice]);
+
   return (
     <Container backdropFilter='blur(.5rem)'>
       {!invoice && <Loader />}
@@ -117,9 +129,9 @@ export const EscrowInfo = () => {
           alignItems='center'
           justifyContent='space-evenly'
         >
-          <Flex direction='column'>
+          <Flex direction='column' minW='30%'>
             <ProjectInfo context={context} />
-            <InvoiceMetaDetails invoice={invoice} />
+            <InvoiceMetaDetails invoice={invoice} raidParty={raidParty} />
           </Flex>
 
           <Flex direction='column' minW='45%'>
@@ -134,6 +146,7 @@ export const EscrowInfo = () => {
               invoice={invoice}
               account={context.account}
               provider={context.provider}
+              raidParty={raidParty}
             />
           </Flex>
         </Flex>

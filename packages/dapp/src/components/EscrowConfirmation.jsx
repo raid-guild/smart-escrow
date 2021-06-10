@@ -89,7 +89,7 @@ export const EscrowConfirmation = ({
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
         <Text fontWeight='bold' fontFamily='jetbrains'>
-          Service Provider Address:
+          Raid Party Address:
         </Text>
         <AccountLink address={serviceProvider} />
       </HStack>

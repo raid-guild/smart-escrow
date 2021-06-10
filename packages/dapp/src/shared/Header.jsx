@@ -7,13 +7,15 @@ import {
   Image,
   Text,
   Tag,
-  Link as ChakraLink
+  Link as ChakraLink,
+  Popover,
+  PopoverTrigger,
+  PopoverContent
 } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
 import { AppContext } from '../context/AppContext';
 
-import { Footer } from '../shared/Footer';
 import { HamburgerIcon } from '../icons/HamburgerIcon';
 
 import { getProfile } from '../utils/3box';
@@ -60,7 +62,7 @@ export const NavButton = ({ onClick, children }) => (
 );
 
 export const Header = () => {
-  const { account, chainID } = useContext(AppContext);
+  const { account, chainID, disconnect } = useContext(AppContext);
   const [isOpen, onOpen] = useState(false);
   const history = useHistory();
 
@@ -108,39 +110,64 @@ export const Header = () => {
         transition='width 1s ease-out'
       >
         {account && (
-          <>
-            <Flex
-              borderRadius='50%'
-              w='2.5rem'
-              h='2.5rem'
-              overflow='hidden'
-              justify='center'
-              align='center'
-              bgColor='black'
-              bgImage={profile && `url(${profile.imageUrl})`}
-              border={`1px solid ${theme.colors.white20}`}
-              bgSize='cover'
-              bgRepeat='no-repeat'
-              bgPosition='center center'
-            />
-            <Text
-              px={2}
-              display={{ base: 'none', md: 'flex' }}
-              fontFamily="'Roboto Mono', monospace;"
-              color='red'
-            >
-              {profile && profile.name
-                ? profile.name
-                : getAccountString(account)}
-            </Text>
-            <Tag
-              colorScheme='red'
-              display={{ base: 'none', md: 'flex' }}
-              size='sm'
-            >
-              {getNetworkLabel(chainID)}
-            </Tag>
-          </>
+          <Flex justify='center' align='center' zIndex={5}>
+            <Popover>
+              <PopoverTrigger>
+                <Button
+                  h='auto'
+                  fontWeight='normal'
+                  colorScheme='red'
+                  _hover={{ backgroundColor: 'blackLight' }}
+                  p={{ base: 0, md: 2 }}
+                >
+                  <Flex
+                    borderRadius='50%'
+                    w='2.5rem'
+                    h='2.5rem'
+                    overflow='hidden'
+                    justify='center'
+                    align='center'
+                    bgColor='black'
+                    bgImage={profile && `url(${profile.imageUrl})`}
+                    border={`1px solid ${theme.colors.white20}`}
+                    bgSize='cover'
+                    bgRepeat='no-repeat'
+                    bgPosition='center center'
+                  />
+
+                  <Text
+                    px={2}
+                    display={{ base: 'none', md: 'flex' }}
+                    fontFamily='jetbrains'
+                    color='red'
+                  >
+                    {profile && profile.name
+                      ? profile.name
+                      : getAccountString(account)}
+                  </Text>
+                  <Tag
+                    colorScheme='red'
+                    display={{ base: 'none', md: 'flex' }}
+                    size='sm'
+                  >
+                    {getNetworkLabel(chainID)}
+                  </Tag>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent bg='none' w='auto' mx='4rem'>
+                <Button
+                  onClick={() => {
+                    disconnect();
+                    history.push('/');
+                  }}
+                  variant='primary'
+                  mt='0'
+                >
+                  Disconnect
+                </Button>
+              </PopoverContent>
+            </Popover>
+          </Flex>
         )}
         <Button
           onClick={() => onOpen((o) => !o)}
@@ -198,7 +225,6 @@ export const Header = () => {
           isExternal
           _hover={{}}
         ></ChakraLink>
-        <Footer center />
       </Flex>
     </Flex>
   );

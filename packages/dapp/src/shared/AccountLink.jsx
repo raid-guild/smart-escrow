@@ -80,7 +80,7 @@ export const AccountLink = ({
         as='span'
         pl='0.25rem'
         fontSize='sm'
-        maxW='10rem'
+        maxW='12rem'
         color='white'
         isTruncated
       >

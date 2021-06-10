@@ -1,6 +1,6 @@
-// Sources flattened with hardhat v2.2.1 https://hardhat.org
+// Sources flattened with hardhat v2.3.0 https://hardhat.org
 
-// File @openzeppelin/contracts/proxy/Clones.sol@v4.0.0
+// File @openzeppelin/contracts/proxy/Clones.sol@v4.1.0
 
 // SPDX-License-Identifier: MIT
 

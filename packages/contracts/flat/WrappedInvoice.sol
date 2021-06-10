@@ -1,6 +1,6 @@
-// Sources flattened with hardhat v2.2.1 https://hardhat.org
+// Sources flattened with hardhat v2.3.0 https://hardhat.org
 
-// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.0.0
+// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.1.0
 
 // SPDX-License-Identifier: MIT
 
@@ -93,7 +93,7 @@ interface IERC20 {
     );
 }
 
-// File @openzeppelin/contracts/utils/Address.sol@v4.0.0
+// File @openzeppelin/contracts/utils/Address.sol@v4.1.0
 
 pragma solidity ^0.8.0;
 
@@ -346,7 +346,7 @@ library Address {
     }
 }
 
-// File @openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol@v4.0.0
+// File @openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol@v4.1.0
 
 pragma solidity ^0.8.0;
 
@@ -477,7 +477,7 @@ library SafeERC20 {
     }
 }
 
-// File @openzeppelin/contracts/security/ReentrancyGuard.sol@v4.0.0
+// File @openzeppelin/contracts/security/ReentrancyGuard.sol@v4.1.0
 
 pragma solidity ^0.8.0;
 
@@ -540,7 +540,7 @@ abstract contract ReentrancyGuard {
     }
 }
 
-// File @openzeppelin/contracts/utils/Context.sol@v4.0.0
+// File @openzeppelin/contracts/utils/Context.sol@v4.1.0
 
 pragma solidity ^0.8.0;
 
@@ -565,7 +565,7 @@ abstract contract Context {
     }
 }
 
-// File @openzeppelin/contracts/proxy/utils/Initializable.sol@v4.0.0
+// File @openzeppelin/contracts/proxy/utils/Initializable.sol@v4.1.0
 
 // solhint-disable-next-line compiler-version
 pragma solidity ^0.8.0;
@@ -577,7 +577,7 @@ pragma solidity ^0.8.0;
  * function so it can only be called once. The {initializer} modifier provided by this contract will have this effect.
  *
  * TIP: To avoid leaving the proxy in an uninitialized state, the initializer function should be called as early as
- * possible by providing the encoded function call as the `_data` argument to {UpgradeableProxy-constructor}.
+ * possible by providing the encoded function call as the `_data` argument to {ERC1967Proxy-constructor}.
  *
  * CAUTION: When used with inheritance, manual care must be taken to not invoke a parent initializer twice, or to ensure
  * that all initializers are idempotent. This is not verified automatically as constructors are by Solidity.

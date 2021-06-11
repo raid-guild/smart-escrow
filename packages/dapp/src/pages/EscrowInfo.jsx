@@ -147,6 +147,7 @@ export const EscrowInfo = () => {
               account={context.account}
               provider={context.provider}
               raidParty={raidParty}
+              wrappedAddress={context.invoice_id}
             />
           </Flex>
         </Flex>

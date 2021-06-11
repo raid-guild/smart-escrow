@@ -22,7 +22,8 @@ export const InvoiceButtonManager = ({
   invoice,
   account,
   provider,
-  raidParty
+  raidParty,
+  wrappedAddress
 }) => {
   const [balance, setBalance] = useState(BigNumber.from(0));
   const [wrappedInvoiceBalance, setWrappedInvoiceBalance] = useState(
@@ -250,6 +251,8 @@ export const InvoiceButtonManager = ({
               <LockFunds
                 invoice={invoice}
                 balance={balance}
+                wrappedAddress={wrappedAddress}
+                isRaidParty={isRaidParty}
                 close={() => setModal(false)}
               />
             )}

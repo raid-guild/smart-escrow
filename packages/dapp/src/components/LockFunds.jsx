@@ -51,7 +51,12 @@ const getResolverString = (chainId, resolver) => {
   return info ? info.name : getAccountString(resolver);
 };
 
-export const LockFunds = ({ invoice, balance }) => {
+export const LockFunds = ({
+  invoice,
+  balance,
+  wrappedAddress,
+  isRaidParty
+}) => {
   const { chainID, provider } = useContext(AppContext);
   const { address, resolver, token, resolutionRate } = invoice;
 
@@ -74,7 +79,11 @@ export const LockFunds = ({ invoice, balance }) => {
           invoice: address,
           amount: balance.toString()
         });
-        const tx = await lock(provider, address, detailsHash);
+        const tx = await lock(
+          provider,
+          isRaidParty ? wrappedAddress : address,
+          detailsHash
+        );
         setTransaction(tx);
         await tx.wait();
         setTimeout(() => {
@@ -85,7 +94,15 @@ export const LockFunds = ({ invoice, balance }) => {
         console.log(lockError);
       }
     }
-  }, [provider, locking, balance, address, disputeReason]);
+  }, [
+    provider,
+    locking,
+    balance,
+    disputeReason,
+    address,
+    isRaidParty,
+    wrappedAddress
+  ]);
 
   if (locking) {
     return (

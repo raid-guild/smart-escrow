@@ -12,7 +12,7 @@ export const NETWORK_CONFIG = {
   RG_XDAI: '0xfe1084bc16427e5eb7f13fc19bcd4e641f7d571f'.toLowerCase(),
   100: {
     SUBGRAPH: 'dan13ram/xdai-smart-invoices',
-    INVOICE_FACTORY: ''.toLowerCase(),
+    INVOICE_FACTORY: '0x6e769470F6F8D99794e53C87Fd8254E5D4FeDb8B'.toLowerCase(),
     WRAPPED_NATIVE_TOKEN:
       '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'.toLowerCase(),
     TOKENS: {

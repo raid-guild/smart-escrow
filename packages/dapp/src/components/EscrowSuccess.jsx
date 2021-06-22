@@ -5,7 +5,7 @@ import { utils } from 'ethers';
 import { CopyIcon } from '../icons/CopyIcon';
 import { Loader } from '../components/Loader';
 
-import { awaitInvoiceAddress } from '../utils/invoice';
+import { awaitInvoiceAddress, getSmartInvoiceAddress } from '../utils/invoice';
 import { getInvoice } from '../graphql/getInvoice';
 import { getTxLink, copyToClipboard, apiRequest } from '../utils/helpers';
 
@@ -18,7 +18,8 @@ export const EscrowSuccess = ({
   raidID,
   history
 }) => {
-  const [invoiceId, setInvoiceId] = useState('');
+  const [wrappedInvoiceId, setWrappedInvoiceId] = useState('');
+  const [smartInvoiceId, setSmartInvoiceId] = useState('');
   const [invoice, setInvoice] = useState();
 
   const postInvoiceId = async () => {
@@ -26,7 +27,7 @@ export const EscrowSuccess = ({
       type: 'update',
       raidID: raidID,
       txHash: tx.hash,
-      invoiceId: invoiceId
+      invoiceId: wrappedInvoiceId
     });
 
     console.log(result);
@@ -41,25 +42,31 @@ export const EscrowSuccess = ({
     console.log(result);
   };
 
+  const fetchSmartInvoiceId = () => {
+    getSmartInvoiceAddress(wrappedInvoiceId, ethersProvider).then((id) => {
+      setSmartInvoiceId(id.toLowerCase());
+    });
+  };
+
   useEffect(() => {
     if (tx && ethersProvider) {
       postTxHash();
 
       awaitInvoiceAddress(ethersProvider, tx).then((id) => {
-        setInvoiceId(id.toLowerCase());
+        setWrappedInvoiceId(id.toLowerCase());
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tx, ethersProvider]);
 
   useEffect(() => {
-    if (!utils.isAddress(invoiceId) || !!invoice) return () => undefined;
+    if (!utils.isAddress(smartInvoiceId) || !!invoice) return () => undefined;
 
     let isSubscribed = true;
 
     const interval = setInterval(() => {
-      console.log(chainID, invoiceId);
-      getInvoice(chainID, invoiceId).then((inv) => {
+      console.log(chainID, smartInvoiceId);
+      getInvoice(chainID, smartInvoiceId).then((inv) => {
         console.log(inv);
         if (isSubscribed && !!inv) {
           setInvoice(inv);
@@ -71,12 +78,15 @@ export const EscrowSuccess = ({
       isSubscribed = false;
       clearInterval(interval);
     };
-  }, [chainID, invoiceId, invoice]);
+  }, [chainID, smartInvoiceId, invoice]);
 
   useEffect(() => {
-    if (utils.isAddress(invoiceId)) postInvoiceId();
+    if (utils.isAddress(wrappedInvoiceId)) {
+      postInvoiceId();
+      fetchSmartInvoiceId();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [invoiceId]);
+  }, [wrappedInvoiceId]);
 
   return (
     <Flex
@@ -97,7 +107,7 @@ export const EscrowSuccess = ({
         fontFamily='jetbrains'
         mb='1rem'
       >
-        {invoiceId
+        {wrappedInvoiceId
           ? 'You can view your transaction '
           : 'You can check the progress of your transaction '}
         <Link

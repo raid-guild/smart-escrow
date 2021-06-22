@@ -6,7 +6,10 @@ import { CopyIcon } from '../icons/CopyIcon';
 import { Loader } from '../components/Loader';
 
 import { awaitInvoiceAddress } from '../utils/invoice';
+import { getInvoice } from '../graphql/getInvoice';
 import { getTxLink, copyToClipboard, apiRequest } from '../utils/helpers';
+
+const POLL_INTERVAL = 5000;
 
 export const EscrowSuccess = ({
   ethersProvider,
@@ -16,6 +19,7 @@ export const EscrowSuccess = ({
   history
 }) => {
   const [invoiceId, setInvoiceId] = useState('');
+  const [invoice, setInvoice] = useState();
 
   const postInvoiceId = async () => {
     let result = await apiRequest({
@@ -40,14 +44,34 @@ export const EscrowSuccess = ({
   useEffect(() => {
     if (tx && ethersProvider) {
       postTxHash();
+
       awaitInvoiceAddress(ethersProvider, tx).then((id) => {
-        setTimeout(() => {
-          setInvoiceId(id.toLowerCase());
-        }, 15000);
+        setInvoiceId(id.toLowerCase());
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tx, ethersProvider]);
+
+  useEffect(() => {
+    if (!utils.isAddress(invoiceId) || !!invoice) return () => undefined;
+
+    let isSubscribed = true;
+
+    const interval = setInterval(() => {
+      console.log(chainID, invoiceId);
+      getInvoice(chainID, invoiceId).then((inv) => {
+        console.log(inv);
+        if (isSubscribed && !!inv) {
+          setInvoice(inv);
+        }
+      });
+    }, POLL_INTERVAL);
+
+    return () => {
+      isSubscribed = false;
+      clearInterval(interval);
+    };
+  }, [chainID, invoiceId, invoice]);
 
   useEffect(() => {
     if (utils.isAddress(invoiceId)) postInvoiceId();
@@ -63,7 +87,7 @@ export const EscrowSuccess = ({
       minWidth='50%'
     >
       <Heading fontFamily='rubik' size='md' color='guildRed' mb='2rem'>
-        {invoiceId ? 'Escrow Registered!' : 'Escrow Registration Received'}
+        {invoice ? 'Escrow Registered!' : 'Escrow Registration Received'}
       </Heading>
 
       <Text
@@ -88,7 +112,7 @@ export const EscrowSuccess = ({
         </Link>
       </Text>
 
-      {invoiceId ? (
+      {invoice ? (
         <VStack w='100%' align='stretch' mb='1rem'>
           <Text fontWeight='bold'>Invoice URL</Text>
           <Flex

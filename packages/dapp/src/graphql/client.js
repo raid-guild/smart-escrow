@@ -1,4 +1,4 @@
-import { createClient } from 'urql';
+import { createClient, dedupExchange, fetchExchange } from 'urql';
 
 import { NETWORK_CONFIG } from '../utils/constants';
 
@@ -9,15 +9,14 @@ const graphUrls = {
 
 const getGraphUrl = (chainId) => graphUrls[chainId] || graphUrls[4];
 
-console.log(getGraphUrl(4));
-
 const SUPPORTED_NETWORKS = Object.keys(NETWORK_CONFIG).map((n) => Number(n));
 
 export const clients = SUPPORTED_NETWORKS.reduce(
   (o, chainId) => ({
     ...o,
     [chainId]: createClient({
-      url: getGraphUrl(chainId)
+      url: getGraphUrl(chainId),
+      exchanges: [dedupExchange, fetchExchange]
     })
   }),
   {}

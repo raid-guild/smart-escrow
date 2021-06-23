@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Flex, Text, Link, Button, Heading, VStack } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { utils } from 'ethers';
@@ -22,6 +23,8 @@ export const EscrowSuccess = ({
   const [smartInvoiceId, setSmartInvoiceId] = useState('');
   const [invoice, setInvoice] = useState();
 
+  const [progressText, updateProgressText] = useState('');
+
   const postInvoiceId = async () => {
     let result = await apiRequest({
       type: 'update',
@@ -29,8 +32,9 @@ export const EscrowSuccess = ({
       txHash: tx.hash,
       invoiceId: wrappedInvoiceId
     });
-
-    console.log(result);
+    if (result === 'SUCCESS') {
+      console.log(`Wrapped Invoice ID posted to airtable, ${wrappedInvoiceId}`);
+    }
   };
 
   const postTxHash = async () => {
@@ -39,45 +43,64 @@ export const EscrowSuccess = ({
       raidID: raidID,
       txHash: tx.hash
     });
-    console.log(result);
+    if (result === 'SUCCESS') {
+      updateProgressText(`Transaction hash posted to airtable.`);
+      console.log(`Transaction hash posted to airtable, ${tx.hash}`);
+    }
   };
 
   const fetchSmartInvoiceId = () => {
+    updateProgressText('Fetching Smart Invoice ID from Wrapped Invoice..');
+    console.log('Fetching Smart Invoice ID from Wrapped Invoice..');
     getSmartInvoiceAddress(wrappedInvoiceId, ethersProvider).then((id) => {
       setSmartInvoiceId(id.toLowerCase());
+      updateProgressText(`Received Smart Invoice ID.`);
+      console.log(`Received Smart Invoice ID, ${id.toLowerCase()}`);
     });
+  };
+
+  const pollSubgraph = () => {
+    let isSubscribed = true;
+    const interval = setInterval(() => {
+      console.log(
+        `Polling subgraph with chain ID ${chainID} & Smart Invoice ID ${smartInvoiceId}`
+      );
+      getInvoice(chainID, smartInvoiceId).then((inv) => {
+        console.log(`Data returned, ${inv}`);
+        if (isSubscribed && !!inv) {
+          setInvoice(inv);
+          updateProgressText(`Invoice data received.`);
+          console.log(`Invoice data received, ${inv}`);
+        }
+      });
+    }, POLL_INTERVAL);
+    return () => {
+      isSubscribed = false;
+      clearInterval(interval);
+    };
   };
 
   useEffect(() => {
     if (tx && ethersProvider) {
       postTxHash();
-
+      updateProgressText('Fetching Wrapped Invoice ID...');
+      console.log('Fetching Wrapped Invoice ID...');
       awaitInvoiceAddress(ethersProvider, tx).then((id) => {
         setWrappedInvoiceId(id.toLowerCase());
+        updateProgressText(`Received Wrapped Invoice ID.`);
+        console.log(`Received Wrapped Invoice ID, ${id.toLowerCase()}`);
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tx, ethersProvider]);
 
   useEffect(() => {
     if (!utils.isAddress(smartInvoiceId) || !!invoice) return () => undefined;
 
-    let isSubscribed = true;
+    updateProgressText('Polling subgraph for invoice data..');
 
-    const interval = setInterval(() => {
-      console.log(chainID, smartInvoiceId);
-      getInvoice(chainID, smartInvoiceId).then((inv) => {
-        console.log(inv);
-        if (isSubscribed && !!inv) {
-          setInvoice(inv);
-        }
-      });
-    }, POLL_INTERVAL);
-
-    return () => {
-      isSubscribed = false;
-      clearInterval(interval);
-    };
+    setTimeout(() => {
+      pollSubgraph();
+    }, 10000);
   }, [chainID, smartInvoiceId, invoice]);
 
   useEffect(() => {
@@ -85,7 +108,6 @@ export const EscrowSuccess = ({
       postInvoiceId();
       fetchSmartInvoiceId();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wrappedInvoiceId]);
 
   return (
@@ -162,7 +184,11 @@ export const EscrowSuccess = ({
           </Flex>
         </VStack>
       ) : (
-        <Loader />
+        <Flex direction='column' alignItems='center'>
+          <Loader />
+          <br />
+          <Text fontFamily='jetbrains'>{progressText}</Text>
+        </Flex>
       )}
 
       <Button

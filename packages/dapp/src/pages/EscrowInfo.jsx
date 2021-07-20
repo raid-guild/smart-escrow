@@ -10,8 +10,6 @@ import {
 } from '@chakra-ui/react';
 import { utils } from 'ethers';
 
-import { Container } from '../shared/Container';
-
 import { ProjectInfo } from '../components/ProjectInfo';
 import { Loader } from '../components/Loader';
 
@@ -122,12 +120,12 @@ export const EscrowInfo = () => {
   useEffect(() => fetchRaidPartyAddress(), [invoice]);
 
   return (
-    <Container backdropFilter='blur(.5rem)'>
+    <>
       {!invoice && <Loader />}
       {invoice && (
         <Flex
           width='100%'
-          direction='row'
+          direction={{ md: 'column', lg: 'row' }}
           alignItems='center'
           justifyContent='space-evenly'
         >
@@ -177,6 +175,6 @@ export const EscrowInfo = () => {
             : 'USING UNSUPPORTED NETWORK'}
         </AlertTitle>
       </Alert>
-    </Container>
+    </>
   );
 };

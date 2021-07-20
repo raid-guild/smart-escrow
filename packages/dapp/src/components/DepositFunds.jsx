@@ -70,7 +70,7 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
       await tx.wait();
       setTimeout(() => {
         window.location.reload();
-      }, 10000);
+      }, 20000);
     } catch (depositError) {
       setLoading(false);
       console.log(depositError);
@@ -145,6 +145,8 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
         })}
       </VStack>
 
+      <Text variant='textOne'>OR</Text>
+
       <VStack
         spacing='0.5rem'
         align='stretch'
@@ -153,7 +155,7 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
         fontFamily='jetbrains'
       >
         <Flex justify='space-between' w='100%'>
-          <Text fontWeight='700'>Amount</Text>
+          <Text fontWeight='500'>Enter a Manual Deposit Amount</Text>
           {paymentType === 1 && (
             <Tooltip
               label={`Your ${NATIVE_TOKEN_SYMBOL} will be automagically wrapped to ${parseTokenAddress(
@@ -185,7 +187,7 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
                 setChecked(initialStatus);
               }
             }}
-            placeholder='Amount to Deposit'
+            placeholder='Value..'
             pr={isWRAPPED ? '6rem' : '3.5rem'}
           />
           <InputRightElement w={isWRAPPED ? '6rem' : '3.5rem'}>

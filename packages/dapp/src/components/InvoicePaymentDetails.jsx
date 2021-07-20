@@ -64,17 +64,10 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
 
   let sum = BigNumber.from(0);
   return (
-    <Flex direction='column' background='#262626' padding='2rem'>
-      <HStack
-        mt='.5rem'
-        mb='1rem'
-        justifyContent='space-between'
-        fontSize='lg'
-        fontWeight='bold'
-        fontFamily='jetbrains'
-      >
-        <Text>Total Project Amount</Text>
-        <Text>
+    <Flex direction='column' background='#262626' padding='1rem'>
+      <HStack mt='.5rem' mb='1rem' justifyContent='space-between'>
+        <Text variant='textOne'>Total Project Amount</Text>
+        <Text variant='textOne'>
           {web3.utils.fromWei(invoice.total)}{' '}
           {parseTokenAddress(chainID, invoice.token)}
         </Text>
@@ -102,18 +95,11 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
             <Flex
               key={index.toString()}
               justify='space-between'
-              align={{ base: 'stretch', sm: 'center' }}
-              direction={{ base: 'column', sm: 'row' }}
-              fontFamily='jetbrains'
-              color='yellow'
+              align='stretch'
+              direction='row'
             >
-              <Text>Payment Milestone #{index + 1}</Text>
-              <HStack
-                spacing={{ base: '0.5rem', md: '1rem' }}
-                align='center'
-                justify='flex-end'
-                ml={{ base: '0.5rem', md: '1rem' }}
-              >
+              <Text variant='textOne'>Payment Milestone #{index + 1}</Text>
+              <HStack align='center' justify='flex-end'>
                 {index < currentMilestone && releases.length > index && (
                   <Link
                     fontSize='xs'
@@ -143,48 +129,37 @@ export const InvoicePaymentDetails = ({ web3, invoice, chainID, provider }) => {
                       ).toLocaleDateString()}
                     </Link>
                   )}
-                <Text textAlign='right' fontWeight='500'>{`${utils.formatUnits(
-                  amt,
-                  18
-                )} ${parseTokenAddress(chainID, invoice.token)}`}</Text>
+                <Text
+                  variant='textOne'
+                  textAlign='right'
+                  fontWeight='500'
+                >{`${utils.formatUnits(amt, 18)} ${parseTokenAddress(
+                  chainID,
+                  invoice.token
+                )}`}</Text>
               </HStack>
             </Flex>
           );
         })}
       </VStack>
       <Divider mt='1rem' />
-      <HStack
-        mt='1rem'
-        mb='.2rem'
-        justifyContent='space-between'
-        fontFamily='jetbrains'
-        color='white'
-      >
-        <Text>Total Deposited</Text>
-        <Text>
+      <HStack mt='1rem' mb='.2rem' justifyContent='space-between'>
+        <Text variant='textOne'>Total Deposited</Text>
+        <Text variant='textOne'>
           {utils.formatUnits(deposited, 18)}{' '}
           {parseTokenAddress(chainID, invoice.token)}
         </Text>
       </HStack>
-      <HStack
-        justifyContent='space-between'
-        color='white'
-        fontFamily='jetbrains'
-        mb='.2rem'
-      >
-        <Text>Total Released</Text>
-        <Text>
+      <HStack justifyContent='space-between' mb='.2rem'>
+        <Text variant='textOne'>Total Released</Text>
+        <Text variant='textOne'>
           {utils.formatUnits(released, 18)}{' '}
           {parseTokenAddress(chainID, invoice.token)}
         </Text>
       </HStack>
-      <HStack
-        justifyContent='space-between'
-        color='white'
-        fontFamily='jetbrains'
-      >
-        <Text>Remaining Amount Due</Text>
-        <Text>
+      <HStack justifyContent='space-between'>
+        <Text variant='textOne'>Remaining Amount Due</Text>
+        <Text variant='textOne'>
           {utils.formatUnits(due, 18)}{' '}
           {parseTokenAddress(chainID, invoice.token)}
         </Text>

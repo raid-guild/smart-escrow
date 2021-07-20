@@ -74,66 +74,62 @@ export const EscrowConfirmation = ({
       minWidth='50%'
     >
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Project Name:
         </Text>
-        <Text fontFamily='rubik' color='white' maxWidth='200px' isTruncated>
+        <Text variant='textOne' color='white' maxWidth='200px' isTruncated>
           {context.project_name}
         </Text>
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Client Address:
         </Text>
         <AccountLink address={client} />
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Raid Party Address:
         </Text>
         <AccountLink address={serviceProvider} />
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Arbitration Provider:
         </Text>
-        <Text fontFamily='rubik' color='white'>
+        <Text variant='textOne' color='white'>
           LexDAO
         </Text>
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Payment Token:
         </Text>
-        <Text fontFamily='rubik' color='yellow'>
+        <Text variant='textOne' color='yellow'>
           {tokenType}
         </Text>
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Payment Due:
         </Text>
-        <Text fontFamily='rubik' color='yellow'>
+        <Text variant='textOne' color='yellow'>
           {paymentDue}
         </Text>
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           No of Payments:
         </Text>
-        <Text fontFamily='rubik' color='yellow'>
+        <Text variant='textOne' color='yellow'>
           {milestones}
         </Text>
       </HStack>
 
       <Flex direction='row' width='100%'>
         <Button
-          variant='primary'
+          variant='secondary'
           minW='25%'
-          color='red'
-          border='2px solid'
-          borderColor='red'
-          bg='black'
           p='5px'
           mr='.5rem'
           isDisabled={isLoading}

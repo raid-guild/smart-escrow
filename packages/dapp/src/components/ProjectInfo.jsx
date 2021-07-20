@@ -9,7 +9,7 @@ export const ProjectInfo = ({ context }) => {
         {context.client_name}
       </Heading>
 
-      <Heading size='md' fontFamily='rubik' color='white' maxWidth='300px'>
+      <Heading size='md' fontFamily='spaceMono' color='white' maxWidth='300px'>
         {context.project_name}
       </Heading>
 

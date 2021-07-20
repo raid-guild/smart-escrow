@@ -41,7 +41,7 @@ export const ReleaseFunds = ({ invoice, balance }) => {
         await tx.wait();
         setTimeout(() => {
           window.location.reload();
-        }, 10000);
+        }, 20000);
       } catch (releaseError) {
         console.log(releaseError);
       }

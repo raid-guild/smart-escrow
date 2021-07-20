@@ -58,7 +58,7 @@ export const WithdrawWrappedBalance = ({ contractAddress, token, balance }) => {
         notifySpoilsSent(tx);
         setTimeout(() => {
           window.location.reload();
-        }, 10000);
+        }, 20000);
       } catch (withdrawError) {
         setLoading(false);
         console.log(withdrawError);

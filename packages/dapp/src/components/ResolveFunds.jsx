@@ -64,7 +64,7 @@ export const ResolveFunds = ({ invoice, balance, close }) => {
         await tx.wait();
         setTimeout(() => {
           window.location.reload();
-        }, 10000);
+        }, 20000);
       } catch (depositError) {
         setLoading(false);
         console.log(depositError);

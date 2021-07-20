@@ -63,7 +63,7 @@ export const EscrowSuccess = ({
     let isSubscribed = true;
     const interval = setInterval(() => {
       console.log(
-        `Polling subgraph with chain ID ${chainID} & Smart Invoice ID ${smartInvoiceId}`
+        `Indexing subgraph with chain ID ${chainID} & Smart Invoice ID ${smartInvoiceId}`
       );
       getInvoice(chainID, smartInvoiceId).then((inv) => {
         console.log(`Data returned, ${inv}`);
@@ -96,7 +96,7 @@ export const EscrowSuccess = ({
   useEffect(() => {
     if (!utils.isAddress(smartInvoiceId) || !!invoice) return () => undefined;
 
-    updateProgressText('Polling subgraph for invoice data..');
+    updateProgressText('Indexing subgraph for invoice data..');
 
     setTimeout(() => {
       pollSubgraph();
@@ -118,7 +118,12 @@ export const EscrowSuccess = ({
       padding='1.5rem'
       minWidth='50%'
     >
-      <Heading fontFamily='rubik' size='md' color='guildRed' mb='2rem'>
+      <Heading
+        fontFamily='spaceMono'
+        textTransform='uppercase'
+        size='md'
+        mb='2rem'
+      >
         {invoice ? 'Escrow Registered!' : 'Escrow Registration Received'}
       </Heading>
 
@@ -146,7 +151,9 @@ export const EscrowSuccess = ({
 
       {invoice ? (
         <VStack w='100%' align='stretch' mb='1rem'>
-          <Text fontWeight='bold'>Invoice URL</Text>
+          <Text fontWeight='bold' variant='textOne' color='red'>
+            Invoice URL
+          </Text>
           <Flex
             p='0.3rem'
             justify='space-between'
@@ -154,7 +161,7 @@ export const EscrowSuccess = ({
             bg='black'
             borderRadius='0.25rem'
             w='100%'
-            fontFamily='jetbrains'
+            fontFamily='spaceMono'
           >
             <Link
               ml='0.5rem'
@@ -196,6 +203,7 @@ export const EscrowSuccess = ({
         onClick={() => {
           history.push(`/`);
         }}
+        mt='1rem'
       >
         return home
       </Button>

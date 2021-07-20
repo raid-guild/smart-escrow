@@ -24,7 +24,7 @@ export const WithdrawFunds = ({ contractAddress, token, balance }) => {
         setLoading(false);
         setTimeout(() => {
           window.location.reload();
-        }, 10000);
+        }, 20000);
       } catch (withdrawError) {
         console.log(withdrawError);
       }

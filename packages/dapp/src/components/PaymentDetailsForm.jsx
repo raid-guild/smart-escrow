@@ -36,7 +36,7 @@ const StyledInput = styled(Input)`
 `;
 
 const StyledFormLabel = styled(FormLabel)`
-  font-family: ${theme.fonts.jetbrains};
+  font-family: ${theme.fonts.spaceMono};
   font-weight: bold;
 `;
 

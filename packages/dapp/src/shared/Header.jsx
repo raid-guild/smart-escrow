@@ -16,8 +16,6 @@ import styled from '@emotion/styled';
 
 import { AppContext } from '../context/AppContext';
 
-import { HamburgerIcon } from '../icons/HamburgerIcon';
-
 import { getProfile } from '../utils/3box';
 import { getAccountString, getNetworkLabel } from '../utils/helpers';
 import { theme } from '../theme/theme';
@@ -77,12 +75,8 @@ export const Header = () => {
   return (
     <Flex
       w='100%'
-      h='8rem'
       color='white'
       fontFamily='rubik'
-      position='absolute'
-      top={0}
-      left={0}
       justify='space-between'
       align='center'
       zIndex={5}
@@ -90,16 +84,8 @@ export const Header = () => {
       <Box zIndex={5}>
         <RouterLink to='/'>
           <Flex align='center' p='1rem' m='1rem'>
-            <Image
-              src={Logo}
-              alt='Raid Guild'
-              w={{ base: '3rem', sm: '4rem', md: '5rem' }}
-            />
-            <Image
-              src={LogoText}
-              alt='Smart Invoice'
-              h={{ base: '2rem', sm: '3rem', md: 'auto' }}
-            />
+            <Image src={Logo} alt='Raid Guild' width='50px' />
+            <Image src={LogoText} alt='Smart Invoice' width='150px' />
           </Flex>
         </RouterLink>
       </Box>
@@ -111,7 +97,7 @@ export const Header = () => {
       >
         {account && (
           <Flex justify='center' align='center' zIndex={5}>
-            <Popover>
+            <Popover placement='left'>
               <PopoverTrigger>
                 <Button
                   h='auto'
@@ -154,7 +140,7 @@ export const Header = () => {
                   </Tag>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent bg='none' w='auto' mx='4rem'>
+              <PopoverContent bg='none' w='auto'>
                 <Button
                   onClick={() => {
                     disconnect();
@@ -175,15 +161,28 @@ export const Header = () => {
           ml={{ base: '0.5rem', sm: '1rem' }}
           zIndex={7}
         >
-          <HamburgerIcon
-            boxSize={{ base: '2rem', sm: '2.75rem' }}
-            transition='all 1s ease-out'
-            _hover={{
-              transition: 'all 1s ease-out',
-              transform: 'rotateZ(90deg)'
-            }}
-            color='red'
-          />
+          {!isOpen && (
+            <span
+              style={{
+                width: '50px',
+                fontSize: '2rem',
+                color: theme.colors.red
+              }}
+            >
+              <i className='fas fa-bars' />
+            </span>
+          )}
+          {isOpen && (
+            <span
+              style={{
+                width: '50px',
+                fontSize: '2rem',
+                color: theme.colors.red
+              }}
+            >
+              <i className='fas fa-times' />
+            </span>
+          )}
         </Button>
       </Flex>
       <Flex
@@ -195,36 +194,29 @@ export const Header = () => {
         h='100%'
         w='100%'
         direction='column'
-        justify='center'
+        justify='space-evenly'
         align='center'
-        transition='all 2s ease-out'
+        transition='all .8s ease-out'
         pointerEvents={isOpen ? 'all' : 'none'}
+        color='red'
+        fontWeight='normal'
+        fontSize='1.5rem'
+        fontFamily='spaceMono'
         css={{
           clipPath: isOpen
             ? 'circle(calc(100vw + 100vh) at 90% -10%)'
             : 'circle(100px at 90% -20%)'
         }}
       >
-        <StyledButton
-          onClick={() => {
-            history.push('/');
-            onOpen(false);
-          }}
-          transition='all 0.5s ease 0.4s'
-          my='1rem'
-          variant='link'
-          color='red'
-          fontWeight='normal'
-          fontSize='1.5rem'
-          fontFamily='rubik'
-        >
-          HOME
-        </StyledButton>
-        <ChakraLink
-          href='https://discord.gg/CanD2WcK7W'
-          isExternal
-          _hover={{}}
-        ></ChakraLink>
+        <ChakraLink href='/' isExternal>
+          Start from Scratch
+        </ChakraLink>
+        <ChakraLink href='https://raidguild.org' isExternal>
+          To Raidguild HomePage
+        </ChakraLink>
+        <ChakraLink href='https://discord.gg/CanD2WcK7W' isExternal>
+          Into Raidguild Discord
+        </ChakraLink>
       </Flex>
     </Flex>
   );

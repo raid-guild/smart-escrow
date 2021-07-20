@@ -147,7 +147,7 @@ export const InvoiceButtonManager = ({
               textTransform='uppercase'
               onClick={() => onDeposit()}
             >
-              Deposit
+              {Number(due) ? 'Deposit Due' : 'Deposit More'}
             </Button>
           )}
         </SimpleGrid>
@@ -179,7 +179,7 @@ export const InvoiceButtonManager = ({
               textTransform='uppercase'
               onClick={() => onDeposit()}
             >
-              Deposit
+              {Number(due) ? 'Deposit Due' : 'Deposit More'}
             </Button>
           )}
           <Button
@@ -193,7 +193,7 @@ export const InvoiceButtonManager = ({
             textTransform='uppercase'
             onClick={() => (isReleasable ? onRelease() : onDeposit())}
           >
-            {isReleasable ? 'Release' : 'Deposit'}
+            {isReleasable ? 'Release' : 'Deposit Due'}
           </Button>
         </SimpleGrid>
       )}
@@ -218,7 +218,7 @@ export const InvoiceButtonManager = ({
             textTransform='uppercase'
             onClick={() => onDeposit()}
           >
-            Deposit
+            {Number(due) ? 'Deposit Due' : 'Deposit More'}
           </Button>
         </SimpleGrid>
       )}
@@ -227,6 +227,7 @@ export const InvoiceButtonManager = ({
         <Button
           variant='primary'
           textTransform='uppercase'
+          mt='1rem'
           onClick={() => onWithdrawWrappedBalance()}
         >
           Withdraw Balance

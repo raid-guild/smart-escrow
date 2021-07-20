@@ -88,7 +88,7 @@ export const LockFunds = ({
         await tx.wait();
         setTimeout(() => {
           window.location.reload();
-        }, 10000);
+        }, 20000);
       } catch (lockError) {
         setLocking(false);
         console.log(lockError);

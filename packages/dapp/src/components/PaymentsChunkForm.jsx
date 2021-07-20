@@ -29,7 +29,7 @@ const StyledInput = styled(Input)`
 `;
 
 const StyledFormLabel = styled(FormLabel)`
-  font-family: ${theme.fonts.jetbrains};
+  font-family: ${theme.fonts.spaceMono};
   font-weight: bold;
 `;
 
@@ -84,14 +84,10 @@ export const PaymentsChunkForm = ({
         The sum should add up to {paymentDue} {tokenType}
       </Text>
 
-      <Flex direction='row' width='100%'>
+      <Flex direction='row' width='100%' mt='1rem'>
         <Button
-          variant='primary'
+          variant='secondary'
           minW='25%'
-          color='red'
-          border='2px solid'
-          borderColor='red'
-          bg='black'
           p='5px'
           mr='.5rem'
           onClick={() => updateStep((prevStep) => prevStep - 1)}

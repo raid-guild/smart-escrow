@@ -1,10 +1,21 @@
 import { extendTheme } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { createBreakpoints } from '@chakra-ui/theme-tools';
 
-import { Button } from './styled/Button';
+import { Heading } from './components/Heading';
+import { Text } from './components/Text';
+import { Button } from './components/Button';
+
+// import { logos, illustrations } from '../utils/constants';
 
 import Calendar from '../assets/calendar.svg';
 import CalendarRed from '../assets/calendar-red.svg';
+
+const breakpoints = createBreakpoints({
+  base: '320px',
+  md: '580px',
+  lg: '1026px'
+});
 
 export const theme = extendTheme({
   colors: {
@@ -26,12 +37,27 @@ export const theme = extendTheme({
     jetbrains: `'JetBrains Mono', monospace`,
     rubik: `'Rubik Mono One', sans-serif`,
     uncial: `'Uncial Antiqua', cursive`,
-    spaceMono: `'Space Mono', monospace;`,
-    body: `'Roboto', sans-serif`
+    spaceMono: `'Space Mono', monospace;`
   },
   components: {
+    Heading,
+    Text,
     Button
-  }
+  },
+  // images: {
+  //   metachilli: logos.meta_chilli,
+  //   daohaus: logos.daohaus,
+  //   moloch: logos.moloch,
+  //   raidguild: logos.raidguild,
+  //   swords: logos.swords,
+  //   smartinvoice: logos.smart_invoice,
+  //   wrapeth: logos.wrapeth,
+  //   raidBanner: illustrations.raid_banner,
+  //   raidFantasy: illustrations.raid_fantasy,
+  //   clouds: illustrations.clouds,
+  //   steps: illustrations.steps
+  // },
+  breakpoints
 });
 
 export const globalStyles = css`

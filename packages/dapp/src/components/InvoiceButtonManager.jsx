@@ -132,7 +132,7 @@ export const InvoiceButtonManager = ({
   return (
     <>
       {isResolver && (
-        <SimpleGrid columns={1} spacing='1rem' w='100%'>
+        <SimpleGrid columns={1} spacing='1rem' w='100%' mt='1rem'>
           {invoice.isLocked ? (
             <Button
               variant='primary'
@@ -154,7 +154,7 @@ export const InvoiceButtonManager = ({
       )}
 
       {!dispute && !resolution && !isResolver && isClient && (
-        <SimpleGrid columns={gridColumns} spacing='1rem' w='100%'>
+        <SimpleGrid columns={gridColumns} spacing='1rem' w='100%' mt='1rem'>
           {isLockable && (isClient || isRaidParty) && (
             <Button
               variant='primary'
@@ -203,6 +203,7 @@ export const InvoiceButtonManager = ({
           columns={isLockable && (isClient || isRaidParty) ? 2 : 1}
           spacing='1rem'
           w='100%'
+          mt='1rem'
         >
           {isLockable && (isClient || isRaidParty) && (
             <Button

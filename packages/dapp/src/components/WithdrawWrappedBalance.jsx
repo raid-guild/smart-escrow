@@ -20,16 +20,43 @@ import {
   parseTokenAddress,
   apiNotifySpoils
 } from '../utils/helpers';
-import { awaitSpoilsWithdrawn } from '../utils/invoice';
+import { awaitSpoilsWithdrawn, getSmartInvoiceAddress } from '../utils/invoice';
+import { getInvoice } from '../graphql/getInvoice';
+import { balanceOf } from '../utils/erc20';
 
 export const WithdrawWrappedBalance = ({ contractAddress, token, balance }) => {
   const [loading, setLoading] = useState(false);
-  const { chainID, provider } = useContext(AppContext);
+  const { chainID, invoice_id, provider } = useContext(AppContext);
 
   //   const [amountInput, setAmountInput] = useState('');
   //   const [amount, setAmount] = useState(BigNumber.from(0));
 
   const [transaction, setTransaction] = useState();
+
+  const pollSubgraph = async () => {
+    let smartInvoice = await getSmartInvoiceAddress(invoice_id, provider);
+
+    let isSubscribed = true;
+
+    const interval = setInterval(async () => {
+      let inv = await getInvoice(parseInt(chainID), smartInvoice);
+      if (isSubscribed && !!inv) {
+        console.log(`Invoice data received, ${inv}`);
+
+        let newBalance = await balanceOf(provider, token, contractAddress);
+
+        if (!(utils.formatUnits(newBalance, 18) > 0)) {
+          isSubscribed = false;
+          clearInterval(interval);
+          console.log(
+            utils.formatUnits(newBalance, 18),
+            utils.formatUnits(balance, 18)
+          );
+          window.location.reload();
+        }
+      }
+    }, 5000);
+  };
 
   const notifySpoilsSent = async (tx) => {
     let result = await awaitSpoilsWithdrawn(provider, tx);
@@ -56,9 +83,7 @@ export const WithdrawWrappedBalance = ({ contractAddress, token, balance }) => {
         setTransaction(tx);
         await tx.wait();
         notifySpoilsSent(tx);
-        setTimeout(() => {
-          window.location.reload();
-        }, 20000);
+        await pollSubgraph();
       } catch (withdrawError) {
         setLoading(false);
         console.log(withdrawError);

@@ -7,12 +7,39 @@ import { Loader } from '../components/Loader';
 import { AppContext } from '../context/AppContext';
 
 import { getTxLink, parseTokenAddress } from '../utils/helpers';
-import { release } from '../utils/invoice';
+import { release, getSmartInvoiceAddress } from '../utils/invoice';
+import { getInvoice } from '../graphql/getInvoice';
 
 export const ReleaseFunds = ({ invoice, balance }) => {
   const [loading, setLoading] = useState(false);
-  const { chainID, provider } = useContext(AppContext);
+  const { chainID, invoice_id, provider } = useContext(AppContext);
   const { currentMilestone, amounts, address, token } = invoice;
+
+  const pollSubgraph = async () => {
+    let smartInvoice = await getSmartInvoiceAddress(invoice_id, provider);
+
+    let isSubscribed = true;
+
+    const interval = setInterval(async () => {
+      let inv = await getInvoice(parseInt(chainID), smartInvoice);
+      if (isSubscribed && !!inv) {
+        console.log(`Invoice data received, ${inv}`);
+
+        if (
+          utils.formatUnits(inv.released, 18) >
+          utils.formatUnits(invoice.released, 18)
+        ) {
+          isSubscribed = false;
+          clearInterval(interval);
+          console.log(
+            utils.formatUnits(inv.released, 18),
+            utils.formatUnits(invoice.released, 18)
+          );
+          window.location.reload();
+        }
+      }
+    }, 5000);
+  };
 
   const getReleaseAmount = (currentMilestone, amounts, balance) => {
     if (
@@ -39,9 +66,7 @@ export const ReleaseFunds = ({ invoice, balance }) => {
         const tx = await release(provider, address);
         setTransaction(tx);
         await tx.wait();
-        setTimeout(() => {
-          window.location.reload();
-        }, 20000);
+        await pollSubgraph();
       } catch (releaseError) {
         console.log(releaseError);
       }

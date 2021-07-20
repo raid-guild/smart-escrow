@@ -32,9 +32,12 @@ import {
   getCheckedStatus
 } from '../utils/helpers';
 
+import { getSmartInvoiceAddress } from '../utils/invoice';
+import { getInvoice } from '../graphql/getInvoice';
+
 export const DepositFunds = ({ invoice, deposited, due }) => {
   const { address, token, amounts, currentMilestone } = invoice;
-  const { chainID, provider, account } = useContext(AppContext);
+  const { chainID, invoice_id, provider, account } = useContext(AppContext);
 
   const NATIVE_TOKEN_SYMBOL = getNativeTokenSymbol(chainID);
   const WRAPPED_NATIVE_TOKEN = getWrappedNativeToken(chainID);
@@ -52,6 +55,29 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
 
   const [balance, setBalance] = useState();
 
+  const pollSubgraph = async () => {
+    let smartInvoice = await getSmartInvoiceAddress(invoice_id, provider);
+
+    let isSubscribed = true;
+
+    const interval = setInterval(async () => {
+      let inv = await getInvoice(parseInt(chainID), smartInvoice);
+      if (isSubscribed && !!inv) {
+        console.log(`Invoice data received, ${inv}`);
+
+        let balance = await balanceOf(provider, inv.token, inv.address);
+        let newDepositValue = BigNumber.from(inv.released).add(balance);
+        newDepositValue = utils.formatUnits(newDepositValue, 18);
+        if (newDepositValue > utils.formatUnits(deposited, 18)) {
+          isSubscribed = false;
+          clearInterval(interval);
+          console.log(newDepositValue, utils.formatUnits(deposited, 18));
+          window.location.reload();
+        }
+      }
+    }, 5000);
+  };
+
   const deposit = async () => {
     if (!amount || !provider) return;
     try {
@@ -68,9 +94,8 @@ export const DepositFunds = ({ invoice, deposited, due }) => {
       }
       setTransaction(tx);
       await tx.wait();
-      setTimeout(() => {
-        window.location.reload();
-      }, 20000);
+
+      await pollSubgraph();
     } catch (depositError) {
       setLoading(false);
       console.log(depositError);

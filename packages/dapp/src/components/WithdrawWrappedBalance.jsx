@@ -1,13 +1,4 @@
-import {
-  Button,
-  Heading,
-  Link,
-  Text,
-  VStack
-  //   InputGroup,
-  //   Input,
-  //   InputRightElement
-} from '@chakra-ui/react';
+import { Button, Heading, Link, Text, VStack } from '@chakra-ui/react';
 import { utils, Contract } from 'ethers';
 import React, { useContext, useState } from 'react';
 
@@ -27,9 +18,6 @@ import { balanceOf } from '../utils/erc20';
 export const WithdrawWrappedBalance = ({ contractAddress, token, balance }) => {
   const [loading, setLoading] = useState(false);
   const { chainID, invoice_id, provider } = useContext(AppContext);
-
-  //   const [amountInput, setAmountInput] = useState('');
-  //   const [amount, setAmount] = useState(BigNumber.from(0));
 
   const [transaction, setTransaction] = useState();
 
@@ -103,44 +91,6 @@ export const WithdrawWrappedBalance = ({ contractAddress, token, balance }) => {
       >
         Withdraw Balance
       </Heading>
-      {/* <VStack my='2rem' py='1rem' fontFamily='jetbrains'>
-        <Text color='red.500' fontSize='1.3rem' textAlign='center'>
-          Available Balance
-        </Text>
-        <Text
-          color='yellow'
-          fontSize='1.3rem'
-          fontWeight='bold'
-          textAlign='center'
-        >{`${utils.formatUnits(balance, 18)} ${parseTokenAddress(
-          chainID,
-          token
-        )}`}</Text>
-        <br />
-        <InputGroup>
-          <Input
-            bg='black'
-            color='white'
-            border='none'
-            type='number'
-            value={amountInput}
-            onChange={(e) => {
-              const newAmountInput = e.target.value;
-              setAmountInput(newAmountInput);
-              if (newAmountInput) {
-                const newAmount = utils.parseUnits(newAmountInput, 18);
-                setAmount(newAmount);
-              } else {
-                setAmount(BigNumber.from(0));
-              }
-            }}
-            placeholder='Amount to Withdraw'
-          />
-          <InputRightElement w={'6rem'}>
-            {parseTokenAddress(chainID, token)}
-          </InputRightElement>
-        </InputGroup>
-      </VStack> */}
 
       <Text textAlign='center' fontSize='sm' mb='1rem' fontFamily='jetbrains'>
         Follow the instructions in your wallet to withdraw the balance from

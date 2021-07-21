@@ -55,7 +55,7 @@ export const NETWORK_CONFIG = {
     },
     RESOLVERS: {
       LexDAO: {
-        address: '0x0C046577bd25f7Ef96955f60E71f7863c75046C5'.toLowerCase(),
+        address: '0x1206b51217271FC3ffCa57d0678121983ce0390E'.toLowerCase(),
         logoUrl: LexDAOLogo,
         termsUrl:
           'https://github.com/lexDAO/Arbitration/blob/master/rules/ToU.md#lexdao-resolver'

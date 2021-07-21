@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 node_modules
 .pnp
@@ -7,19 +5,58 @@ node_modules
 
 # testing
 coverage
+lib-cov
+coverage.json
 
 # production
 build
+build/Release
+generated
+cache
 
-# misc
+# Generated files
+.docusaurus
+.cache-loader
+
+# environment variables
 .DS_Store
-.env*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env
 
-# debug
+# logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# swap 
+*.sw[a-z]
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# optional npm cache directory
+.npm
+
+# only yarn
+package-lock.json
+
+# yarn Integrity file
+.yarn-integrity
+
+# editor 
+.history
+.vscode
+
+# misc
+.DS_Store
+
 # subgraph
-packages/subgraph/build/
-packages/subgraph/src/types/
+subgraph.yaml

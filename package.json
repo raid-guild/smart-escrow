@@ -1,32 +1,72 @@
 {
-  "name": "@project/monorepo",
-  "version": "1.0.0",
+  "name": "smart-escrow",
+  "version": "0.1.0",
   "keywords": [
     "ethereum",
-    "react",
+    "smart-escrow",
+    "escrow",
     "workspaces",
     "yarn"
   ],
   "private": true,
   "scripts": {
-    "subgraph:auth": "yarn workspace @project/subgraph auth",
-    "subgraph:codegen": "yarn workspace @project/subgraph codegen",
-    "subgraph:build": "yarn workspace @project/subgraph build",
-    "subgraph:deploy": "yarn workspace @project/subgraph deploy",
-    "react-app:build": "yarn workspace @project/react-app build",
-    "react-app:eject": "yarn workspace @project/react-app eject",
-    "react-app:ipfs": "yarn workspace @project/react-app ipfs",
-    "react-app:start": "yarn workspace @project/react-app start",
-    "react-app:test": "yarn workspace @project/react-app test"
+    "subgraph:auth": "yarn workspace @smart-escrow/subgraph auth",
+    "subgraph:codegen": "yarn workspace @smart-escrow/subgraph codegen",
+    "subgraph:build": "yarn workspace @smart-escrow/subgraph build",
+    "subgraph:deploy-kovan": "yarn workspace @smart-escrow/subgraph deploy-kovan",
+    "subgraph:deploy-rinkeby": "yarn workspace @smart-escrow/subgraph deploy-rinkeby",
+    "dapp:start": "yarn workspace @smart-escrow/dapp start",
+    "dapp:build": "yarn workspace @smart-escrow/dapp build",
+    "contracts:build": "yarn workspace @smart-escrow/contracts build",
+    "contracts:lint": "yarn workspace @smart-escrow/contracts lint",
+    "contracts:test": "yarn workspace @smart-escrow/contracts test",
+    "contracts:deploy-factory": "yarn workspace @smart-escrow/contracts deploy-factory",
+    "lint": "eslint --ignore-path .gitignore \"./packages/**/*.{ts,tsx,js,jsx}\"",
+    "format": "prettier --ignore-path .gitignore --write \"{*,**/*}.{ts,tsx,js,jsx,json,md,sol}\"",
+    "prepare": "husky install"
   },
   "workspaces": {
     "nohoist": [
       "**/@graphprotocol/graph-ts",
-      "**/@graphprotocol/graph-ts/**"
+      "**/@graphprotocol/graph-ts/**",
+      "**/@nomiclabs/**",
+      "**/solidity-coverage",
+      "**/bulma",
+      "**/@ethersproject/**"
     ],
     "packages": [
       "packages/*"
     ]
   },
-  "dependencies": {}
+  "license": "MIT",
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.11.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "8.1.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-flowtype": "^5.6.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-mocha": "^8.1.0",
+    "eslint-plugin-react": "7.23.1",
+    "eslint-plugin-react-hooks": "4.2.0",
+    "eslint-plugin-simple-import-sort": "7.0.0",
+    "ethers": "^5.1.0",
+    "husky": "^6.0.0",
+    "it-all": "^1.0.2",
+    "lint-staged": "^10.3.0",
+    "prettier": "^2.1.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.10"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,sol}": [
+      "prettier --write"
+    ]
+  }
 }

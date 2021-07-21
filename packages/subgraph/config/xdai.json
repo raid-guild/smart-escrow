@@ -1,0 +1,10 @@
+{
+  "network": "xdai",
+  "factories": [
+    {
+      "factoryName": "Version00",
+      "startBlock": "16497070",
+      "address": "0x6e769470F6F8D99794e53C87Fd8254E5D4FeDb8B"
+    }
+  ]
+}

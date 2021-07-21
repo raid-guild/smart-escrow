@@ -1,30 +1,8 @@
 import { Flex, HStack, Text, Button } from '@chakra-ui/react';
 
-import styled from '@emotion/styled';
-
 import { AccountLink } from '../shared/AccountLink';
 
 import { spoilsPercent, NETWORK_CONFIG } from '../utils/constants';
-
-const StyledButton = styled(Button)`
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  margin-top: 1rem;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
-`;
 
 export const EscrowConfirmation = ({
   context,
@@ -96,80 +74,77 @@ export const EscrowConfirmation = ({
       minWidth='50%'
     >
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Project Name:
         </Text>
-        <Text fontFamily='mono' color='white' maxWidth='200px' isTruncated>
+        <Text variant='textOne' color='white' maxWidth='200px' isTruncated>
           {context.project_name}
         </Text>
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Client Address:
         </Text>
         <AccountLink address={client} />
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
-          Service Provider Address:
+        <Text fontWeight='bold' variant='textOne'>
+          Raid Party Address:
         </Text>
         <AccountLink address={serviceProvider} />
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Arbitration Provider:
         </Text>
-        <Text fontFamily='mono' color='white'>
+        <Text variant='textOne' color='white'>
           LexDAO
         </Text>
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Payment Token:
         </Text>
-        <Text fontFamily='mono' color='purple'>
+        <Text variant='textOne' color='yellow'>
           {tokenType}
         </Text>
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           Payment Due:
         </Text>
-        <Text fontFamily='mono' color='purple'>
+        <Text variant='textOne' color='yellow'>
           {paymentDue}
         </Text>
       </HStack>
       <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' fontFamily='jetbrains'>
+        <Text fontWeight='bold' variant='textOne'>
           No of Payments:
         </Text>
-        <Text fontFamily='mono' color='purple'>
+        <Text variant='textOne' color='yellow'>
           {milestones}
         </Text>
       </HStack>
 
       <Flex direction='row' width='100%'>
-        <StyledButton
-          style={{
-            minWidth: '25%',
-            marginRight: '.5rem',
-            border: '2px solid #ff3864',
-            backgroundColor: '#16161a',
-            color: '#ff3864',
-            padding: '5px'
-          }}
+        <Button
+          variant='secondary'
+          minW='25%'
+          p='5px'
+          mr='.5rem'
           isDisabled={isLoading}
           onClick={() => updateStep((prevStep) => prevStep - 1)}
         >
           Back
-        </StyledButton>
-        <StyledButton
-          style={{ width: '100%' }}
+        </Button>
+        <Button
+          variant='primary'
+          w='100%'
           isDisabled={isLoading}
           onClick={createInvoice}
         >
           {isLoading ? 'Creating Escrow..' : 'Create Escrow'}
-        </StyledButton>
+        </Button>
       </Flex>
     </Flex>
   );

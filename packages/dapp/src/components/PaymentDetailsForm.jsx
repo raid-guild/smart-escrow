@@ -5,14 +5,17 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Link
+  Link,
+  Tooltip,
+  HStack
 } from '@chakra-ui/react';
 
 import styled from '@emotion/styled';
 
 import { RadioBox } from './RadioBox';
 
-import { theme } from '../theme';
+import { theme } from '../theme/theme';
+import { QuestionIcon } from '../icons/QuestionIcon';
 
 import { getResolverUrl, getSpoilsUrl } from '../utils/helpers';
 
@@ -33,28 +36,8 @@ const StyledInput = styled(Input)`
 `;
 
 const StyledFormLabel = styled(FormLabel)`
-  font-family: ${theme.fonts.jetbrains};
+  font-family: ${theme.fonts.spaceMono};
   font-weight: bold;
-`;
-
-const StyledButton = styled(Button)`
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  margin-top: 1rem;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
 `;
 
 export const PaymentDetailsForm = ({
@@ -97,7 +80,15 @@ export const PaymentDetailsForm = ({
       minWidth='50%'
     >
       <FormControl isRequired>
-        <StyledFormLabel>Client Address</StyledFormLabel>
+        <HStack alignItems='baseline' justifyContent='space-between'>
+          <StyledFormLabel>Client Address</StyledFormLabel>
+          <Tooltip
+            label='This will be the address used to access the invoice'
+            placement='auto-start'
+          >
+            <QuestionIcon boxSize='0.85rem' />
+          </Tooltip>
+        </HStack>
         <StyledInput
           name='client'
           onChange={(e) => setClient(e.target.value)}
@@ -106,7 +97,12 @@ export const PaymentDetailsForm = ({
       </FormControl>
 
       <FormControl isRequired>
-        <StyledFormLabel>Service Provider Address</StyledFormLabel>
+        <HStack alignItems='baseline' justifyContent='space-between'>
+          <StyledFormLabel>Raid Party Address</StyledFormLabel>
+          <Tooltip label='Recipient of the funds' placement='auto-start'>
+            <QuestionIcon boxSize='0.85rem' />
+          </Tooltip>
+        </HStack>
         <StyledInput
           name='serviceProvider'
           onChange={(e) => setServiceProvider(e.target.value)}
@@ -136,7 +132,15 @@ export const PaymentDetailsForm = ({
           />
         </FormControl>
         <FormControl isRequired>
-          <StyledFormLabel>No of Payments</StyledFormLabel>
+          <HStack alignItems='baseline' justifyContent='space-between'>
+            <StyledFormLabel>No of Payments</StyledFormLabel>
+            <Tooltip
+              label='Number of milestones in which the total payment will be processed'
+              placement='auto-start'
+            >
+              <QuestionIcon boxSize='0.85rem' />
+            </Tooltip>
+          </HStack>
           <StyledInput
             type='number'
             name='milestones'
@@ -148,16 +152,6 @@ export const PaymentDetailsForm = ({
       </Flex>
 
       <Flex direction='row'>
-        <FormControl mr='.5em' isRequired>
-          <StyledFormLabel>Safety Valve Date</StyledFormLabel>
-          <StyledInput
-            type='date'
-            color='white'
-            name='safetyValveDate'
-            onChange={(e) => setSelectedDay(e.target.value)}
-            value={selectedDay}
-          />
-        </FormControl>
         <FormControl isReadOnly mr='.5em'>
           <Link
             href={getResolverUrl(parseInt(context.chainID))}
@@ -171,7 +165,7 @@ export const PaymentDetailsForm = ({
           <StyledInput value='LexDAO' isDisabled />
         </FormControl>
 
-        <FormControl isReadOnly>
+        <FormControl isReadOnly mr='.5em'>
           <Link
             href={getSpoilsUrl(parseInt(context.chainID), serviceProvider)}
             target='_blank'
@@ -181,9 +175,30 @@ export const PaymentDetailsForm = ({
           </Link>
           <StyledInput value='10%' readOnly isDisabled />
         </FormControl>
+
+        <FormControl isRequired>
+          <HStack alignItems='baseline' justifyContent='space-between'>
+            <StyledFormLabel>Safety Valve Date </StyledFormLabel>
+            <Tooltip
+              label='The funds can be withdrawn by the client after 00:00:00 GMT on this date'
+              placement='auto-start'
+            >
+              <QuestionIcon boxSize='0.85rem' />
+            </Tooltip>
+          </HStack>
+
+          <StyledInput
+            type='date'
+            color='white'
+            name='safetyValveDate'
+            onChange={(e) => setSelectedDay(e.target.value)}
+            value={selectedDay}
+          />
+        </FormControl>
       </Flex>
 
-      <StyledButton
+      <Button
+        variant='primary'
         onClick={() => {
           if (
             parseInt(context.chainID) !== 4 &&
@@ -193,10 +208,14 @@ export const PaymentDetailsForm = ({
           if (!context.web3.utils.isAddress(client))
             return sendToast('Invalid Client Address.');
           if (!context.web3.utils.isAddress(serviceProvider))
-            return sendToast('Invalid Service Provider Address.');
+            return sendToast('Invalid Raid Party Address.');
+          if (client === serviceProvider)
+            return sendToast(
+              'Client and Raid party address cannot be the same.'
+            );
           if (tokenType === undefined)
             return sendToast('Select a Payment Token.');
-          if (paymentDue < 1 || paymentDue === '')
+          if (paymentDue <= 0 || paymentDue === '')
             return sendToast('Invalid Payment Due Amount.');
           if (!selectedDay) return sendToast('Safety valve date required.');
           if (new Date(selectedDay).getTime() < new Date().getTime())
@@ -206,7 +225,7 @@ export const PaymentDetailsForm = ({
         }}
       >
         Next: Set Payment Amounts
-      </StyledButton>
+      </Button>
     </Flex>
   );
 };

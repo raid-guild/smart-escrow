@@ -1,47 +1,114 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Flex, Text, Link, Button, Heading, VStack } from '@chakra-ui/react';
-
-import styled from '@emotion/styled';
 import { useState, useEffect } from 'react';
+import { utils } from 'ethers';
 
 import { CopyIcon } from '../icons/CopyIcon';
 import { Loader } from '../components/Loader';
 
-import { awaitInvoiceAddress } from '../utils/invoice';
-import { getTxLink, copyToClipboard, getAddressLink } from '../utils/helpers';
+import { awaitInvoiceAddress, getSmartInvoiceAddress } from '../utils/invoice';
+import { getInvoice } from '../graphql/getInvoice';
+import { getTxLink, copyToClipboard, apiRequest } from '../utils/helpers';
 
-const StyledButton = styled(Button)`
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  margin-top: 2rem;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
-`;
+const POLL_INTERVAL = 5000;
 
-export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
-  const [invoiceId, setInvoiceId] = useState('');
+export const EscrowSuccess = ({
+  ethersProvider,
+  tx,
+  chainID,
+  raidID,
+  history
+}) => {
+  const [wrappedInvoiceId, setWrappedInvoiceId] = useState('');
+  const [smartInvoiceId, setSmartInvoiceId] = useState('');
+  const [invoice, setInvoice] = useState();
 
-  const getInvoice = async () => {
-    let invoiceID = await awaitInvoiceAddress(ethersProvider, tx);
-    setInvoiceId(invoiceID);
-    console.log(invoiceID);
+  const [progressText, updateProgressText] = useState('');
+
+  const postInvoiceId = async () => {
+    let result = await apiRequest({
+      type: 'update',
+      raidID: raidID,
+      txHash: tx.hash,
+      invoiceId: wrappedInvoiceId
+    });
+    if (result === 'SUCCESS') {
+      console.log(`Wrapped Invoice ID posted to airtable, ${wrappedInvoiceId}`);
+    }
+  };
+
+  const postTxHash = async () => {
+    let result = await apiRequest({
+      type: 'update',
+      raidID: raidID,
+      txHash: tx.hash
+    });
+    if (result === 'SUCCESS') {
+      updateProgressText(`Transaction hash posted to airtable.`);
+      console.log(`Transaction hash posted to airtable, ${tx.hash}`);
+    }
+  };
+
+  const fetchSmartInvoiceId = () => {
+    updateProgressText('Fetching Smart Invoice ID from Wrapped Invoice..');
+    console.log('Fetching Smart Invoice ID from Wrapped Invoice..');
+    getSmartInvoiceAddress(wrappedInvoiceId, ethersProvider).then((id) => {
+      setSmartInvoiceId(id.toLowerCase());
+      updateProgressText(`Received Smart Invoice ID.`);
+      console.log(`Received Smart Invoice ID, ${id.toLowerCase()}`);
+    });
+  };
+
+  const pollSubgraph = () => {
+    let isSubscribed = true;
+    const interval = setInterval(() => {
+      console.log(
+        `Indexing subgraph with chain ID ${chainID} & Smart Invoice ID ${smartInvoiceId}`
+      );
+      getInvoice(chainID, smartInvoiceId).then((inv) => {
+        console.log(`Data returned, ${inv}`);
+        if (isSubscribed && !!inv) {
+          setInvoice(inv);
+          updateProgressText(`Invoice data received.`);
+          console.log(`Invoice data received, ${inv}`);
+        }
+      });
+    }, POLL_INTERVAL);
+    return () => {
+      isSubscribed = false;
+      clearInterval(interval);
+    };
   };
 
   useEffect(() => {
-    getInvoice();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (tx && ethersProvider) {
+      postTxHash();
+      updateProgressText('Fetching Wrapped Invoice ID...');
+      console.log('Fetching Wrapped Invoice ID...');
+      awaitInvoiceAddress(ethersProvider, tx).then((id) => {
+        setWrappedInvoiceId(id.toLowerCase());
+        updateProgressText(`Received Wrapped Invoice ID.`);
+        console.log(`Received Wrapped Invoice ID, ${id.toLowerCase()}`);
+      });
+    }
+  }, [tx, ethersProvider]);
+
+  useEffect(() => {
+    if (!utils.isAddress(smartInvoiceId) || !!invoice) return () => undefined;
+
+    updateProgressText('Indexing subgraph for invoice data..');
+
+    setTimeout(() => {
+      pollSubgraph();
+    }, 10000);
+  }, [chainID, smartInvoiceId, invoice]);
+
+  useEffect(() => {
+    if (utils.isAddress(wrappedInvoiceId)) {
+      postInvoiceId();
+      fetchSmartInvoiceId();
+    }
+  }, [wrappedInvoiceId]);
 
   return (
     <Flex
@@ -51,8 +118,13 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
       padding='1.5rem'
       minWidth='50%'
     >
-      <Heading fontFamily='mono' size='md' color='guildRed' mb='2rem'>
-        {invoiceId ? 'Escrow created!' : 'Generating Escrow Id...'}
+      <Heading
+        fontFamily='spaceMono'
+        textTransform='uppercase'
+        size='md'
+        mb='2rem'
+      >
+        {invoice ? 'Escrow Registered!' : 'Escrow Registration Received'}
       </Heading>
 
       <Text
@@ -62,22 +134,26 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
         fontFamily='jetbrains'
         mb='1rem'
       >
-        {invoiceId
+        {wrappedInvoiceId
           ? 'You can view your transaction '
           : 'You can check the progress of your transaction '}
         <Link
           href={getTxLink(chainID, tx.hash)}
           isExternal
-          color='red.500'
+          color='yellow'
           textDecoration='underline'
+          target='_blank'
+          rel='noopener noreferrer'
         >
           here
         </Link>
       </Text>
 
-      {invoiceId ? (
+      {invoice ? (
         <VStack w='100%' align='stretch' mb='1rem'>
-          <Text fontWeight='bold'>Your Invoice ID</Text>
+          <Text fontWeight='bold' variant='textOne' color='red'>
+            Invoice URL
+          </Text>
           <Flex
             p='0.3rem'
             justify='space-between'
@@ -85,22 +161,25 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
             bg='black'
             borderRadius='0.25rem'
             w='100%'
-            fontFamily='jetbrains'
+            fontFamily='spaceMono'
           >
             <Link
               ml='0.5rem'
-              href={getAddressLink(chainID, invoiceId)}
-              color='white'
+              href={`/escrow/${raidID}`}
+              color='yellow'
               overflow='hidden'
             >
-              {invoiceId}
+              {`https://${window.location.hostname}/escrow/${raidID}`}
             </Link>
             {document.queryCommandSupported('copy') && (
               <Button
                 ml={4}
-                onClick={() => copyToClipboard(invoiceId)}
-                variant='ghost'
-                colorScheme='red'
+                onClick={() =>
+                  copyToClipboard(
+                    `https://${window.location.hostname}/escrow/${raidID}`
+                  )
+                }
+                bgColor='black'
                 h='auto'
                 w='auto'
                 minW='2'
@@ -112,16 +191,22 @@ export const EscrowSuccess = ({ ethersProvider, tx, chainID, history }) => {
           </Flex>
         </VStack>
       ) : (
-        <Loader />
+        <Flex direction='column' alignItems='center'>
+          <Loader />
+          <br />
+          <Text fontFamily='jetbrains'>{progressText}</Text>
+        </Flex>
       )}
 
-      <StyledButton
+      <Button
+        variant='primary'
         onClick={() => {
-          history.push('/');
+          history.push(`/`);
         }}
+        mt='1rem'
       >
-        Go Home
-      </StyledButton>
+        return home
+      </Button>
     </Flex>
   );
 };

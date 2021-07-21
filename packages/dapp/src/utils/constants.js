@@ -1,4 +1,8 @@
+import axios from 'axios';
+
 import LexDAOLogo from '../assets/lex-dao.png';
+
+axios.defaults.baseURL = 'https://guild-keeper.herokuapp.com/escrow';
 
 export const INFURA_ID = process.env.REACT_APP_INFURA_ID;
 export const IPFS_ENDPOINT = 'https://ipfs.infura.io';
@@ -7,7 +11,10 @@ export const BOX_ENDPOINT = 'https://ipfs.3box.io';
 export const NETWORK_CONFIG = {
   RG_XDAI: '0xfe1084bc16427e5eb7f13fc19bcd4e641f7d571f'.toLowerCase(),
   100: {
-    INVOICE_FACTORY: ''.toLowerCase(),
+    SUBGRAPH: 'dan13ram/xdai-smart-invoices',
+    INVOICE_FACTORY: '0x6e769470F6F8D99794e53C87Fd8254E5D4FeDb8B'.toLowerCase(),
+    WRAPPED_NATIVE_TOKEN:
+      '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'.toLowerCase(),
     TOKENS: {
       WXDAI: {
         decimals: 18,
@@ -28,7 +35,10 @@ export const NETWORK_CONFIG = {
     }
   },
   4: {
+    SUBGRAPH: 'dan13ram/rinkeby-smart-invoices',
     INVOICE_FACTORY: '0x003680b3C09699D0B16b01F4c00fBeF6692b1Dce'.toLowerCase(),
+    WRAPPED_NATIVE_TOKEN:
+      '0xc778417E063141139Fce010982780140Aa0cD5Ab'.toLowerCase(),
     TOKENS: {
       WETH: {
         decimals: 18,
@@ -101,4 +111,23 @@ export const rpcUrls = {
   100: 'https://rpc.xdaichain.com'
 };
 
+export const nativeSymbols = {
+  1: 'ETH',
+  4: 'ETH',
+  42: 'ETH',
+  100: 'XDAI'
+};
+
+export const wrappedNativeToken = {
+  4: NETWORK_CONFIG[4].WRAPPED_NATIVE_TOKEN,
+  100: NETWORK_CONFIG[100].WRAPPED_NATIVE_TOKEN
+};
+
+export const tokenInfo = {
+  4: NETWORK_CONFIG[4].TOKENS,
+  100: NETWORK_CONFIG[100].TOKENS
+};
+
 export const spoilsPercent = 10;
+
+export const INVOICE_VERSION = 'smart-escrow-v0';

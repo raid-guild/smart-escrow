@@ -1,45 +1,30 @@
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Flex, Heading, VStack, useToast, Box } from '@chakra-ui/react';
+import {
+  Heading,
+  VStack,
+  useToast,
+  Box,
+  Button,
+  Tooltip
+} from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import { theme } from '../theme';
 
-import { Container } from '../shared/Container';
+import { QuestionIcon } from '../icons/QuestionIcon';
+import { theme } from '../theme/theme';
 import { Loader } from '../components/Loader';
-
 import { AppContext } from '../context/AppContext';
-
-const StyledButton = styled.button`
-  width: 350px;
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
-`;
 
 const StyledInput = styled.input`
   width: 350px;
   outline: none;
   color: white;
-  font-family: ${theme.fonts.jetbrains};
+  font-family: ${theme.fonts.spaceMono};
   font-size: 1.1rem;
-  border: 2px solid #ff3864;
-  border-radius: 5px;
-  background-color: transparent;
+  border-radius: 3px;
+  background-color: ${theme.colors.blackLighter};
   margin-bottom: 15px;
-  padding: 12px;
+  padding: 10px;
   &::placeholder {
     color: #ff3864;
     opacity: 1;
@@ -55,9 +40,19 @@ const ButtonManager = (
 ) => {
   let component;
   if (context.isLoading) {
-    component = <Loader />;
+    component = (
+      <span style={{ width: '50px' }}>
+        <Loader />
+      </span>
+    );
   } else if (validId) {
-    if (
+    if (context.account === '') {
+      component = (
+        <Button w='350px' variant='primary' onClick={context.connectAccount}>
+          Connect Wallet
+        </Button>
+      );
+    } else if (
       context.chainID.toString() !== '100' &&
       context.chainID !== '0x64' &&
       context.chainID.toString() !== '4' &&
@@ -70,27 +65,25 @@ const ButtonManager = (
           Switch to xDai or Rinkeby
         </p>
       );
-    } else if (context.account) {
-      if (context.escrow_index !== '') {
-        component = (
-          <StyledButton onClick={escrowClickHandler}>View Escrow</StyledButton>
-        );
-      } else {
-        component = (
-          <StyledButton onClick={registerClickHandler}>
-            Register Escrow
-          </StyledButton>
-        );
-      }
+    } else if (context.invoice_id !== '') {
+      component = (
+        <Button w='350px' variant='primary' onClick={escrowClickHandler}>
+          View Escrow
+        </Button>
+      );
     } else {
       component = (
-        <StyledButton onClick={context.connectAccount}>
-          Connect Wallet
-        </StyledButton>
+        <Button w='350px' variant='primary' onClick={registerClickHandler}>
+          Register Escrow
+        </Button>
       );
     }
   } else {
-    component = <StyledButton onClick={validateID}>Validate ID</StyledButton>;
+    component = (
+      <Button w='350px' variant='primary' onClick={validateID}>
+        Validate ID
+      </Button>
+    );
   }
 
   return component;
@@ -142,31 +135,29 @@ export const Home = () => {
   };
 
   return (
-    <Container>
-      <Flex marginRight='auto' marginLeft='3rem'>
-        <VStack height='150px' marginTop='auto' marginBottom='auto'>
-          <Heading
-            size='md'
-            fontFamily='jetbrains'
-            color='guildRed'
-            marginBottom='1rem'
-          >
-            Start here by providing the Raid ID..
-          </Heading>
-          <StyledInput
-            type='text'
-            placeholder='Enter Raid ID'
-            onChange={(event) => setID(event.target.value)}
-          ></StyledInput>
-          {ButtonManager(
-            context,
-            validId,
-            escrowClickHandler,
-            registerClickHandler,
-            validateID
-          )}
-        </VStack>
-      </Flex>
-    </Container>
+    <VStack height='150px' maxW='350px'>
+      <Heading variant='headingOne'>
+        Start here by providing the Raid ID.{' '}
+        <Tooltip
+          label='Raid ID can be found in the Raids V2 table of RaidCentral base in airtable corresponding to the Raid you wanna create an invoice for. Contact a Cleric for access.'
+          placement='auto-start'
+        >
+          <QuestionIcon boxSize='1.2rem' />
+        </Tooltip>
+      </Heading>
+
+      <StyledInput
+        type='text'
+        placeholder='Enter Raid ID'
+        onChange={(event) => setID(event.target.value)}
+      ></StyledInput>
+      {ButtonManager(
+        context,
+        validId,
+        escrowClickHandler,
+        registerClickHandler,
+        validateID
+      )}
+    </VStack>
   );
 };

@@ -10,20 +10,34 @@ export const Layout = ({ children }) => {
     <Flex
       position='relative'
       w='100%'
+      h='100%'
+      minH='100vh'
       direction='column'
       justify='center'
       align='center'
       bg='black'
-      h='100%'
-      minH='100vh'
       overflowX='hidden'
       bgImage={`url(${BackgroundImage})`}
       bgSize='cover'
-      color='guildRed'
+      color='red'
+      p='1rem'
     >
-      <Header />
-      {children}
-      <Footer />
+      <Flex
+        w='100%'
+        h='100%'
+        minH='100vh'
+        direction='column'
+        alignItems='center'
+        justifyContent='space-between'
+        style={{ backdropFilter: 'blur(.5rem)' }}
+        border='2px solid'
+        borderColor='red'
+      >
+        <Header />
+        {children}
+        <br />
+        <Footer />
+      </Flex>
     </Flex>
   );
 };

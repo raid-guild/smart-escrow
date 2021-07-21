@@ -47,6 +47,24 @@ export const register = async (
   );
 };
 
+export const getSmartInvoiceAddress = async (address, ethersProvider) => {
+  const abi = new utils.Interface([
+    'function invoice() public view returns(address)'
+  ]);
+  const contract = new Contract(address, abi, ethersProvider);
+  const smartInvoice = await contract.invoice();
+  return smartInvoice;
+};
+
+export const getRaidPartyAddress = async (address, ethersProvider) => {
+  const abi = new utils.Interface([
+    'function child() public view returns(address)'
+  ]);
+  const contract = new Contract(address, abi, ethersProvider);
+  const child = await contract.child();
+  return child;
+};
+
 export const getResolutionRateFromFactory = async (
   chainId,
   ethersProvider,
@@ -87,6 +105,26 @@ export const awaitInvoiceAddress = async (ethersProvider, tx) => {
       event.topics
     );
     return decodedLog.wrappedInvoice;
+  }
+  return '';
+};
+
+export const awaitSpoilsWithdrawn = async (ethersProvider, tx) => {
+  await tx.wait(1);
+  const abi = new utils.Interface([
+    'event Withdraw(address indexed token, uint256 parentShare, uint256 childShare)'
+  ]);
+  const receipt = await ethersProvider.getTransactionReceipt(tx.hash);
+  const eventFragment = abi.events[Object.keys(abi.events)[0]];
+  const eventTopic = abi.getEventTopic(eventFragment);
+  const event = receipt.logs.find((e) => e.topics[0] === eventTopic);
+  if (event) {
+    const decodedLog = abi.decodeEventLog(
+      eventFragment,
+      event.data,
+      event.topics
+    );
+    return decodedLog;
   }
   return '';
 };

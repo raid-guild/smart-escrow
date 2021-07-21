@@ -1,41 +1,25 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   Flex,
-  HStack,
-  Text,
-  Button,
-  Divider,
   Box,
-  useToast
+  useToast,
+  Alert,
+  AlertIcon,
+  AlertTitle
 } from '@chakra-ui/react';
-import styled from '@emotion/styled';
-
-import { Container } from '../shared/Container';
+import { utils } from 'ethers';
 
 import { ProjectInfo } from '../components/ProjectInfo';
+import { Loader } from '../components/Loader';
 
 import { AppContext } from '../context/AppContext';
+import { getInvoice } from '../graphql/getInvoice';
+import { getSmartInvoiceAddress, getRaidPartyAddress } from '../utils/invoice';
 
-const StyledButton = styled(Button)`
-  display: block;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #fffffe;
-  background-color: #ff3864;
-  border: none;
-  border-radius: 3px;
-  padding: 12px;
-  margin-top: 1rem;
-  &:hover {
-    cursor: pointer;
-    background-color: #16161a;
-    color: #ff3864;
-  }
-`;
+import { InvoicePaymentDetails } from '../components/InvoicePaymentDetails';
+import { InvoiceMetaDetails } from '../components/InvoiceMetaDetails';
+import { InvoiceButtonManager } from '../components/InvoiceButtonManager';
 
 export const EscrowInfo = () => {
   const context = useContext(AppContext);
@@ -43,6 +27,9 @@ export const EscrowInfo = () => {
 
   const history = useHistory();
   const toast = useToast();
+
+  const [invoice, setInvoice] = useState();
+  const [raidParty, setRaidParty] = useState('');
 
   const initData = async () => {
     if (id) {
@@ -68,7 +55,7 @@ export const EscrowInfo = () => {
         return history.push('/');
       }
 
-      if (!result.escrow_index) {
+      if (!result.invoice_id) {
         toast({
           duration: 3000,
           position: 'top',
@@ -93,119 +80,101 @@ export const EscrowInfo = () => {
     }
   };
 
+  const getSmartInvoiceData = async () => {
+    if (
+      utils.isAddress(context.invoice_id) &&
+      !Number.isNaN(parseInt(context.chainID))
+    ) {
+      let smartInvoice = await getSmartInvoiceAddress(
+        context.invoice_id,
+        context.provider
+      );
+      console.log(context.chainID, smartInvoice);
+      getInvoice(parseInt(context.chainID), smartInvoice).then((i) => {
+        console.log(i);
+        setInvoice(i);
+      });
+    }
+  };
+
+  const fetchRaidPartyAddress = async () => {
+    if (invoice) {
+      let addr = await getRaidPartyAddress(invoice.provider, context.provider);
+      setRaidParty(addr);
+    }
+  };
+
   useEffect(() => {
     initData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (context.invoice_id) {
+      getSmartInvoiceData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context.invoice_id, context.chainID]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => fetchRaidPartyAddress(), [invoice]);
+
   return (
-    <Container backdropFilter='blur(.5rem)'>
-      <Flex
-        width='100%'
-        direction='row'
-        alignItems='center'
-        justifyContent='space-evenly'
-      >
-        <ProjectInfo context={context} />
+    <>
+      {!invoice && <Loader />}
+      {invoice && (
         <Flex
-          direction='column'
-          background='#262626'
-          padding='1.5rem'
-          minWidth='50%'
+          width='100%'
+          direction={{ md: 'column', lg: 'row' }}
+          alignItems='center'
+          justifyContent='space-evenly'
         >
-          <HStack mb='.5rem' justifyContent='space-between'>
-            <Text fontWeight='bold' fontFamily='jetbrains'>
-              Client Address:
-            </Text>
-            <Text
-              maxWidth='200px'
-              fontFamily='mono'
-              color='guildRed'
-              isTruncated
-              padding='5px'
-              background='#16161a'
-            >
-              {context.client}
-            </Text>
-          </HStack>
-          <HStack mb='.5rem' justifyContent='space-between'>
-            <Text fontWeight='bold' fontFamily='jetbrains'>
-              Service Provider Address:
-            </Text>
-            <Text
-              fontFamily='mono'
-              maxWidth='200px'
-              color='guildRed'
-              padding='5px'
-              background='#16161a'
-              isTruncated
-            >
-              {context.serviceProvider}
-            </Text>
-          </HStack>
-          <HStack mb='.5rem' justifyContent='space-between'>
-            <Text fontWeight='bold' fontFamily='jetbrains'>
-              Arbitration Provider:
-            </Text>
-            <Text fontFamily='mono' color='white'>
-              LexDAO
-            </Text>
-          </HStack>
+          <Flex direction='column' minW='30%'>
+            <ProjectInfo context={context} />
+            <InvoiceMetaDetails invoice={invoice} raidParty={raidParty} />
+          </Flex>
 
-          <Divider />
+          <Flex direction='column' minW='45%'>
+            <InvoicePaymentDetails
+              web3={context.web3}
+              invoice={invoice}
+              chainID={context.chainID}
+              provider={context.provider}
+            />
 
-          <HStack mt='.5rem' mb='.5rem' justifyContent='space-between'>
-            <Text fontWeight='bold' fontFamily='jetbrains'>
-              Total Payment Due:
-            </Text>
-            <Text fontFamily='mono' color='purple'>
-              {context.paymentDue}
-            </Text>
-          </HStack>
-          {context.payments.map((payment, index) => {
-            return (
-              <HStack
-                mb='.5rem'
-                justifyContent='space-between'
-                textDecoration={`${index === 0 ? 'line-through' : 'none'}`}
-              >
-                <Text fontFamily='jetbrains'>{`payment#${index + 1}:`}</Text>
-                <Text fontFamily='jetbrains' color='white'>
-                  {`${payment} ${context.token}`}
-                </Text>
-              </HStack>
-            );
-          })}
-
-          <Flex direction='row' width='100%'>
-            <StyledButton
-              style={{
-                minWidth: '25%',
-                marginRight: '.5rem',
-                border: '2px solid #ff3864',
-                backgroundColor: '#16161a',
-                color: '#ff3864',
-                padding: '5px'
-              }}
-            >
-              Lock
-            </StyledButton>
-            <StyledButton
-              style={{
-                minWidth: '25%',
-                marginRight: '.5rem',
-                border: '2px solid #ff3864',
-                backgroundColor: '#16161a',
-                color: '#ff3864',
-                padding: '5px'
-              }}
-            >
-              Release
-            </StyledButton>
-            <StyledButton style={{ width: '100%' }}>Deposit</StyledButton>
+            <InvoiceButtonManager
+              invoice={invoice}
+              account={context.account}
+              provider={context.provider}
+              raidParty={raidParty}
+              wrappedAddress={context.invoice_id}
+            />
           </Flex>
         </Flex>
-      </Flex>
-    </Container>
+      )}
+
+      <Alert
+        status={
+          parseInt(context.chainID) === 4
+            ? 'warning'
+            : parseInt(context.chainID) === 100
+            ? 'success'
+            : 'warning'
+        }
+        width='auto'
+        position='absolute'
+        bottom='1rem'
+        left='1rem'
+      >
+        <AlertIcon />
+        <AlertTitle mr={2} fontFamily='jetbrains' color='black'>
+          {parseInt(context.chainID) === 4
+            ? 'USING TEST NETWORK'
+            : parseInt(context.chainID) === 100
+            ? 'USING PRODUCTION NETWORK'
+            : 'USING UNSUPPORTED NETWORK'}
+        </AlertTitle>
+      </Alert>
+    </>
   );
 };

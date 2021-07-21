@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../context/AppContext';
 
-import { theme } from '../theme';
+import { theme } from '../theme/theme';
 import { getProfile } from '../utils/3box';
 
 import { getAddressLink } from '../utils/helpers';
@@ -15,7 +15,8 @@ export const AccountLink = ({
 }) => {
   const context = useContext(AppContext);
 
-  const address = inputAddress.toLowerCase();
+  const address =
+    typeof inputAddress === 'string' ? inputAddress.toLowerCase() : '';
   const [profile, setProfile] = useState();
   const chainId = inputChainId || context.chainID;
 
@@ -50,11 +51,11 @@ export const AccountLink = ({
       isExternal
       display='inline-flex'
       textAlign='right'
-      bgColor='black30'
+      bgColor='black'
       px='0.25rem'
       _hover={{
         textDecor: 'none',
-        bgColor: 'white20'
+        bgColor: 'blackLight'
       }}
       borderRadius='5px'
       alignItems='center'
@@ -75,7 +76,14 @@ export const AccountLink = ({
         bgRepeat='no-repeat'
         bgPosition='center center'
       />
-      <Text as='span' pl='0.25rem' fontSize='sm' maxW='15rem' isTruncated>
+      <Text
+        as='span'
+        pl='0.25rem'
+        fontSize='sm'
+        maxW='12rem'
+        color='white'
+        isTruncated
+      >
         {displayString}
       </Text>
     </Link>

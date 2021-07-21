@@ -13,14 +13,15 @@ function RadioCard(props) {
       <Box
         {...checkbox}
         cursor='pointer'
-        color='#7f5af0'
+        color='yellow'
         boxShadow='md'
-        border='1px solid #7f5af0'
+        border='1px solid'
+        borderColor='yellow'
         borderRadius='md'
         fontFamily="'JetBrains Mono', monospace"
         _checked={{
-          bg: '#7f5af0',
-          color: 'white',
+          bg: 'yellow',
+          color: 'black',
           borderColor: 'teal.600'
         }}
         px={2}

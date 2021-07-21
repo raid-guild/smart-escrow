@@ -35,14 +35,6 @@ class AppContextProvider extends Component {
     web3: '',
     chainID: '',
 
-    // invoice info
-    client: '0xB96E81f80b3AEEf65CB6d0E280b15FD5DBE71937',
-    serviceProvider: '0x5932221470936e5c845A93bB2b6AC3396f2863Ba',
-    token: 'WXDAI',
-    paymentDue: 5000,
-    milestones: 3,
-    payments: [1000, 3000, 1000],
-
     //airtable info
     invoice_id: '',
     raid_id: '',

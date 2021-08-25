@@ -213,7 +213,7 @@ export const PaymentDetailsForm = ({
             return sendToast(
               'Client and Raid party address cannot be the same.'
             );
-          if (tokenType === undefined)
+          if (tokenType === "")
             return sendToast('Select a Payment Token.');
           if (paymentDue <= 0 || paymentDue === '')
             return sendToast('Invalid Payment Due Amount.');

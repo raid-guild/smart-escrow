@@ -1,12 +1,12 @@
 import gql from 'fake-tag';
-import { getAddress } from '@ethersproject/address';
+import { utils } from 'ethers';
 
 import { clients } from './client';
 import { InvoiceDetails } from './fragments';
 
-const isAddress = (value) => {
+const isAddress = value => {
   try {
-    return getAddress(value).toLowerCase();
+    return utils.getAddress(value).toLowerCase();
   } catch {
     return false;
   }

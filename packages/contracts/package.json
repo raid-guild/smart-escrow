@@ -31,7 +31,7 @@
     "delay": "^5.0.0",
     "dotenv": "^8.2.0",
     "ethereum-waffle": "^3.0.0",
-    "ethers": "^5.1.0",
+    "ethers": "^5.4.5",
     "fs": "^0.0.1-security",
     "hardhat": "^2.1.2",
     "hardhat-ethernal": "^0.2.3",

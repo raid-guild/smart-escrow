@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const axios = require("axios");
 const { subtask, types } = require("hardhat/config");
 const delay = require("delay");

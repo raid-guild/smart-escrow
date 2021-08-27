@@ -50,6 +50,8 @@ package-lock.json
 
 # yarn Integrity file
 .yarn-integrity
+.yarn/*
+.yarnrc
 
 # editor 
 .history

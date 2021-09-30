@@ -3,6 +3,7 @@ const { ethers, run, network, ethernal } = require("hardhat");
 const fs = require("fs");
 
 const smartInvoiceFactoryAddress = {
+  1: "0xb7019c3670f5d4dd99166727a7d29f8a16f4f20a",
   4: "0x9c94f17C4B7A8E2a75A83466c9F9745a0D9F7e1c",
   42: "",
   77: "",
@@ -10,6 +11,7 @@ const smartInvoiceFactoryAddress = {
 };
 
 const networkName = {
+  1: "Mainnet",
   4: "Rinkeby",
   42: "Kovan",
   77: "Sokol",
@@ -17,6 +19,7 @@ const networkName = {
 };
 
 const networkCurrency = {
+  1: "ETH",
   4: "ETH",
   42: "ETH",
   77: "SPOA",

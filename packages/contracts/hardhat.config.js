@@ -6,9 +6,16 @@ require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-waffle");
 require("hardhat-ethernal");
 require("solidity-coverage");
+require("hardhat-gas-reporter");
 require("./tasks/verify-blockscout");
 
-const { INFURA_PROJECT_ID, PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env;
+const {
+  INFURA_PROJECT_ID,
+  PRIVATE_KEY,
+  ETHERSCAN_API_KEY,
+  COINMARKETCAP_API_KEY,
+  CURRENCY,
+} = process.env;
 
 /* eslint-disable no-undef, no-param-reassign */
 
@@ -53,8 +60,17 @@ module.exports = {
       url: "http://127.0.0.1:8555",
       defaultBalanceEther: 1000,
     },
+    mainnet: {
+      url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: [`0x${PRIVATE_KEY}`],
+      gasPrice: 60000000000,
+    },
   },
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
+  },
+  gasReporter: {
+    coinmarketcap: COINMARKETCAP_API_KEY,
+    currency: CURRENCY,
   },
 };

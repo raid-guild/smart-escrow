@@ -96,9 +96,9 @@ export const EscrowInfo = () => {
         getInvoice(parseInt(context.chainID), smartInvoice).then(i => {
           console.log(i);
           setInvoice(i);
+          setInvoiceFetchError(false);
         });
       }
-      setInvoiceFetchError(false);
     } catch (err) {
       console.log(err);
       setInvoiceFetchError(true);

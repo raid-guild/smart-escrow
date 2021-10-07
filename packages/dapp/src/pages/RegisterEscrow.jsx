@@ -5,7 +5,7 @@ import {
   useToast,
   Alert,
   AlertIcon,
-  AlertTitle
+  AlertTitle,
 } from '@chakra-ui/react';
 
 import { useHistory } from 'react-router-dom';
@@ -21,20 +21,20 @@ import { ProjectInfo } from '../components/ProjectInfo';
 // web3 functions
 import { register } from '../utils/invoice';
 
-export const RegisterEscrow = (props) => {
+export const RegisterEscrow = props => {
   const context = useContext(AppContext);
 
   const [client, setClient] = useState('');
   const [serviceProvider, setServiceProvider] = useState('');
 
   const [paymentDue, setPaymentDue] = useState('');
-  const [milestones, setMilestones] = useState(2);
+  const [milestones, setMilestones] = useState(1);
   const [selectedDay, setSelectedDay] = useState('');
 
   const [tokenType, setTokenType] = useState('');
 
   const [payments, setPayments] = useState(
-    Array.from(Array(Number(milestones)))
+    Array.from(Array(Number(milestones))),
   );
 
   const [tx, setTx] = useState('');
@@ -51,16 +51,16 @@ export const RegisterEscrow = (props) => {
       position: 'top',
       render: () => (
         <Box
-          color='white'
+          color="white"
           p={3}
-          mt='2rem'
-          bg='#ff3864'
-          fontFamily='jetbrains'
-          textTransform='uppercase'
+          mt="2rem"
+          bg="#ff3864"
+          fontFamily="jetbrains"
+          textTransform="uppercase"
         >
           {msg}
         </Box>
-      )
+      ),
     });
   };
 
@@ -71,10 +71,10 @@ export const RegisterEscrow = (props) => {
 
   return (
     <Flex
-      width='100%'
-      direction='row'
-      alignItems='center'
-      justifyContent='space-evenly'
+      width="100%"
+      direction="row"
+      alignItems="center"
+      justifyContent="space-evenly"
     >
       <ProjectInfo context={context} />
       {step === 1 && (
@@ -135,25 +135,19 @@ export const RegisterEscrow = (props) => {
       )}
 
       <Alert
-        status={
-          parseInt(context.chainID) === 4
-            ? 'warning'
-            : parseInt(context.chainID) === 100
-            ? 'success'
-            : 'warning'
-        }
-        width='auto'
-        position='absolute'
-        bottom='1rem'
-        left='1rem'
+        status={parseInt(context.chainID) !== 100 || 1 ? 'warning' : 'success'}
+        width="auto"
+        position="absolute"
+        bottom="1rem"
+        left="1rem"
       >
         <AlertIcon />
-        <AlertTitle mr={2} fontFamily='jetbrains' color='black'>
-          {parseInt(context.chainID) === 4
-            ? 'USING TEST NETWORK'
-            : parseInt(context.chainID) === 100
-            ? 'USING PRODUCTION NETWORK'
-            : 'USING UNSUPPORTED NETWORK'}
+        <AlertTitle mr={2} fontFamily="jetbrains" color="black">
+          {parseInt(context.chainID) === 4 && 'USING TEST NETWORK'}
+          {parseInt(context.chainID) === 100 && 'USING XDAI'}
+          {parseInt(context.chainID) === 1 && 'USING MAINNET'}
+          {parseInt(context.chainID) !== (4 && 100 && 1) &&
+            'UNSUPPORTED NETWORK'}
         </AlertTitle>
       </Alert>
     </Flex>

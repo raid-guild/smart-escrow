@@ -1,0 +1,10 @@
+{
+  "network": "mainnet",
+  "factories": [
+    {
+      "factoryName": "Version00",
+      "startBlock": "13326376",
+      "address": "0xD8D6216354551dC960A6d1aDd1E06581983c6694"
+    }
+  ]
+}

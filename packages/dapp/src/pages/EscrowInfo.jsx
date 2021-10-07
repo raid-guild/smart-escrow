@@ -93,7 +93,10 @@ export const EscrowInfo = () => {
           context.provider,
         );
         console.log(context.chainID, smartInvoice);
-        const invoice = getInvoice(parseInt(context.chainID), smartInvoice);
+        const invoice = await getInvoice(
+          parseInt(context.chainID),
+          smartInvoice,
+        );
         setInvoice(invoice);
         setInvoiceFetchError(false);
       }

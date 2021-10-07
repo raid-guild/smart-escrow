@@ -17,7 +17,7 @@ export const EscrowConfirmation = ({
   setLoading,
   updateStep,
   register,
-  setTx
+  setTx,
 }) => {
   const createInvoice = async () => {
     setLoading(true);
@@ -26,8 +26,15 @@ export const EscrowConfirmation = ({
     let ethersProvider = context.provider;
     let clientAddress = client;
 
-    let daoAddress =
-      parseInt(chainID) === 100 ? NETWORK_CONFIG['RG_XDAI'] : serviceProvider;
+    let daoAddress = '';
+
+    if (parseInt(chainID) === 100) {
+      daoAddress = NETWORK_CONFIG['RG_XDAI'];
+    } else if (parseInt(chainID) === 1) {
+      daoAddress = NETWORK_CONFIG['RG_MULTISIG'];
+    } else {
+      daoAddress = serviceProvider;
+    }
 
     let serviceProviders = [daoAddress, serviceProvider]; // [dao address, multisig address]
     let splitFactor = spoilsPercent;
@@ -38,8 +45,8 @@ export const EscrowConfirmation = ({
     let paymentsInWei = [];
     let terminationTime = new Date(selectedDay).getTime() / 1000;
 
-    payments.map((amount) =>
-      paymentsInWei.push(context.web3.utils.toWei(amount))
+    payments.map(amount =>
+      paymentsInWei.push(context.web3.utils.toWei(amount)),
     );
 
     try {
@@ -53,13 +60,13 @@ export const EscrowConfirmation = ({
         tokenAddress,
         paymentsInWei,
         terminationTime,
-        '0x0000000000000000000000000000000000000000000000000000000000000000'
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
       );
 
       setTx(transaction);
       console.log(transaction);
 
-      updateStep((prevStep) => prevStep + 1);
+      updateStep(prevStep => prevStep + 1);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -68,78 +75,78 @@ export const EscrowConfirmation = ({
 
   return (
     <Flex
-      direction='column'
-      background='#262626'
-      padding='1.5rem'
-      minWidth='50%'
+      direction="column"
+      background="#262626"
+      padding="1.5rem"
+      minWidth="50%"
     >
-      <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' variant='textOne'>
+      <HStack mb=".5rem" justifyContent="space-between">
+        <Text fontWeight="bold" variant="textOne">
           Project Name:
         </Text>
-        <Text variant='textOne' color='white' maxWidth='200px' isTruncated>
+        <Text variant="textOne" color="white" maxWidth="200px" isTruncated>
           {context.project_name}
         </Text>
       </HStack>
-      <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' variant='textOne'>
+      <HStack mb=".5rem" justifyContent="space-between">
+        <Text fontWeight="bold" variant="textOne">
           Client Address:
         </Text>
         <AccountLink address={client} />
       </HStack>
-      <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' variant='textOne'>
+      <HStack mb=".5rem" justifyContent="space-between">
+        <Text fontWeight="bold" variant="textOne">
           Raid Party Address:
         </Text>
         <AccountLink address={serviceProvider} />
       </HStack>
-      <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' variant='textOne'>
+      <HStack mb=".5rem" justifyContent="space-between">
+        <Text fontWeight="bold" variant="textOne">
           Arbitration Provider:
         </Text>
-        <Text variant='textOne' color='white'>
+        <Text variant="textOne" color="white">
           LexDAO
         </Text>
       </HStack>
-      <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' variant='textOne'>
+      <HStack mb=".5rem" justifyContent="space-between">
+        <Text fontWeight="bold" variant="textOne">
           Payment Token:
         </Text>
-        <Text variant='textOne' color='yellow'>
+        <Text variant="textOne" color="yellow">
           {tokenType}
         </Text>
       </HStack>
-      <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' variant='textOne'>
+      <HStack mb=".5rem" justifyContent="space-between">
+        <Text fontWeight="bold" variant="textOne">
           Payment Due:
         </Text>
-        <Text variant='textOne' color='yellow'>
+        <Text variant="textOne" color="yellow">
           {paymentDue}
         </Text>
       </HStack>
-      <HStack mb='.5rem' justifyContent='space-between'>
-        <Text fontWeight='bold' variant='textOne'>
+      <HStack mb=".5rem" justifyContent="space-between">
+        <Text fontWeight="bold" variant="textOne">
           No of Payments:
         </Text>
-        <Text variant='textOne' color='yellow'>
+        <Text variant="textOne" color="yellow">
           {milestones}
         </Text>
       </HStack>
 
-      <Flex direction='row' width='100%'>
+      <Flex direction="row" width="100%">
         <Button
-          variant='secondary'
-          minW='25%'
-          p='5px'
-          mr='.5rem'
+          variant="secondary"
+          minW="25%"
+          p="5px"
+          mr=".5rem"
           isDisabled={isLoading}
-          onClick={() => updateStep((prevStep) => prevStep - 1)}
+          onClick={() => updateStep(prevStep => prevStep - 1)}
         >
           Back
         </Button>
         <Button
-          variant='primary'
-          w='100%'
+          variant="primary"
+          w="100%"
           isDisabled={isLoading}
           onClick={createInvoice}
         >

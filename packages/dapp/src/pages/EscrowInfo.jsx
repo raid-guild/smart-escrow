@@ -178,13 +178,16 @@ export const EscrowInfo = () => {
         bottom="1rem"
         left="1rem"
       >
+        {console.log(context.chainID)}
         <AlertIcon />
         <AlertTitle mr={2} fontFamily="jetbrains" color="black">
-          {parseInt(context.chainID) === 4 && 'USING TEST NETWORK'}
-          {parseInt(context.chainID) === 100 && 'USING XDAI'}
-          {parseInt(context.chainID) === 1 && 'USING MAINNET'}
-          {parseInt(context.chainID) !== (4 && 100 && 1) &&
-            'UNSUPPORTED NETWORK'}
+          {parseInt(context.chainID) === 1
+            ? 'USING MAINNET'
+            : parseInt(context.chainID) === 100
+            ? 'USING XDAI'
+            : parseInt(context.chainID) === 4
+            ? 'USING RINKEBY'
+            : 'UNSUPPORTED NETWORK'}
         </AlertTitle>
       </Alert>
     </>
